@@ -1,20 +1,19 @@
 #include "MenuEntity.h"
 
 #include <gf/Coordinates.h>
-#include <gf/Log.h>
 #include <gf/RenderTarget.h>
 
 namespace ggj {
 
-  MenuEntity::MenuEntity(gf::ResourceManager& resources)
+  MenuEntity::MenuEntity(gf::ResourceManager& resources, MenuChoice& choice)
   : m_font(resources.getFont("DejaVuSans.ttf"))
   , m_startWidget("Start", m_font)
   , m_quitWidget("Quit", m_font)
   {
-    m_startWidget.setCallback([]() { gf::Log::debug("Start!\n"); });
+    m_startWidget.setCallback([&choice]() { choice = MenuChoice::Start; });
     m_container.addWidget(m_startWidget);
 
-    m_quitWidget.setCallback([]() { gf::Log::debug("Quit!\n"); });
+    m_quitWidget.setCallback([&choice]() { choice = MenuChoice::Quit; });
     m_container.addWidget(m_quitWidget);
 
   }

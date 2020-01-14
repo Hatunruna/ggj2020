@@ -9,9 +9,15 @@
 
 namespace ggj {
 
+  enum class MenuChoice {
+    None,
+    Start,
+    Quit,
+  };
+
   class MenuEntity : public gf::Entity {
   public:
-    MenuEntity(gf::ResourceManager& resources);
+    MenuEntity(gf::ResourceManager& resources, MenuChoice& choice);
 
     void pointTo(gf::Vector2f coords);
     void triggerAction();

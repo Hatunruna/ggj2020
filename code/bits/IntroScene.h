@@ -18,12 +18,14 @@ namespace ggj {
   private:
     void doProcessEvent(gf::Event& event) override;
     void doHandleActions(gf::Window& window) override;
+    void doUpdate(gf::Time time) override;
 
   private:
     Scenes& m_scenes;
 
     gf::Action m_escapeAction;
 
+    MenuChoice m_choice;
     MenuEntity m_menu;
   };
 

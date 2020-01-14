@@ -8,6 +8,7 @@ namespace ggj {
   : gf::SceneManager("tmpgame", InitialSize)
   , resources({ searchDir })
   , intro(*this, resources)
+  , waiting(*this, resources)
   {
 
   }

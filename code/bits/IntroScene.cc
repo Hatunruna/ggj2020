@@ -3,13 +3,16 @@
 #include "Constants.h"
 #include "Scenes.h"
 
+#include <gf/Log.h>
+
 namespace ggj {
 
   IntroScene::IntroScene(Scenes& scenes, gf::ResourceManager& resources)
   : gf::Scene(InitialSize)
   , m_scenes(scenes)
   , m_escapeAction("Escape")
-  , m_menu(resources)
+  , m_choice(MenuChoice::None)
+  , m_menu(resources, m_choice)
   {
     m_escapeAction.addKeycodeKeyControl(gf::Keycode::Escape);
     addAction(m_escapeAction);
@@ -37,6 +40,21 @@ namespace ggj {
     if (m_escapeAction.isActive()) {
       m_scenes.popScene();
     }
+  }
+
+  void IntroScene::doUpdate(gf::Time time) {
+    switch (m_choice) {
+      case MenuChoice::None:
+        break;
+      case MenuChoice::Start:
+        m_scenes.replaceScene(m_scenes.waiting);
+        break;
+      case MenuChoice::Quit:
+        m_scenes.popScene();
+        break;
+    }
+
+    m_choice = MenuChoice::None;
   }
 
 }

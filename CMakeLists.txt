@@ -26,6 +26,7 @@ add_executable(tmpgame
   code/bits/IntroScene.cc
   code/bits/MenuEntity.cc
   code/bits/Scenes.cc
+  code/bits/WaitingScene.cc
 )
 
 target_include_directories(tmpgame

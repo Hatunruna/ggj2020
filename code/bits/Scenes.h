@@ -5,6 +5,7 @@
 #include <gf/ResourceManager.h>
 
 #include "IntroScene.h"
+#include "WaitingScene.h"
 
 namespace ggj {
 
@@ -14,6 +15,7 @@ namespace ggj {
     gf::ResourceManager resources;
 
     IntroScene intro;
+    WaitingScene waiting;
   };
 
 }
