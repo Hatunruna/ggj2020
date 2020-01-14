@@ -23,6 +23,8 @@ endif()
 
 add_executable(tmpgame
   code/client.cc
+  code/bits/IntroScene.cc
+  code/bits/Scenes.cc
 )
 
 target_include_directories(tmpgame
