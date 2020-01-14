@@ -1,7 +1,10 @@
 #ifndef TMPGAME_INTRO_SCENE_H
 #define TMPGAME_INTRO_SCENE_H
 
+#include <gf/ResourceManager.h>
 #include <gf/Scene.h>
+
+#include "MenuEntity.h"
 
 namespace ggj {
 
@@ -10,11 +13,12 @@ namespace ggj {
   class IntroScene : public gf::Scene {
   public:
 
-    IntroScene(Scenes& scenes);
+    IntroScene(Scenes& scenes, gf::ResourceManager& resources);
 
 
   private:
     Scenes& m_scenes;
+    MenuEntity m_menu;
   };
 
 }

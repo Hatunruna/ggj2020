@@ -24,6 +24,7 @@ endif()
 add_executable(tmpgame
   code/client.cc
   code/bits/IntroScene.cc
+  code/bits/MenuEntity.cc
   code/bits/Scenes.cc
 )
 

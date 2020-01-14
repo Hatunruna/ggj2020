@@ -4,9 +4,10 @@
 
 namespace ggj {
 
-  Scenes::Scenes()
+  Scenes::Scenes(gf::Path searchDir)
   : gf::SceneManager("tmpgame", InitialSize)
-  , intro(*this)
+  , resources({ searchDir })
+  , intro(*this, resources)
   {
 
   }
