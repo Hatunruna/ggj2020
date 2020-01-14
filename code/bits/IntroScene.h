@@ -15,9 +15,15 @@ namespace ggj {
 
     IntroScene(Scenes& scenes, gf::ResourceManager& resources);
 
+  private:
+    void doProcessEvent(gf::Event& event) override;
+    void doHandleActions(gf::Window& window) override;
 
   private:
     Scenes& m_scenes;
+
+    gf::Action m_escapeAction;
+
     MenuEntity m_menu;
   };
 

@@ -13,6 +13,9 @@ namespace ggj {
   public:
     MenuEntity(gf::ResourceManager& resources);
 
+    void pointTo(gf::Vector2f coords);
+    void triggerAction();
+
     void render(gf::RenderTarget& target, const gf::RenderStates& states) override;
 
   private:
