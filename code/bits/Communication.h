@@ -10,7 +10,7 @@ namespace ggj {
 
   class Communication {
   public:
-    Communication(const char *hostname, const char *player);
+    Communication(const std::string& hostname, const std::string& player);
 
     void send(const ClientPacket& packet);
 

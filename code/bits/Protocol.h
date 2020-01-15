@@ -4,6 +4,7 @@
 #include <array>
 
 #include <gf/Id.h>
+#include <gf/SerializationOps.h>
 
 #include "Constants.h"
 
@@ -13,7 +14,7 @@ namespace ggj {
    * server -> client
    */
 
-  enum class ServerPacketType {
+  enum class ServerPacketType : uint16_t {
     PlayerId,
   };
 
@@ -48,7 +49,7 @@ namespace ggj {
    * client -> server
    */
 
-  enum class ClientPacketType {
+  enum class ClientPacketType : uint16_t {
     PlayerName,
   };
 
