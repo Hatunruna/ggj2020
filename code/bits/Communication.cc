@@ -38,24 +38,16 @@ namespace ggj {
   }
 
   void Communication::run() {
-    try {
-      gf::Log::info("Communication thread started!\n");
+    for (;;) {
+      ServerPacket packet;
 
-      for (;;) {
-        ServerPacket packet;
-
-        if (!m_socket.recvData(packet)) {
-          gf::Log::error("Error while receiving a packet from server\n");
-          break;
-        }
-
-        queue.push(packet);
+      if (!m_socket.recvData(packet)) {
+        gf::Log::error("Error while receiving a packet from server\n");
+        break;
       }
-    } catch (std::exception& ex) {
-      gf::Log::error("Exception: %s\n", ex.what());
+
+      queue.push(packet);
     }
   }
 
-
 }
-
