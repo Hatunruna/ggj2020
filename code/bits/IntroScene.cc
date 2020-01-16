@@ -47,7 +47,7 @@ namespace ggj {
       case MenuChoice::None:
         break;
       case MenuChoice::Start:
-        m_scenes.replaceScene(m_scenes.waiting);
+        m_scenes.replaceScene(m_scenes.connection);
         break;
       case MenuChoice::Quit:
         m_scenes.popScene();

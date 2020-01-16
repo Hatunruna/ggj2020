@@ -10,7 +10,7 @@ namespace ggj {
   constexpr std::size_t PlayersCount = 2;
   constexpr const char *Service = "2020";
 
-  constexpr std::size_t MaxPlayerNameLength = 64;
+  constexpr std::size_t MaxPlayerNameLength = 15;
 
 }
 

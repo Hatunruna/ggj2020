@@ -4,6 +4,7 @@
 #include <gf/SceneManager.h>
 #include <gf/ResourceManager.h>
 
+#include "ConnectionScene.h"
 #include "IntroScene.h"
 #include "WaitingScene.h"
 
@@ -15,6 +16,7 @@ namespace ggj {
     gf::ResourceManager resources;
 
     IntroScene intro;
+    ConnectionScene connection;
     WaitingScene waiting;
   };
 
