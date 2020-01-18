@@ -31,14 +31,10 @@ int main() {
     ggj::ClientPacket packet;
 
     for (auto& socket : sockets) {
-      packet.playerName.name[0] = '\0';
-
       if (!socket.recvData(packet)) {
         // TODO: handle error
         return EXIT_FAILURE;
       }
-
-      assert(packet.type == ggj::ClientPacketType::PlayerName);
     }
   }
 

@@ -10,7 +10,8 @@
 
 namespace ggj {
 
-  using Name = std::array<char, MaxPlayerNameLength + 1>;
+  using PlayerName = std::array<char, MaxPlayerNameLength + 1>;
+  using RoomName = std::array<char, MaxRoomNameLength + 1>;
 
   /*
    * server -> client
@@ -27,7 +28,7 @@ namespace ggj {
 
   struct PlayerOther {
     gf::Id id;
-    Name name;
+    PlayerName name;
   };
 
   struct ServerPacket {
@@ -63,18 +64,18 @@ namespace ggj {
    */
 
   enum class ClientPacketType : uint16_t {
-    PlayerName,
+    PlayerIdentity,
   };
 
-  struct PlayerName {
-    Name name;
+  struct PlayerIdentity {
+    PlayerName name;
   };
 
   struct ClientPacket {
     ClientPacketType type;
 
     union {
-      PlayerName playerName;
+      PlayerIdentity playerIdentity;
     };
   };
 
@@ -83,8 +84,8 @@ namespace ggj {
     ar | packet.type;
 
     switch (packet.type) {
-      case ClientPacketType::PlayerName:
-        ar | packet.playerName.name;
+      case ClientPacketType::PlayerIdentity:
+        ar | packet.playerIdentity.name;
         break;
     }
 

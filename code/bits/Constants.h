@@ -11,6 +11,7 @@ namespace ggj {
   constexpr const char *Service = "2020";
 
   constexpr std::size_t MaxPlayerNameLength = 15;
+  constexpr std::size_t MaxRoomNameLength = 15;
 
 }
 

@@ -6,17 +6,21 @@
 
 #include "ConnectionScene.h"
 #include "IntroScene.h"
+#include "LobbyScene.h"
+#include "RoomScene.h"
 #include "WaitingScene.h"
 
 namespace ggj {
 
   struct Scenes : gf::SceneManager {
-    Scenes(gf::Path searchDir);
+    Scenes(ClientNetwork& network, gf::Path searchDir);
 
     gf::ResourceManager resources;
 
     IntroScene intro;
     ConnectionScene connection;
+    LobbyScene lobby;
+    RoomScene room;
     WaitingScene waiting;
   };
 
