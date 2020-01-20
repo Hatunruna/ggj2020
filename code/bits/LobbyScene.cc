@@ -2,6 +2,7 @@
 
 #include <gf/Coordinates.h>
 #include <gf/Log.h>
+#include <gf/Unused.h>
 
 #include "Constants.h"
 #include "Scenes.h"
@@ -23,12 +24,16 @@ namespace ggj {
   }
 
   void LobbyScene::doUpdate(gf::Time time) {
+    gf::unused(time);
+
     ServerPacket packet;
 
     while (m_network.queue.poll(packet)) {
-      // TODO
       switch (packet.type) {
-
+        case ServerPacketType::Disconnect:
+          m_network.disconnect();
+          m_scenes.replaceScene(m_scenes.connection);
+          break;
       }
     }
   }
@@ -69,7 +74,7 @@ namespace ggj {
           m_ui.layoutRowDynamic(25.0f, 1);
 
           for (std::size_t i = 0; i < m_rooms.size(); ++i) {
-            if (m_ui.selectableValueLabel(m_rooms[i].data(), gf::UIAlignment::Left, (i == m_selectedRoom))) {
+            if (m_ui.selectableValueLabel(m_rooms[i].getData(), gf::UIAlignment::Left, (i == m_selectedRoom))) {
               m_selectedRoom = i;
             }
           }
@@ -90,6 +95,7 @@ namespace ggj {
       m_ui.layoutRowDynamic(25.0f, 1);
 
       if (m_ui.buttonLabel("Back")) {
+        m_network.disconnect();
         m_scenes.replaceScene(m_scenes.connection);
       }
 

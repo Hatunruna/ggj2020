@@ -2,6 +2,7 @@
 
 #include <gf/Coordinates.h>
 #include <gf/Log.h>
+#include <gf/Unused.h>
 
 #include "Constants.h"
 #include "Scenes.h"
@@ -26,7 +27,7 @@ namespace ggj {
   }
 
   void ConnectionScene::doUpdate(gf::Time time) {
-
+    gf::unused(time);
   }
 
   void ConnectionScene::doRender(gf::RenderTarget& target) {

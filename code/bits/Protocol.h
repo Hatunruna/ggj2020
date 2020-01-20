@@ -5,19 +5,21 @@
 
 #include <gf/Id.h>
 #include <gf/SerializationOps.h>
+#include <gf/StaticString.h>
 
 #include "Constants.h"
 
 namespace ggj {
 
-  using PlayerName = std::array<char, MaxPlayerNameLength + 1>;
-  using RoomName = std::array<char, MaxRoomNameLength + 1>;
+  using PlayerName = gf::StaticString<MaxPlayerNameLength>;
+  using RoomName = gf::StaticString<MaxRoomNameLength>;
 
   /*
    * server -> client
    */
 
   enum class ServerPacketType : uint16_t {
+    Disconnect,
     PlayerId,
     PlayerOther,
   };
@@ -46,6 +48,9 @@ namespace ggj {
     ar | packet.type;
 
     switch (packet.type) {
+      case ServerPacketType::Disconnect:
+        // no data
+        break;
       case ServerPacketType::PlayerId:
         ar | packet.playerId.id;
         break;
@@ -64,6 +69,7 @@ namespace ggj {
    */
 
   enum class ClientPacketType : uint16_t {
+    Disconnect,
     PlayerIdentity,
   };
 
@@ -84,6 +90,9 @@ namespace ggj {
     ar | packet.type;
 
     switch (packet.type) {
+      case ClientPacketType::Disconnect:
+        // no data
+        break;
       case ClientPacketType::PlayerIdentity:
         ar | packet.playerIdentity.name;
         break;

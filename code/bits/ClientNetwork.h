@@ -20,6 +20,7 @@ namespace ggj {
     bool isConnected();
     void connect(const std::string& hostname);
     void send(const ClientPacket& packet);
+    void disconnect();
 
   public:
     gf::Queue<ServerPacket> queue;

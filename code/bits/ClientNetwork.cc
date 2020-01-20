@@ -31,16 +31,18 @@ namespace ggj {
     std::thread thread(&ClientNetwork::run, this, hostname);
     thread.detach();
 
-//     ClientPacket packet;
-//     packet.type = ClientPacketType::PlayerIdentity;
-//     std::copy(player.begin(), player.end(), packet.playerIdentity.name.begin());
-//     packet.playerIdentity.name[player.length()] = '\0';
-//
-//     send(packet);
   }
 
   void ClientNetwork::send(const ClientPacket& packet) {
     m_socket.sendData(packet);
+  }
+
+  void ClientNetwork::disconnect() {
+    ClientPacket packet;
+    packet.type = ClientPacketType::Disconnect;
+    send(packet);
+    m_socket = gf::TcpSocket();
+    m_connecting = false;
   }
 
   void ClientNetwork::run(std::string hostname) {
