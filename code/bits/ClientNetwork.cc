@@ -7,6 +7,8 @@
 #include <gf/Log.h>
 #include <gf/SerializationOps.h>
 
+#include "Protocol.h"
+
 namespace ggj {
 
   ClientNetwork::ClientNetwork()
@@ -33,14 +35,9 @@ namespace ggj {
 
   }
 
-  void ClientNetwork::send(const ClientPacket& packet) {
-    m_socket.sendData(packet);
-  }
-
   void ClientNetwork::disconnect() {
-    ClientPacket packet;
-    packet.type = ClientPacketType::Disconnect;
-    send(packet);
+    ClientDisconnect data;
+    send(data);
     m_socket = gf::TcpSocket();
     m_connecting = false;
   }
@@ -59,15 +56,22 @@ namespace ggj {
     }
 
     for (;;) {
-      ServerPacket packet;
+      ProtocolBytes bytes;
 
-      if (!m_socket.recvData(packet)) {
-        gf::Log::error("Error while receiving a packet from server\n");
-        // TODO: push a disconnection packet
-        break;
+      switch (m_socket.recvPacket(bytes.packet)) {
+        case gf::SocketStatus::Data:
+          queue.push(std::move(bytes));
+          break;
+        case gf::SocketStatus::Error:
+          gf::Log::error("Error while receiving a packet from server\n");
+          return;
+        case gf::SocketStatus::Close:
+          gf::Log::info("End of connection to the server\n");
+          return;
+        case gf::SocketStatus::Block:
+          assert(false);
+          break;
       }
-
-      queue.push(packet);
     }
   }
 

@@ -6,7 +6,6 @@
 #include <gf/UI.h>
 
 #include "ClientNetwork.h"
-#include "Protocol.h"
 
 namespace ggj {
 
@@ -29,7 +28,7 @@ namespace ggj {
     gf::UI m_ui;
     gf::UICharBuffer m_roomBuffer;
 
-    std::vector<RoomName> m_rooms;
+    std::vector<std::string> m_rooms;
     std::size_t m_selectedRoom;
   };
 

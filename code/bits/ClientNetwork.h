@@ -8,7 +8,7 @@
 #include <gf/Queue.h>
 #include <gf/TcpSocket.h>
 
-#include "Protocol.h"
+#include "ProtocolBytes.h"
 
 namespace ggj {
 
@@ -19,11 +19,17 @@ namespace ggj {
     bool isConnecting();
     bool isConnected();
     void connect(const std::string& hostname);
-    void send(const ClientPacket& packet);
     void disconnect();
 
+    template<typename T>
+    void send(const T& data) {
+      ProtocolBytes bytes;
+      bytes.is(data);
+      m_socket.sendPacket(bytes.packet);
+    }
+
   public:
-    gf::Queue<ServerPacket> queue;
+    gf::Queue<ProtocolBytes> queue;
 
   private:
     void run(std::string hostname);

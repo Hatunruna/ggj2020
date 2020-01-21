@@ -9,96 +9,44 @@
 
 #include "Constants.h"
 
-namespace ggj {
+using namespace gf::literals;
 
-  using PlayerName = gf::StaticString<MaxPlayerNameLength>;
-  using RoomName = gf::StaticString<MaxRoomNameLength>;
+namespace ggj {
 
   /*
    * server -> client
    */
 
-  enum class ServerPacketType : uint16_t {
-    Disconnect,
-    PlayerId,
-    PlayerOther,
-  };
-
-  struct PlayerId {
-    gf::Id id;
-  };
-
-  struct PlayerOther {
-    gf::Id id;
-    PlayerName name;
-  };
-
-  struct ServerPacket {
-    ServerPacketType type;
-
-    union {
-      PlayerId playerId;
-      PlayerOther playerOther;
-    };
-
+  struct ServerDisconnect {
+    static constexpr gf::Id type = "ServerDisconnect"_id;
   };
 
   template<typename Archive>
-  Archive& operator|(Archive& ar, ServerPacket& packet) {
-    ar | packet.type;
-
-    switch (packet.type) {
-      case ServerPacketType::Disconnect:
-        // no data
-        break;
-      case ServerPacketType::PlayerId:
-        ar | packet.playerId.id;
-        break;
-
-      case ServerPacketType::PlayerOther:
-        ar | packet.playerOther.id | packet.playerOther.name;
-        break;
-    }
-
+  Archive operator|(Archive& ar, ServerDisconnect&) {
     return ar;
   }
-
 
   /*
    * client -> server
    */
 
-  enum class ClientPacketType : uint16_t {
-    Disconnect,
-    PlayerIdentity,
-  };
-
-  struct PlayerIdentity {
-    PlayerName name;
-  };
-
-  struct ClientPacket {
-    ClientPacketType type;
-
-    union {
-      PlayerIdentity playerIdentity;
-    };
+  struct ClientDisconnect {
+    static constexpr gf::Id type = "ClientDisconnect"_id;
   };
 
   template<typename Archive>
-  Archive& operator|(Archive& ar, ClientPacket& packet) {
-    ar | packet.type;
-
-    switch (packet.type) {
-      case ClientPacketType::Disconnect:
-        // no data
-        break;
-      case ClientPacketType::PlayerIdentity:
-        ar | packet.playerIdentity.name;
-        break;
-    }
-
+  Archive operator|(Archive& ar, ClientDisconnect&) {
     return ar;
+  }
+
+  struct ClientCreateRoom {
+    static constexpr gf::Id type = "ClientCreateRoom"_id;
+    std::string name;
+  };
+
+  template<typename Archive>
+  Archive operator|(Archive& ar, ClientCreateRoom& data) {
+    return ar | data.name;
   }
 
 }

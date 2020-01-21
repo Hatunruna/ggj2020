@@ -3,6 +3,7 @@
 #include <gf/Coordinates.h>
 #include <gf/Log.h>
 
+#include "Constants.h"
 #include "Scenes.h"
 
 namespace ggj {

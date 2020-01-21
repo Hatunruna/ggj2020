@@ -53,6 +53,12 @@ install(
 
 add_executable(tmpgame-server
   code/server.cc
+  code/bits/GameFactory.cc
+  code/bits/GameInstance.cc
+  code/bits/ServerGroup.cc
+  code/bits/ServerLobby.cc
+  code/bits/ServerNetwork.cc
+  code/bits/ServerRoom.cc
 )
 
 target_include_directories(tmpgame-server
