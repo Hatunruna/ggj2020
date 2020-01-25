@@ -31,10 +31,19 @@ add_executable(tmpgame
   code/bits/RoomScene.cc
   code/bits/Scenes.cc
   code/bits/WaitingScene.cc
+
+  vendor/imgui/imgui.cpp
+  vendor/imgui/imgui_demo.cpp
+  vendor/imgui/imgui_draw.cpp
+  vendor/imgui/imgui_widgets.cpp
+
+  vendor/gf-imgui/imgui_impl_gf.cc
 )
 
 target_include_directories(tmpgame
   PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/vendor/imgui
+    ${CMAKE_CURRENT_SOURCE_DIR}/vendor/gf-imgui
     ${CMAKE_CURRENT_SOURCE_DIR}/code
     ${CMAKE_CURRENT_BINARY_DIR}
 )

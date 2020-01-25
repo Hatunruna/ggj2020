@@ -14,6 +14,12 @@ namespace ggj {
 
   struct Scenes : gf::SceneManager {
     Scenes(ClientNetwork& network, gf::Path searchDir);
+    Scenes(const Scenes&) = delete;
+    Scenes(Scenes&&) = delete;
+    ~Scenes();
+
+    Scenes& operator=(const Scenes&) = delete;
+    Scenes& operator=(Scenes&&) = delete;
 
     gf::ResourceManager resources;
 
