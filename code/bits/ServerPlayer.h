@@ -5,6 +5,8 @@
 
 #include <gf/TcpSocket.h>
 
+#include "ProtocolBytes.h"
+
 namespace ggj {
 
   class ServerRoom;
@@ -14,6 +16,13 @@ namespace ggj {
     std::string name;
     gf::TcpSocket socket;
     ServerRoom *room = nullptr;
+
+    template<typename T>
+    void send(const T& data) {
+      ProtocolBytes bytes;
+      bytes.is(data);
+      socket.sendPacket(bytes.packet);
+    }
   };
 
 }

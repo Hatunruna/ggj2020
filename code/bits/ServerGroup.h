@@ -6,6 +6,7 @@
 #include <gf/Ref.h>
 
 #include "ProtocolBytes.h"
+#include "ProtocolData.h"
 #include "ServerPlayer.h"
 
 namespace ggj {
@@ -16,15 +17,27 @@ namespace ggj {
 
     void addPlayer(ServerPlayer& player);
     void removePlayer(ServerPlayer& player);
+    std::vector<PlayerData> getPlayers();
 
     virtual void update(ServerPlayer& player, ProtocolBytes& bytes) = 0;
 
-    void broadcast(const ProtocolBytes& bytes);
+    template<typename T>
+    void broadcast(const T& data) {
+      ProtocolBytes bytes;
+      bytes.is(data);
+
+      for (ServerPlayer& player : m_players) {
+        player.socket.sendPacket(bytes.packet);
+      }
+    }
+
+  private:
+    virtual void doAddPlayer(ServerPlayer& player);
+    virtual void doRemovePlayer(ServerPlayer& player);
 
   private:
     std::vector<gf::Ref<ServerPlayer>> m_players;
   };
-
 
 }
 

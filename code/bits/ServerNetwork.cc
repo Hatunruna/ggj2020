@@ -13,6 +13,7 @@ namespace ggj {
   ServerNetwork::ServerNetwork(gf::Random& random)
   : m_random(random)
   , m_listener(Service)
+  , m_lobby(random)
   {
     if (!m_listener) {
       throw std::runtime_error("Can not start listener.");
@@ -64,6 +65,7 @@ namespace ggj {
               gf::Log::error("Error receiving data from player #%" PRIX64 ".", player.id);
               // fallthrough
             case gf::SocketStatus::Close:
+              gf::Log::info("Player #%" PRIX64 " socket closed.\n", player.id);
               purgatory.push_back(player.id);
               break;
             case gf::SocketStatus::Block:
@@ -80,7 +82,7 @@ namespace ggj {
           continue;
         }
 
-        gf::Id id = m_random.computeUniformInteger(std::numeric_limits<gf::Id>::min(), std::numeric_limits<gf::Id>::max()); // assume it's unique
+        gf::Id id = m_random.get().computeId(); // assume it's unique
 
         ServerPlayer player;
         player.id = id;

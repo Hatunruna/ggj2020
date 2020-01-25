@@ -5,18 +5,33 @@ namespace ggj {
 
   void ServerGroup::addPlayer(ServerPlayer& player) {
     m_players.push_back(player);
+    doAddPlayer(player);
   }
 
   void ServerGroup::removePlayer(ServerPlayer& player) {
     m_players.erase(std::remove(m_players.begin(), m_players.end(), player), m_players.end());
+    doRemovePlayer(player);
   }
 
-  void ServerGroup::broadcast(const ProtocolBytes& bytes) {
-    assert(bytes.type != gf::InvalidId);
+  std::vector<PlayerData> ServerGroup::getPlayers() {
+    std::vector<PlayerData> list;
 
-    for (ServerPlayer& player : m_players) {
-      player.socket.sendPacket(bytes.packet);
+    for (const ServerPlayer& player : m_players) {
+      PlayerData data;
+      data.id = player.id;
+      data.name = player.name;
+      list.push_back(std::move(data));
     }
+
+    return list;
+  }
+
+  void ServerGroup::doAddPlayer(ServerPlayer& player) {
+    // nothing by default
+  }
+
+  void ServerGroup::doRemovePlayer(ServerPlayer& player) {
+    // nothing by default
   }
 
 }

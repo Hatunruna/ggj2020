@@ -5,6 +5,7 @@
 #include <gf/Scene.h>
 #include <gf/UI.h>
 
+#include "ProtocolData.h"
 #include "ClientNetwork.h"
 
 namespace ggj {
@@ -21,14 +22,17 @@ namespace ggj {
     void doUpdate(gf::Time time) override;
     void doRender(gf::RenderTarget& target) override;
 
-
   private:
     Scenes& m_scenes;
     ClientNetwork& m_network;
     gf::UI m_ui;
     gf::UICharBuffer m_roomBuffer;
+    gf::UICharBuffer m_lineBuffer;
+    gf::UICharBuffer m_nameBuffer;
 
-    std::vector<std::string> m_rooms;
+    std::vector<PlayerData> m_players;
+    std::vector<RoomData> m_rooms;
+    std::vector<MessageData> m_messages;
     std::size_t m_selectedRoom;
   };
 

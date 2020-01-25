@@ -11,6 +11,7 @@ namespace ggj {
 
     void update(ServerPlayer& player, ProtocolBytes& bytes) override;
 
+    gf::Id id;
     std::string name;
   };
 

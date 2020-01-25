@@ -6,6 +6,7 @@
 #include <set>
 
 #include <gf/Random.h>
+#include <gf/Ref.h>
 #include <gf/SocketSelector.h>
 #include <gf/TcpListener.h>
 
@@ -24,7 +25,7 @@ namespace ggj {
     static void signalHandler(int sig);
 
   private:
-    gf::Random& m_random;
+    gf::Ref<gf::Random> m_random;
     gf::TcpListener m_listener;
     gf::SocketSelector m_selector;
 
