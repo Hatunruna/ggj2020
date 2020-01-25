@@ -4,91 +4,97 @@
 #include <gf/Log.h>
 #include <gf/Unused.h>
 
+#include <imgui.h>
+#include <imgui_impl_gf.h>
+
 #include "Constants.h"
 #include "Protocol.h"
 #include "Scenes.h"
 
 namespace ggj {
 
-  ConnectionScene::ConnectionScene(Scenes& scenes, ClientNetwork& network, gf::ResourceManager& resources)
+  ConnectionScene::ConnectionScene(Scenes& scenes, ClientNetwork& network)
   : gf::Scene(InitialSize)
   , m_scenes(scenes)
   , m_network(network)
-  , m_ui(resources.getFont("DejaVuSans.ttf"), UICharacterSize)
-  , m_hostnameBuffer(128)
-  , m_nameBuffer(MaxPlayerNameLength + 1)
   , m_connectionAsked(false)
   {
-    m_hostnameBuffer.append("localhost");
-    m_nameBuffer.append("toto");
+    m_hostnameBuffer = "localhost";
+    m_nameBuffer = "toto";
   }
 
   void ConnectionScene::doProcessEvent(gf::Event& event) {
-    m_ui.processEvent(event);
+    ImGui_ImplGF_ProcessEvent(event);
   }
 
   void ConnectionScene::doUpdate(gf::Time time) {
-    gf::unused(time);
+    ImGui_ImplGF_Update(time);
   }
 
   void ConnectionScene::doRender(gf::RenderTarget& target) {
     gf::Coordinates coords(target);
 
+    auto windowPosition = coords.getCenter();
+    auto buttonSize = ImVec2(170, 40);
+
     // UI
+    ImGui::NewFrame();
 
-    if (m_ui.begin("Connect", gf::RectF::fromCenterSize(coords.getCenter(), { 400.0f, 180.0f }), gf::UIWindow::Border | gf::UIWindow::Title)) {
+//     ImGui::SetNextWindowSize(ImVec2(windowSize.x, windowSize.y));
+    ImGui::SetNextWindowPos(ImVec2(windowPosition.x, windowPosition.y), 0, ImVec2(0.5f, 0.5f));
 
+    if (ImGui::Begin("Connect", nullptr, /* ImGuiWindowFlags_NoResize | */ ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings)) {
       if (m_network.isConnecting()) {
-        m_ui.label("Connecting...", gf::UIAlignment::Center);
+        ImGui::Text("Connecting...");
 
         if (m_network.isConnected()) {
           m_connectionAsked = false;
           m_scenes.replaceScene(m_scenes.lobby);
 
           ClientChangeName data;
-          data.name = m_nameBuffer.asString();
+          data.name = m_nameBuffer.getData();
           m_network.send(data);
         }
       } else {
-        auto editRatios = { 0.25f, 0.75f };
-        auto buttonRatios = { 0.5f, 0.5f };
+        ImGui::Text("Hostname:");
+        ImGui::SameLine();
+        float x = ImGui::GetCursorPosX();
+        ImGui::InputText("###hostname", m_hostnameBuffer.getData(), m_hostnameBuffer.getSize());
 
-        m_ui.layoutRow(gf::UILayout::Dynamic, UILineSize, gf::array(editRatios.begin(), editRatios.size()));
+        ImGui::Text("Name:");
+        ImGui::SameLine();
+        ImGui::SetCursorPosX(x);
+        ImGui::InputText("###name", m_nameBuffer.getData(), m_nameBuffer.getSize());
 
-        m_ui.label("Hostname:");
-        m_ui.edit(gf::UIEditType::Simple, m_hostnameBuffer, gf::UIEditFilter::Default);
+        ImGui::Indent();
 
-        m_ui.label("Name:");
-        m_ui.edit(gf::UIEditType::Simple, m_nameBuffer, gf::UIEditFilter::Default);
-
-
-        m_ui.layoutRow(gf::UILayout::Dynamic, UILineSize, gf::array(buttonRatios.begin(), buttonRatios.size()));
-
-        if (m_ui.buttonLabel("Back")) {
+        if (ImGui::Button("Back", buttonSize)) {
           m_connectionAsked = false;
           m_scenes.replaceScene(m_scenes.intro);
         }
 
-        if (m_ui.buttonLabel("Connect")) {
-          m_network.connect(m_hostnameBuffer.asString());
+        ImGui::SameLine();
+
+        if (ImGui::Button("Connect", buttonSize)) {
+          m_network.connect(m_hostnameBuffer.getData());
           m_connectionAsked = true;
         }
 
         if (m_connectionAsked) {
-          m_ui.layoutRowDynamic(UILineSize, 1);
-          m_ui.label("Error: unable to connect to server.", gf::UIAlignment::Center);
+          ImGui::Text("Error: unable to connect to server.");
         }
       }
 
+      ImGui::End();
     }
-
-    m_ui.end();
 
     // Display
 
     renderWorldEntities(target);
     renderHudEntities(target);
-    target.draw(m_ui);
+
+    ImGui::Render();
+    ImGui_ImplGF_RenderDrawData(ImGui::GetDrawData());
   }
 
 }

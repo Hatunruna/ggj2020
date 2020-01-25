@@ -11,7 +11,7 @@ namespace ggj {
   : gf::SceneManager("tmpgame", InitialSize)
   , resources({ searchDir })
   , intro(*this, resources)
-  , connection(*this, network, resources)
+  , connection(*this, network)
   , lobby(*this, network, resources)
   , room(*this, resources)
   , waiting(*this, resources)
@@ -24,7 +24,7 @@ namespace ggj {
     io.IniFilename = nullptr;
 
     // load font(s)
-    // io.Fonts->AddFontFromFileTTF("font.ttf", size_pixels);
+    io.Fonts->AddFontFromFileTTF(resources.getAbsolutePath("DejaVuSans.ttf").string().c_str(), 20);
 
     ImGui_ImplGF_Init(getWindow(), getRenderer());
   }

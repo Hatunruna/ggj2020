@@ -1,9 +1,8 @@
 #ifndef TMPGAME_CONNECTION_SCENE_H
 #define TMPGAME_CONNECTION_SCENE_H
 
-#include <gf/ResourceManager.h>
 #include <gf/Scene.h>
-#include <gf/UI.h>
+#include <gf/StaticString.h>
 
 #include "ClientNetwork.h"
 
@@ -14,7 +13,7 @@ namespace ggj {
   class ConnectionScene : public gf::Scene {
   public:
 
-    ConnectionScene(Scenes& scenes, ClientNetwork& network, gf::ResourceManager& resources);
+    ConnectionScene(Scenes& scenes, ClientNetwork& network);
 
   private:
     void doProcessEvent(gf::Event& event) override;
@@ -27,9 +26,8 @@ namespace ggj {
   private:
     Scenes& m_scenes;
     ClientNetwork& m_network;
-    gf::UI m_ui;
-    gf::UICharBuffer m_hostnameBuffer;
-    gf::UICharBuffer m_nameBuffer;
+    gf::StaticString<255> m_hostnameBuffer;
+    gf::StaticString<255> m_nameBuffer;
     bool m_connectionAsked;
   };
 
