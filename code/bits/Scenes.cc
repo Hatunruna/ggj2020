@@ -12,7 +12,7 @@ namespace ggj {
   , resources({ searchDir })
   , intro(*this, resources)
   , connection(*this, network)
-  , lobby(*this, network, resources)
+  , lobby(*this, network)
   , room(*this, resources)
   , waiting(*this, resources)
   {

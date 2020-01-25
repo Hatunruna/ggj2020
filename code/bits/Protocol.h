@@ -27,6 +27,16 @@ namespace ggj {
     return ar;
   }
 
+  struct ServerChangeName {
+    static constexpr gf::Id type = "ServerChangeName"_id;
+    std::string name;
+  };
+
+  template<typename Archive>
+  Archive operator|(Archive& ar, ServerChangeName& data) {
+    return ar | data.name;
+  }
+
   struct ServerJoinRoom {
     static constexpr gf::Id type = "ServerJoinRoom"_id;
     gf::Id room;

@@ -8,6 +8,7 @@
 #include <imgui_impl_gf.h>
 
 #include "Constants.h"
+#include "ImGuiConstants.h"
 #include "Protocol.h"
 #include "Scenes.h"
 
@@ -33,17 +34,13 @@ namespace ggj {
 
   void ConnectionScene::doRender(gf::RenderTarget& target) {
     gf::Coordinates coords(target);
-
-    auto windowPosition = coords.getCenter();
-    auto buttonSize = ImVec2(170, 40);
+    auto position = coords.getCenter();
 
     // UI
     ImGui::NewFrame();
+    ImGui::SetNextWindowPos(ImVec2(position.x, position.y), 0, ImVec2(0.5f, 0.5f));
 
-//     ImGui::SetNextWindowSize(ImVec2(windowSize.x, windowSize.y));
-    ImGui::SetNextWindowPos(ImVec2(windowPosition.x, windowPosition.y), 0, ImVec2(0.5f, 0.5f));
-
-    if (ImGui::Begin("Connect", nullptr, /* ImGuiWindowFlags_NoResize | */ ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings)) {
+    if (ImGui::Begin("Connect", nullptr, DefaultWindowFlags)) {
       if (m_network.isConnecting()) {
         ImGui::Text("Connecting...");
 
@@ -68,14 +65,14 @@ namespace ggj {
 
         ImGui::Indent();
 
-        if (ImGui::Button("Back", buttonSize)) {
+        if (ImGui::Button("Back", DefaultButtonSize)) {
           m_connectionAsked = false;
           m_scenes.replaceScene(m_scenes.intro);
         }
 
         ImGui::SameLine();
 
-        if (ImGui::Button("Connect", buttonSize)) {
+        if (ImGui::Button("Connect", DefaultButtonSize)) {
           m_network.connect(m_hostnameBuffer.getData());
           m_connectionAsked = true;
         }
@@ -85,8 +82,9 @@ namespace ggj {
         }
       }
 
-      ImGui::End();
     }
+
+    ImGui::End();
 
     // Display
 

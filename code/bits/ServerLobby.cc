@@ -14,6 +14,11 @@ namespace ggj {
       case ClientChangeName::type: {
         auto data = bytes.as<ClientChangeName>();
         player.name = data.name;
+        // send an acknowledgement to the player
+        ServerChangeName change;
+        change.name = data.name;
+        player.send(change);
+        // broadcast new information
         broadcastPlayers();
         break;
       }
