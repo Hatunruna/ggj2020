@@ -48,7 +48,7 @@ namespace ggj {
           m_connectionAsked = false;
           m_scenes.replaceScene(m_scenes.lobby);
 
-          ClientChangeName data;
+          ClientHello data;
           data.name = m_nameBuffer.getData();
           m_network.send(data);
         }

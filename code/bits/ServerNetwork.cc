@@ -10,10 +10,10 @@
 
 namespace ggj {
 
-  ServerNetwork::ServerNetwork(gf::Random& random)
+  ServerNetwork::ServerNetwork(gf::Random& random, GameFactory& factory, const GameSettings& settings)
   : m_random(random)
   , m_listener(Service)
-  , m_lobby(random)
+  , m_lobby(random, factory, settings)
   {
     if (!m_listener) {
       throw std::runtime_error("Can not start listener.");
@@ -86,7 +86,7 @@ namespace ggj {
 
         ServerPlayer player;
         player.id = id;
-        player.name = "Player #" + std::to_string(player.id); // assume it's unique
+        player.name = ""; // no name yet
         player.socket = std::move(socket);
 
         auto res = m_players.emplace(id, std::move(player));

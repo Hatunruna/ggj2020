@@ -1,5 +1,7 @@
 #include "LobbyScene.h"
 
+#include <cinttypes>
+
 #include <gf/Coordinates.h>
 #include <gf/Log.h>
 #include <gf/Unused.h>
@@ -27,6 +29,8 @@ namespace ggj {
   : gf::Scene(InitialSize)
   , m_scenes(scenes)
   , m_network(network)
+  , m_settings{ 0, 0, 0, 0 }
+  , m_instance{ 0, 0 }
   , m_selectedRoom(-1)
   , m_autoscroll(false)
   {
@@ -46,6 +50,14 @@ namespace ggj {
 
     while (m_network.queue.poll(bytes)) {
       switch (bytes.getType()) {
+        case ServerHello::type: {
+          auto data = bytes.as<ServerHello>();
+          m_settings = data.settings;
+          m_instance.teams = m_settings.teamsMin;
+          m_instance.playersByTeam = m_settings.playersByTeamMin;
+          break;
+        }
+
         case ServerDisconnect::type:
           m_network.disconnect();
           m_scenes.replaceScene(m_scenes.connection);
@@ -79,6 +91,13 @@ namespace ggj {
           break;
         }
 
+        case ServerAnswerRoom::type: {
+          auto data = bytes.as<ServerAnswerRoom>();
+          m_selectedRoomName = std::move(data.name);
+          m_selectedRoomSettings = data.settings;
+          break;
+        }
+
         case ServerJoinRoom::type: {
           m_scenes.replaceScene(m_scenes.room);
           // do not poll any more message as the next messages are for the room
@@ -106,7 +125,7 @@ namespace ggj {
 
     // UI
     ImGui::NewFrame();
-    ImGui::SetNextWindowSize(ImVec2(900.0f, 0.0f));
+    ImGui::SetNextWindowSize(ImVec2(1000.0f, 0.0f));
     ImGui::SetNextWindowPos(ImVec2(position.x, position.y), 0, ImVec2(0.5f, 0.5f));
 
     if (ImGui::Begin("Lobby", nullptr, DefaultWindowFlags)) {
@@ -126,7 +145,15 @@ namespace ggj {
       ImGui::Text("Join a room");
       ImGui::Spacing();
       ImGui::PushItemWidth(-1.0f);
-      ImGui::ListBox("###rooms", &m_selectedRoom, m_roomsView.data(), m_roomsView.size(), 10);
+
+
+      if (ImGui::ListBox("###rooms", &m_selectedRoom, m_roomsView.data(), m_roomsView.size(), 10)) {
+        assert(m_selectedRoom != -1);
+        ClientQueryRoom data;
+        data.room = m_rooms[m_selectedRoom].id;
+        m_network.send(data);
+      }
+
       ImGui::PopItemWidth();
       ImGui::Spacing();
       ImGui::Indent();
@@ -199,6 +226,14 @@ namespace ggj {
 
       ImGui::BeginGroup();
       ImGui::Text("Room info");
+
+      if (!m_selectedRoomName.empty()) {
+        ImGui::Indent();
+        ImGui::Text("Name: %s", m_selectedRoomName.c_str());
+        ImGui::Text("Teams: %" PRIi32, m_selectedRoomSettings.teams);
+        ImGui::Text("Players/team: %" PRIi32, m_selectedRoomSettings.playersByTeam);
+      }
+
       ImGui::EndGroup();
 
       ImGui::NextColumn();
@@ -210,58 +245,39 @@ namespace ggj {
       ImGui::SameLine();
       ImGui::InputText("###room_name", m_roomBuffer.getData(), m_roomBuffer.getSize());
 
+      if (m_settings.teamsMin == m_settings.teamsMax) {
+        ImGui::Text("Teams:");
+        ImGui::SameLine();
+        ImGui::Text("%" PRIi32, m_instance.teams);
+      } else {
+        ImGui::SliderScalar("teams", ImGuiDataType_S32, &m_instance.teams, &m_settings.teamsMin, &m_settings.teamsMax);
+      }
+
+      if (m_settings.playersByTeamMin == m_settings.playersByTeamMax) {
+        ImGui::Text("Players/team:");
+        ImGui::SameLine();
+        ImGui::Text("%" PRIi32, m_instance.playersByTeam);
+      } else {
+        ImGui::SliderScalar("#/team", ImGuiDataType_S32, &m_instance.playersByTeam, &m_settings.playersByTeamMin, &m_settings.playersByTeamMax);
+      }
+
       ImGui::Spacing();
       ImGui::Indent();
 
-      if (ImGui::Button("Create room", DefaultButtonSize) && m_roomBuffer[0] != '\0') {
+      if (m_settings.teamsMin > 0 && ImGui::Button("Create room", DefaultButtonSize) && m_roomBuffer[0] != '\0') {
         ClientCreateRoom data;
         data.name = m_roomBuffer.getData();
+        data.settings = m_instance;
         m_network.send(data);
         m_roomBuffer.clear();
       }
 
       ImGui::EndGroup();
+
+      // TODO: back button?
     }
 
     ImGui::End();
-
-#if 0
-      // create room panel
-
-      if (m_ui.groupBegin("Create a room", gf::UIWindow::Title | gf::UIWindow::Border)) {
-        auto editRatios = { 0.25f, 0.75f };
-        m_ui.layoutRow(gf::UILayout::Dynamic, 25.0f, gf::array(editRatios.begin(), editRatios.size()));
-
-        m_ui.label("Name:");
-        m_ui.edit(gf::UIEditType::Simple, m_roomBuffer, gf::UIEditFilter::Default);
-
-        m_ui.layoutRowDynamic(25.0f, 1);
-
-        if (m_ui.buttonLabel("Create")) {
-          ClientCreateRoom data;
-          data.name = m_roomBuffer.asString();
-          m_network.send(data);
-        }
-
-        m_ui.groupEnd();
-      }
-
-      /*
-       * Third line
-       */
-
-      m_ui.layoutRowDynamic(25.0f, 1);
-
-      if (m_ui.buttonLabel("Back")) {
-        m_network.disconnect();
-        m_scenes.replaceScene(m_scenes.connection);
-      }
-
-    }
-
-    m_ui.end();
-
-#endif
 
     // Display
 

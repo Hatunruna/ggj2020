@@ -8,6 +8,7 @@
 #include <gf/SerializationOps.h>
 
 #include "Constants.h"
+#include "GameSettings.h"
 #include "ProtocolData.h"
 
 using namespace gf::literals;
@@ -17,6 +18,16 @@ namespace ggj {
   /*
    * server -> client
    */
+
+  struct ServerHello {
+    static constexpr gf::Id type = "ServerHello"_id;
+    GameSettings settings;
+  };
+
+  template<typename Archive>
+  Archive operator|(Archive& ar, ServerHello& data) {
+    return ar | data.settings;
+  }
 
   struct ServerDisconnect {
     static constexpr gf::Id type = "ServerDisconnect"_id;
@@ -35,6 +46,18 @@ namespace ggj {
   template<typename Archive>
   Archive operator|(Archive& ar, ServerChangeName& data) {
     return ar | data.name;
+  }
+
+  struct ServerAnswerRoom {
+    static constexpr gf::Id type = "ServerAnswerRoom"_id;
+    gf::Id room;
+    std::string name;
+    GameInstanceSettings settings;
+  };
+
+  template<typename Archive>
+  Archive operator|(Archive& ar, ServerAnswerRoom& data) {
+    return ar | data.room | data.name | data.settings;
   }
 
   struct ServerJoinRoom {
@@ -82,6 +105,16 @@ namespace ggj {
    * client -> server
    */
 
+  struct ClientHello {
+    static constexpr gf::Id type = "ClientHello"_id;
+    std::string name;
+  };
+
+  template<typename Archive>
+  Archive operator|(Archive& ar, ClientHello& data) {
+    return ar | data.name;
+  }
+
   struct ClientDisconnect {
     static constexpr gf::Id type = "ClientDisconnect"_id;
   };
@@ -104,11 +137,22 @@ namespace ggj {
   struct ClientCreateRoom {
     static constexpr gf::Id type = "ClientCreateRoom"_id;
     std::string name;
+    GameInstanceSettings settings;
   };
 
   template<typename Archive>
   Archive operator|(Archive& ar, ClientCreateRoom& data) {
-    return ar | data.name;
+    return ar | data.name | data.settings;
+  }
+
+  struct ClientQueryRoom {
+    static constexpr gf::Id type = "ClientQueryRoom"_id;
+    gf::Id room;
+  };
+
+  template<typename Archive>
+  Archive operator|(Archive& ar, ClientQueryRoom& data) {
+    return ar | data.room;
   }
 
   struct ClientJoinRoom {

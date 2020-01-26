@@ -4,6 +4,7 @@
 #include <gf/Scene.h>
 #include <gf/StaticString.h>
 
+#include "GameSettings.h"
 #include "ProtocolData.h"
 #include "ClientNetwork.h"
 
@@ -28,11 +29,16 @@ namespace ggj {
     gf::StaticString<255> m_lineBuffer;
     gf::StaticString<255> m_nameBuffer;
 
+    GameSettings m_settings;
+    GameInstanceSettings m_instance;
+
     std::vector<PlayerData> m_players;
     std::vector<const char *> m_playersView;
     std::vector<RoomData> m_rooms;
     std::vector<const char *> m_roomsView;
     int m_selectedRoom;
+    std::string m_selectedRoomName;
+    GameInstanceSettings m_selectedRoomSettings;
     std::vector<MessageData> m_messages;
     bool m_autoscroll;
   };

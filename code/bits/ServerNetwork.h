@@ -12,12 +12,13 @@
 
 #include "ServerLobby.h"
 #include "ServerPlayer.h"
+#include "GameFactory.h"
 
 namespace ggj {
 
   class ServerNetwork {
   public:
-    ServerNetwork(gf::Random& random);
+    ServerNetwork(gf::Random& random, GameFactory& factory, const GameSettings& settings);
 
     void run();
 

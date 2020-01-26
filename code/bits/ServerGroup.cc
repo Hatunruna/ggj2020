@@ -17,6 +17,10 @@ namespace ggj {
     std::vector<PlayerData> list;
 
     for (const ServerPlayer& player : m_players) {
+      if (player.name.empty()) {
+        continue;
+      }
+
       PlayerData data;
       data.id = player.id;
       data.name = player.name;

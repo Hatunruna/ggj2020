@@ -4,13 +4,14 @@
 #include <memory>
 
 #include "GameInstance.h"
+#include "GameSettings.h"
 
 namespace ggj {
 
   class GameFactory {
   public:
     virtual ~GameFactory();
-    virtual std::unique_ptr<GameInstance> createInstance() = 0;
+    virtual std::unique_ptr<GameInstance> createInstance(const GameInstanceSettings& settings) = 0;
   };
 
 }
