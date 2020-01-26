@@ -8,7 +8,11 @@ namespace {
 
   class DummyGameInstance : public ggj::GameInstance {
   public:
-    void update() override {
+    void start() override {
+
+    }
+
+    void update(ggj::ServerPlayer& player, ggj::ProtocolBytes& bytes) override {
 
     }
   };

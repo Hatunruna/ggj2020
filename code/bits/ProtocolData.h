@@ -10,11 +10,13 @@ namespace ggj {
   struct PlayerData {
     gf::Id id;
     std::string name;
+    int32_t team = -1;
+    bool ready = false;
   };
 
   template<typename Archive>
   Archive operator|(Archive& ar, PlayerData& data) {
-    return ar | data.id | data.name;
+    return ar | data.id | data.name | data.team | data.ready;
   }
 
   struct RoomData {

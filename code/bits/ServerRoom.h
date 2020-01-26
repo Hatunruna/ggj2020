@@ -14,6 +14,13 @@ namespace ggj {
     gf::Id id;
     std::string name;
     GameInstanceSettings settings;
+
+    void broadcastPlayers();
+
+  private:
+    void doAddPlayer(ServerPlayer& player) override;
+    void doRemovePlayer(ServerPlayer& player) override;
+
   };
 
 }

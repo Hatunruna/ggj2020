@@ -63,11 +63,31 @@ namespace ggj {
   struct ServerJoinRoom {
     static constexpr gf::Id type = "ServerJoinRoom"_id;
     gf::Id room;
+    GameInstanceSettings settings;
   };
 
   template<typename Archive>
   Archive operator|(Archive& ar, ServerJoinRoom& data) {
-    return ar | data.room;
+    return ar | data.room | data.settings;
+  }
+
+  struct ServerLeaveRoom {
+    static constexpr gf::Id type = "ServerLeaveRoom"_id;
+  };
+
+  template<typename Archive>
+  Archive operator|(Archive& ar, ServerLeaveRoom&) {
+    return ar;
+  }
+
+  struct ServerChangeTeam {
+    static constexpr gf::Id type = "ServerChangeTeam"_id;
+    int32_t team;
+  };
+
+  template<typename Archive>
+  Archive operator|(Archive& ar, ServerChangeTeam& data) {
+    return ar | data.team;
   }
 
   struct ServerChatMessage {
@@ -87,6 +107,16 @@ namespace ggj {
 
   template<typename Archive>
   Archive operator|(Archive& ar, ServerListPlayers& data) {
+    return ar | data.players;
+  }
+
+  struct ServerListRoomPlayers {
+    static constexpr gf::Id type = "ServerListRoomPlayers"_id;
+    std::vector<PlayerData> players;
+  };
+
+  template<typename Archive>
+  Archive operator|(Archive& ar, ServerListRoomPlayers& data) {
     return ar | data.players;
   }
 
@@ -163,6 +193,25 @@ namespace ggj {
   template<typename Archive>
   Archive operator|(Archive& ar, ClientJoinRoom& data) {
     return ar | data.room;
+  }
+
+  struct ClientLeaveRoom {
+    static constexpr gf::Id type = "ClientLeaveRoom"_id;
+  };
+
+  template<typename Archive>
+  Archive operator|(Archive& ar, ClientLeaveRoom&) {
+    return ar;
+  }
+
+  struct ClientChangeTeam {
+    static constexpr gf::Id type = "ClientChangeTeam"_id;
+    int32_t team;
+  };
+
+  template<typename Archive>
+  Archive operator|(Archive& ar, ClientChangeTeam& data) {
+    return ar | data.team;
   }
 
   struct ClientChatMessage {

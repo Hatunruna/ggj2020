@@ -24,6 +24,7 @@ namespace ggj {
       PlayerData data;
       data.id = player.id;
       data.name = player.name;
+      data.team = player.team;
       list.push_back(std::move(data));
     }
 

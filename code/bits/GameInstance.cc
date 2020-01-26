@@ -2,6 +2,5 @@
 
 namespace ggj {
 
-  GameInstance::~GameInstance() = default;
 
 }

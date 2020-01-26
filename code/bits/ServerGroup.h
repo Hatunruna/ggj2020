@@ -19,6 +19,10 @@ namespace ggj {
     void removePlayer(ServerPlayer& player);
     std::vector<PlayerData> getPlayers();
 
+    bool isEmpty() const {
+      return m_players.empty();
+    }
+
     virtual void update(ServerPlayer& player, ProtocolBytes& bytes) = 0;
 
     template<typename T>

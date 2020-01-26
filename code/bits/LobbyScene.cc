@@ -99,6 +99,8 @@ namespace ggj {
         }
 
         case ServerJoinRoom::type: {
+          auto data = bytes.as<ServerJoinRoom>();
+          m_scenes.room.startRoom(data.settings);
           m_scenes.replaceScene(m_scenes.room);
           // do not poll any more message as the next messages are for the room
           return;
@@ -114,16 +116,12 @@ namespace ggj {
     }
   }
 
-/*
- * - players list | rooms list + join | chat
- * - change name  | room info         | create room
- * - Back
- */
   void LobbyScene::doRender(gf::RenderTarget& target) {
     gf::Coordinates coords(target);
     auto position = coords.getCenter();
 
     // UI
+
     ImGui::NewFrame();
     ImGui::SetNextWindowSize(ImVec2(1000.0f, 0.0f));
     ImGui::SetNextWindowPos(ImVec2(position.x, position.y), 0, ImVec2(0.5f, 0.5f));
