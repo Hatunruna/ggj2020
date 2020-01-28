@@ -35,7 +35,7 @@ namespace ggj {
   }
 
   int32_t ServerGroup::getPlayersCountInTeam(int32_t team) {
-    return std::count_if(m_players.begin(), m_players.begin(), [team](ServerPlayer& player) { return player.team == team; });
+    return std::count_if(m_players.begin(), m_players.end(), [team](ServerPlayer& player) { return player.team == team; });
   }
 
   bool ServerGroup::areAllPlayersReady() {
