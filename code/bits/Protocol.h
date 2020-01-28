@@ -90,6 +90,16 @@ namespace ggj {
     return ar | data.team;
   }
 
+  struct ServerReady {
+    static constexpr gf::Id type = "ServerReady"_id;
+    bool ready;
+  };
+
+  template<typename Archive>
+  Archive operator|(Archive& ar, ServerReady& data) {
+    return ar | data.ready;
+  }
+
   struct ServerChatMessage {
     static constexpr gf::Id type = "ServerChatMessage"_id;
     MessageData message;
@@ -130,6 +140,46 @@ namespace ggj {
     return ar | data.rooms;
   }
 
+  struct ServerStartGame {
+    static constexpr gf::Id type = "ServerStartGame"_id;
+  };
+
+  template<typename Archive>
+  Archive operator|(Archive& ar, ServerStartGame&) {
+    return ar;
+  }
+
+  struct ServerStopGame {
+    static constexpr gf::Id type = "ServerStopGame"_id;
+  };
+
+  template<typename Archive>
+  Archive operator|(Archive& ar, ServerStopGame&) {
+    return ar;
+  }
+
+  struct ServerError {
+    static constexpr gf::Id type = "ServerError"_id;
+
+    enum Type : uint16_t {
+      PlayerAlreadyInRoom,
+      PlayerAlreadyReady,
+      PlayerNotInRoom,
+      PlayerNotInTeam,
+      UnknownRoom,
+      FullRoom,
+      UnknownTeam,
+      FullTeam,
+      GameAlreadyStarted,
+    };
+
+    Type reason;
+  };
+
+  template<typename Archive>
+  Archive operator|(Archive& ar, ServerError& data) {
+    return ar | data.reason;
+  }
 
   /*
    * client -> server
@@ -212,6 +262,16 @@ namespace ggj {
   template<typename Archive>
   Archive operator|(Archive& ar, ClientChangeTeam& data) {
     return ar | data.team;
+  }
+
+  struct ClientReady {
+    static constexpr gf::Id type = "ClientReady"_id;
+    bool ready;
+  };
+
+  template<typename Archive>
+  Archive operator|(Archive& ar, ClientReady& data) {
+    return ar | data.ready;
   }
 
   struct ClientChatMessage {

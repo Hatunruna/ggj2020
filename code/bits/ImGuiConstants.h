@@ -7,6 +7,7 @@ namespace ggj {
 
   constexpr ImGuiWindowFlags DefaultWindowFlags = ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings;
   const ImVec2 DefaultButtonSize = { 170.0f, 40.0f };
+  const ImVec2 DefaultProgressSize = { 0.0f, 40.0f };
 
 }
 

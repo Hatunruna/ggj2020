@@ -1,6 +1,7 @@
 #include "RoomScene.h"
 
 #include <cinttypes>
+#include <algorithm>
 
 #include <gf/Coordinates.h>
 #include <gf/Log.h>
@@ -37,12 +38,14 @@ namespace ggj {
   : gf::Scene(InitialSize)
   , m_scenes(scenes)
   , m_network(network)
+  , m_chat(network)
   {
   }
 
   void RoomScene::startRoom(const GameInstanceSettings& settings) {
     m_currentTeam = -1;
     m_settings = settings;
+    m_ready = false;
   }
 
   void RoomScene::doProcessEvent(gf::Event& event) {
@@ -68,12 +71,29 @@ namespace ggj {
           break;
         }
 
+        case ServerReady::type: {
+          auto data = bytes.as<ServerReady>();
+          m_ready = data.ready;
+          break;
+        }
+
         case ServerListRoomPlayers::type: {
           auto data = bytes.as<ServerListRoomPlayers>();
           m_players = std::move(data.players);
           break;
         }
 
+        case ServerChatMessage::type: {
+          auto data = bytes.as<ServerChatMessage>();
+          m_chat.appendMessage(std::move(data.message));
+          break;
+        }
+
+        case ServerStartGame::type: {
+          m_scenes.replaceScene(m_scenes.waiting);
+          // do not poll any more message as the next messages are for the game
+          return;
+        }
       }
     }
   }
@@ -86,9 +106,29 @@ namespace ggj {
 
     ImGui::NewFrame();
     ImGui::SetNextWindowPos(ImVec2(position.x, position.y), 0, ImVec2(0.5f, 0.5f));
-    ImGui::SetNextWindowSize(ImVec2(400.0f, 0.0f));
+    ImGui::SetNextWindowSize(ImVec2(1000.0f, 0.0f));
 
     if (ImGui::Begin("Room", nullptr, DefaultWindowFlags)) {
+      ImGui::Text("Teams: %" PRIi32 " | Players by team: %" PRIi32, m_settings.teams, m_settings.playersByTeam);
+      ImGui::Separator();
+
+      ImGui::Columns(3);
+
+      ImGui::BeginGroup();
+      ImGui::Text("No team");
+      ImGui::Spacing();
+
+      for (auto& player : m_players) {
+        if (player.team == -1) {
+          ImGui::BulletText("%s", player.name.c_str());
+        }
+      }
+
+      ImGui::EndGroup();
+
+      ImGui::NextColumn();
+
+      ImGui::BeginGroup();
 
       auto ShowTeam = [&](const char *name, gf::Color4f color, int32_t team) {
         if (ImGui::Selectable(name, m_currentTeam == team)) {
@@ -97,37 +137,58 @@ namespace ggj {
           m_network.send(data);
         }
 
-        ImGui::Indent();
-
         auto lighter = gf::Color::lighter(color);
+
+        int32_t index = 0;
 
         for (auto& player : m_players) {
           if (player.team == team) {
-            ImGui::TextColored(ImVec4(lighter.r, lighter.g, lighter.b, lighter.a), "%s", player.name.c_str());
+            ImGui::Bullet();
+            ImGui::TextColored(ImVec4(lighter.r, lighter.g, lighter.b, lighter.a), "%s [%s]", player.name.c_str(), player.ready ? "ready" : "not ready");
+            ++index;
           }
         }
 
-        ImGui::Unindent();
+        while (index < m_settings.playersByTeam) {
+          ImGui::BulletText("-");
+          ++index;
+        }
       };
-
-      ShowTeam("No team", gf::Color::White, -1);
 
       for (int32_t i = 0; i < m_settings.teams; ++i) {
         ShowTeam(g_teamInfo[i].name, g_teamInfo[i].color, i);
       }
 
-      ImGui::Indent();
+      ImGui::EndGroup();
+
+      ImGui::NextColumn();
+
+      m_chat.display(10);
+
+      ImGui::Columns();
+
       ImGui::Spacing();
 
-      if (ImGui::Button("Leave room", DefaultButtonSize)) {
-        ClientLeaveRoom data;
-        m_network.send(data);
-      }
+      if (!m_ready) {
+        ImGui::Indent();
 
-      ImGui::SameLine();
+        if (ImGui::Button("Leave room", DefaultButtonSize)) {
+          ClientLeaveRoom data;
+          m_network.send(data);
+        }
 
-      if (ImGui::Button("Ready", DefaultButtonSize)) {
-        // TODO
+        ImGui::SameLine();
+
+        if (ImGui::Button("Ready", DefaultButtonSize)) {
+          ClientReady data;
+          data.ready = true;
+          m_network.send(data);
+        }
+      } else {
+        int32_t readyPlayers = std::count_if(m_players.begin(), m_players.end(), [](auto& player) { return player.ready; });
+//         ImGui::Text("Waiting for other players...");
+        ImGui::PushItemWidth(-1.0f);
+        ImGui::ProgressBar(static_cast<float>(readyPlayers) / (m_settings.teams * m_settings.playersByTeam), DefaultProgressSize, "Waiting players...");
       }
     }
 

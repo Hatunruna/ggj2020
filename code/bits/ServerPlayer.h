@@ -18,6 +18,7 @@ namespace ggj {
     gf::TcpSocket socket;
     ServerRoom *room = nullptr;
     int32_t team = -1;
+    bool ready = false;
 
     template<typename T>
     void send(const T& data) {

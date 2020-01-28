@@ -4,9 +4,10 @@
 #include <gf/Scene.h>
 #include <gf/StaticString.h>
 
+#include "Chat.h"
+#include "ClientNetwork.h"
 #include "GameSettings.h"
 #include "ProtocolData.h"
-#include "ClientNetwork.h"
 
 namespace ggj {
 
@@ -26,7 +27,6 @@ namespace ggj {
     Scenes& m_scenes;
     ClientNetwork& m_network;
     gf::StaticString<255> m_roomBuffer;
-    gf::StaticString<255> m_lineBuffer;
     gf::StaticString<255> m_nameBuffer;
 
     GameSettings m_settings;
@@ -39,8 +39,8 @@ namespace ggj {
     int m_selectedRoom;
     std::string m_selectedRoomName;
     GameInstanceSettings m_selectedRoomSettings;
-    std::vector<MessageData> m_messages;
-    bool m_autoscroll;
+
+    Chat m_chat;
   };
 
 }

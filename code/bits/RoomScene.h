@@ -7,6 +7,7 @@
 #include <gf/ResourceManager.h>
 #include <gf/Scene.h>
 
+#include "Chat.h"
 #include "ClientNetwork.h"
 #include "GameSettings.h"
 #include "ProtocolData.h"
@@ -33,8 +34,11 @@ namespace ggj {
 
     GameInstanceSettings m_settings;
     int32_t m_currentTeam;
+    bool m_ready;
 
     std::vector<PlayerData> m_players;
+
+    Chat m_chat;
   };
 
 }

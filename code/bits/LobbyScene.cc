@@ -16,15 +16,6 @@
 
 namespace ggj {
 
-  namespace {
-
-    ImVec4 toColor(gf::Id id) {
-      gf::Color4f color = gf::Color::lighter(gf::Color::fromRgba32(static_cast<uint32_t>(id)));
-      return ImVec4(color.r, color.g, color.b, 1.0f);
-    }
-
-  }
-
   LobbyScene::LobbyScene(Scenes& scenes, ClientNetwork& network)
   : gf::Scene(InitialSize)
   , m_scenes(scenes)
@@ -32,10 +23,9 @@ namespace ggj {
   , m_settings{ 0, 0, 0, 0 }
   , m_instance{ 0, 0 }
   , m_selectedRoom(-1)
-  , m_autoscroll(false)
+  , m_chat(network)
   {
     m_roomBuffer.clear();
-    m_lineBuffer.clear();
     m_nameBuffer.clear();
   }
 
@@ -108,8 +98,7 @@ namespace ggj {
 
         case ServerChatMessage::type: {
           auto data = bytes.as<ServerChatMessage>();
-          m_autoscroll = true;
-          m_messages.push_back(std::move(data.message));
+          m_chat.appendMessage(std::move(data.message));
           break;
         }
       }
@@ -167,36 +156,7 @@ namespace ggj {
       ImGui::NextColumn();
 
       ImGui::BeginGroup();
-      ImGui::Text("Chat");
-      ImGui::Spacing();
-      ImVec2 size(0.0f, 10 * ImGui::GetTextLineHeightWithSpacing());
-
-      if (ImGui::BeginChild("Messages", size, false)) {
-        for (auto& message : m_messages) {
-          std::string str = "[" + message.author + "] ";
-          ImGui::TextColored(toColor(message.origin), str.c_str());
-          ImGui::SameLine();
-          ImGui::TextWrapped(message.content.c_str());
-        }
-      }
-
-      if (m_autoscroll) {
-        ImGui::SetScrollHereY(1.0f); // bottom
-        m_autoscroll = false;
-      }
-
-      ImGui::EndChild();
-
-      ImGui::Spacing();
-
-      if (ImGui::InputText("###chat", m_lineBuffer.getData(), m_lineBuffer.getSize(), ImGuiInputTextFlags_EnterReturnsTrue) && m_lineBuffer[0] != '\0') {
-        ClientChatMessage data;
-        data.content = m_lineBuffer.getData();
-        m_network.send(data);
-        m_lineBuffer.clear();
-        ImGui::SetKeyboardFocusHere(-1);
-      }
-
+      m_chat.display(10);
       ImGui::EndGroup();
 
       ImGui::NextColumn();

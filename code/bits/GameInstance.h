@@ -9,6 +9,7 @@ namespace ggj {
   class GameInstance : public ServerGroup {
   public:
     virtual void start() = 0;
+    virtual bool isFinished() = 0;
   };
 
 }
