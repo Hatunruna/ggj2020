@@ -105,26 +105,6 @@ namespace ggj {
         break;
       }
 
-      case ClientQueryRoom::type: {
-        gf::Log::info("(LOBBY) {%" PRIX64 "} Query room.\n", player.id);
-        // deserialize
-        auto data = bytes.as<ClientQueryRoom>();
-        // find the room
-        auto it = m_rooms.find(data.room);
-        if (it == m_rooms.end()) {
-          gf::Log::warning("(LOBBY) {%" PRIX64 "} Querying an unknown room @%" PRIX64 "\n", player.id, data.room);
-          break;
-        }
-        auto& room = it->second;
-        // send the answer
-        ServerAnswerRoom answer;
-        answer.room = room.id;
-        answer.name = room.name;
-        answer.settings = room.settings;
-        player.send(answer);
-        break;
-      }
-
       case ClientJoinRoom::type: {
         gf::Log::info("(LOBBY) {%" PRIX64 "} Join room.\n", player.id);
         // check if player is in a room
@@ -163,6 +143,8 @@ namespace ggj {
         // move player to the room
         removePlayer(player);
         room.addPlayer(player);
+        // broadcast new information
+        broadcastRooms();
         break;
       }
 
@@ -188,6 +170,7 @@ namespace ggj {
         player.send(list);
         // broadcast new information
         broadcastPlayers();
+        broadcastRooms();
         break;
       }
 
@@ -225,6 +208,8 @@ namespace ggj {
       RoomData data;
       data.id = room.id;
       data.name = room.name;
+      data.settings = room.settings;
+      data.players = getPlayersCount();
       list.push_back(std::move(data));
     }
 
@@ -254,6 +239,7 @@ namespace ggj {
       auto& room = *player.room;
       room.removePlayer(player);
       checkEmptyRoom(room);
+      broadcastRooms();
     }
 
     broadcastPlayers();

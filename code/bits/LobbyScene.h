@@ -37,8 +37,7 @@ namespace ggj {
     std::vector<RoomData> m_rooms;
     std::vector<const char *> m_roomsView;
     int m_selectedRoom;
-    std::string m_selectedRoomName;
-    GameInstanceSettings m_selectedRoomSettings;
+    RoomData m_selectedRoomData;
 
     Chat m_chat;
   };

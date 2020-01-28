@@ -74,17 +74,16 @@ namespace ggj {
           auto data = bytes.as<ServerListRooms>();
           m_rooms = std::move(data.rooms);
 
+          int32_t index = 0;
+          m_selectedRoom = -1;
           m_roomsView.clear();
           for (auto& room : m_rooms) {
             m_roomsView.push_back(room.name.c_str());
+            if (room.id == m_selectedRoomData.id) {
+              m_selectedRoom = index;
+            }
+            ++index;
           }
-          break;
-        }
-
-        case ServerAnswerRoom::type: {
-          auto data = bytes.as<ServerAnswerRoom>();
-          m_selectedRoomName = std::move(data.name);
-          m_selectedRoomSettings = data.settings;
           break;
         }
 
@@ -136,9 +135,7 @@ namespace ggj {
 
       if (ImGui::ListBox("###rooms", &m_selectedRoom, m_roomsView.data(), m_roomsView.size(), 10)) {
         assert(m_selectedRoom != -1);
-        ClientQueryRoom data;
-        data.room = m_rooms[m_selectedRoom].id;
-        m_network.send(data);
+        m_selectedRoomData = m_rooms[m_selectedRoom];
       }
 
       ImGui::PopItemWidth();
@@ -185,11 +182,12 @@ namespace ggj {
       ImGui::BeginGroup();
       ImGui::Text("Room info");
 
-      if (!m_selectedRoomName.empty()) {
+      if (m_selectedRoom != -1) {
         ImGui::Indent();
-        ImGui::Text("Name: %s", m_selectedRoomName.c_str());
-        ImGui::Text("Teams: %" PRIi32, m_selectedRoomSettings.teams);
-        ImGui::Text("Players/team: %" PRIi32, m_selectedRoomSettings.playersByTeam);
+        ImGui::Text("Name: %s", m_selectedRoomData.name.c_str());
+        ImGui::Text("Teams: %" PRIi32, m_selectedRoomData.settings.teams);
+        ImGui::Text("Players/team: %" PRIi32, m_selectedRoomData.settings.playersByTeam);
+        ImGui::Text("Players: %" PRIi32 "/%" PRIi32, m_selectedRoomData.players, m_selectedRoomData.settings.teams * m_selectedRoomData.settings.playersByTeam);
       }
 
       ImGui::EndGroup();
