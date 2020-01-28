@@ -137,7 +137,7 @@ namespace ggj {
   }
 
   void ServerRoom::startGameIfReady() {
-    if (!areAllPlayersReady()) {
+    if (getPlayersCount() < settings.teams * settings.playersByTeam || !areAllPlayersReady()) {
       return;
     }
 
