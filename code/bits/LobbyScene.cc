@@ -81,6 +81,7 @@ namespace ggj {
             m_roomsView.push_back(room.name.c_str());
             if (room.id == m_selectedRoomData.id) {
               m_selectedRoom = index;
+              m_selectedRoomData = m_rooms[m_selectedRoom];
             }
             ++index;
           }
