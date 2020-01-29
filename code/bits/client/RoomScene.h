@@ -7,10 +7,11 @@
 #include <gf/ResourceManager.h>
 #include <gf/Scene.h>
 
+#include "../common/GameSettings.h"
+#include "../common/ProtocolData.h"
+
 #include "Chat.h"
 #include "ClientNetwork.h"
-#include "GameSettings.h"
-#include "ProtocolData.h"
 
 namespace ggj {
 

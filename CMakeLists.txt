@@ -23,15 +23,15 @@ endif()
 
 add_executable(tmpgame
   code/client.cc
-  code/bits/Chat.cc
-  code/bits/ClientNetwork.cc
-  code/bits/ConnectionScene.cc
-  code/bits/IntroScene.cc
-  code/bits/LobbyScene.cc
-  code/bits/MenuEntity.cc
-  code/bits/RoomScene.cc
-  code/bits/Scenes.cc
-  code/bits/WaitingScene.cc
+  code/bits/client/Chat.cc
+  code/bits/client/ClientNetwork.cc
+  code/bits/client/ConnectionScene.cc
+  code/bits/client/IntroScene.cc
+  code/bits/client/LobbyScene.cc
+  code/bits/client/MenuEntity.cc
+  code/bits/client/RoomScene.cc
+  code/bits/client/Scenes.cc
+  code/bits/client/WaitingScene.cc
 
   vendor/imgui/imgui.cpp
   vendor/imgui/imgui_demo.cpp
@@ -63,12 +63,12 @@ install(
 
 add_executable(tmpgame-server
   code/server.cc
-  code/bits/GameFactory.cc
-  code/bits/GameInstance.cc
-  code/bits/ServerGroup.cc
-  code/bits/ServerLobby.cc
-  code/bits/ServerNetwork.cc
-  code/bits/ServerRoom.cc
+  code/bits/server/GameFactory.cc
+  code/bits/server/GameInstance.cc
+  code/bits/server/ServerGroup.cc
+  code/bits/server/ServerLobby.cc
+  code/bits/server/ServerNetwork.cc
+  code/bits/server/ServerRoom.cc
 )
 
 target_include_directories(tmpgame-server

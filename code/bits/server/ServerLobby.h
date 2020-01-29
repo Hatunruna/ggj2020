@@ -4,8 +4,9 @@
 #include <gf/Random.h>
 #include <gf/Ref.h>
 
+#include "../common/ProtocolData.h"
+
 #include "GameFactory.h"
-#include "ProtocolData.h"
 #include "ServerGroup.h"
 #include "ServerRoom.h"
 

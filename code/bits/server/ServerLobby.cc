@@ -6,7 +6,7 @@
 #include <gf/Log.h>
 #include <gf/Math.h>
 
-#include "Protocol.h"
+#include "../common/Protocol.h"
 
 namespace ggj {
 

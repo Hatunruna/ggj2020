@@ -1,6 +1,7 @@
 #include "IntroScene.h"
 
-#include "Constants.h"
+#include "../common/Constants.h"
+
 #include "Scenes.h"
 
 #include <gf/Log.h>

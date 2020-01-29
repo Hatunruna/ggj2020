@@ -1,6 +1,7 @@
 #include "WaitingScene.h"
 
-#include "Constants.h"
+#include "../common/Constants.h"
+
 #include "Scenes.h"
 
 namespace ggj {

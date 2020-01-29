@@ -2,8 +2,8 @@
 
 #include <gf/Log.h>
 
-#include "bits/ClientNetwork.h"
-#include "bits/Scenes.h"
+#include "bits/client/ClientNetwork.h"
+#include "bits/client/Scenes.h"
 
 #include "config.h"
 

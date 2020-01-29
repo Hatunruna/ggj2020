@@ -1,7 +1,8 @@
 #ifndef TMPGAME_GAME_INSTANCE_H
 #define TMPGAME_GAME_INSTANCE_H
 
-#include "ProtocolBytes.h"
+#include "../common/ProtocolBytes.h"
+
 #include "ServerGroup.h"
 
 namespace ggj {

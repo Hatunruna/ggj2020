@@ -1,8 +1,8 @@
 #include <gf/Random.h>
 
-#include "bits/GameFactory.h"
-#include "bits/GameInstance.h"
-#include "bits/ServerNetwork.h"
+#include "bits/server/GameFactory.h"
+#include "bits/server/GameInstance.h"
+#include "bits/server/ServerNetwork.h"
 
 namespace {
 

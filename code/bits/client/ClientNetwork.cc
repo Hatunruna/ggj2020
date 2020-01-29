@@ -7,7 +7,7 @@
 #include <gf/Log.h>
 #include <gf/SerializationOps.h>
 
-#include "Protocol.h"
+#include "../common/Protocol.h"
 
 namespace ggj {
 

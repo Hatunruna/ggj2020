@@ -1,10 +1,11 @@
 #ifndef TMPGAME_SERVER_ROOM_H
 #define TMPGAME_SERVER_ROOM_H
 
+#include "../common/GameSettings.h"
+
 #include "GameFactory.h"
 #include "GameInstance.h"
 #include "ServerGroup.h"
-#include "GameSettings.h"
 
 namespace ggj {
 

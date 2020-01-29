@@ -7,9 +7,10 @@
 #include <imgui.h>
 #include <imgui_impl_gf.h>
 
-#include "Constants.h"
-#include "ImGuiConstants.h"
-#include "Protocol.h"
+#include "../common/Constants.h"
+#include "../common/ImGuiConstants.h"
+#include "../common/Protocol.h"
+
 #include "Scenes.h"
 
 namespace ggj {

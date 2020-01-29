@@ -6,8 +6,9 @@
 
 #include <gf/Ref.h>
 
-#include "ProtocolBytes.h"
-#include "ProtocolData.h"
+#include "../common/ProtocolBytes.h"
+#include "../common/ProtocolData.h"
+
 #include "ServerPlayer.h"
 
 namespace ggj {

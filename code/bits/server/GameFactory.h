@@ -3,8 +3,9 @@
 
 #include <memory>
 
+#include "../common/GameSettings.h"
+
 #include "GameInstance.h"
-#include "GameSettings.h"
 
 namespace ggj {
 
