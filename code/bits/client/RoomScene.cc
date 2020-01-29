@@ -95,6 +95,17 @@ namespace ggj {
           // do not poll any more message as the next messages are for the game
           return;
         }
+
+        case ServerError::type: {
+          auto data = bytes.as<ServerError>();
+          MessageData message;
+          message.origin = gf::InvalidId;
+          message.author = "server";
+          message.content = serverErrorString(data.reason);
+
+          m_chat.appendMessage(std::move(message));
+          break;
+        }
       }
     }
   }

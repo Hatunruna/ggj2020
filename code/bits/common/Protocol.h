@@ -176,6 +176,40 @@ namespace ggj {
     Type reason;
   };
 
+  inline std::string serverErrorString(ServerError::Type type) {
+    switch (type) {
+    case ServerError::Type::PlayerAlreadyInRoom:
+      return "You are already in room.";
+
+    case ServerError::Type::PlayerAlreadyReady:
+      return "You are already ready.";
+
+    case ServerError::Type::PlayerNotInRoom:
+      return "You are not in room.";
+
+    case ServerError::Type::PlayerNotInTeam:
+      return "You are not in team.";
+
+    case ServerError::Type::UnknownRoom:
+      return "The room is unknown.";
+
+    case ServerError::Type::FullRoom:
+      return "The room is full.";
+
+    case ServerError::Type::UnknownTeam:
+      return "The team is unknown.";
+
+    case ServerError::Type::FullTeam:
+      return "The team is full.";
+
+    case ServerError::Type::GameAlreadyStarted:
+      return "The game is already started.";
+    }
+
+    assert(false);
+    return "";
+  }
+
   template<typename Archive>
   Archive operator|(Archive& ar, ServerError& data) {
     return ar | data.reason;

@@ -109,6 +109,8 @@ namespace ggj {
           message.origin = gf::InvalidId;
           message.author = "server";
           message.content = serverErrorString(data.reason);
+
+          m_chat.appendMessage(std::move(message));
           break;
         }
       }

@@ -11,7 +11,15 @@ namespace ggj {
   namespace {
 
     ImVec4 toColor(gf::Id id) {
-      gf::Color4f color = gf::Color::lighter(gf::Color::fromRgba32(static_cast<uint32_t>(id)));
+      gf::Color4f color;
+
+      if (id == gf::InvalidId) { // Server message
+        color = gf::Color::lighter(gf::Color::Red);
+      }
+      else {
+        color = gf::Color::lighter(gf::Color::fromRgba32(static_cast<uint32_t>(id)));
+      }
+
       return ImVec4(color.r, color.g, color.b, 1.0f);
     }
 
