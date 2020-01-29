@@ -22,7 +22,7 @@ namespace ggj {
     std::signal(SIGINT, &ServerNetwork::signalHandler);
     m_selector.addSocket(m_listener);
 
-    gf::Log::info("Server waiting for connections on port %s...\n", Service);
+    gf::Log::info("(SERVER) Waiting for connections on port %s...\n", Service);
   }
 
   void ServerNetwork::run() {
@@ -36,7 +36,7 @@ namespace ggj {
       }
 
       if (status == gf::SocketSelectorStatus::Error) {
-        gf::Log::error("An error occurred in the selector. Stopping the server...\n");
+        gf::Log::error("(SERVER) An error occurred in the selector. Stopping the server...\n");
         break;
       }
 
@@ -52,7 +52,7 @@ namespace ggj {
             case gf::SocketStatus::Data:
               switch (bytes.getType()) {
                 case ClientDisconnect::type:
-                  gf::Log::info("Player #%" PRIX64 " disconnected.\n", player.id);
+                  gf::Log::info("(SERVER) {%" PRIX64 "} Disconnected.\n", player.id);
                   purgatory.push_back(player.id);
                   break;
                 default:
@@ -62,10 +62,10 @@ namespace ggj {
               break;
 
             case gf::SocketStatus::Error:
-              gf::Log::error("Error receiving data from player #%" PRIX64 ".", player.id);
+              gf::Log::error("(SERVER) {%" PRIX64 "} Error receiving data.\n", player.id);
               // fallthrough
             case gf::SocketStatus::Close:
-              gf::Log::info("Player #%" PRIX64 " socket closed.\n", player.id);
+              gf::Log::info("(SERVER) {%" PRIX64 "} Socket closed.\n", player.id);
               purgatory.push_back(player.id);
               break;
             case gf::SocketStatus::Block:
@@ -84,18 +84,18 @@ namespace ggj {
 
         gf::Id id = m_random.get().computeId(); // assume it's unique
 
-        ServerPlayer player;
-        player.id = id;
-        player.name = ""; // no name yet
-        player.socket = std::move(socket);
+        ServerPlayer playerInstance;
+        playerInstance.id = id;
+        playerInstance.name = ""; // no name yet
+        playerInstance.socket = std::move(socket);
 
-        auto res = m_players.emplace(id, std::move(player));
+        auto res = m_players.emplace(id, std::move(playerInstance));
         assert(res.second);
-        auto& actualPlayer = res.first->second;
-        m_selector.addSocket(actualPlayer.socket);
-        m_lobby.addPlayer(actualPlayer);
+        auto& player = res.first->second;
+        m_selector.addSocket(player.socket);
+        m_lobby.addPlayer(player);
 
-        gf::Log::info("Player #%" PRIX64 " connected.\n", id);
+        gf::Log::info("(SERVER) {%" PRIX64 "} Connected.\n", player.id);
       }
 
       if (!purgatory.empty()) {

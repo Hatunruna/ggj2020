@@ -26,6 +26,8 @@ namespace ggj {
     void doAddPlayer(ServerPlayer& player) override;
     void doRemovePlayer(ServerPlayer& player) override;
 
+    void checkEmptyRoom(ServerRoom& room);
+
   private:
     gf::Ref<gf::Random> m_random;
     gf::Ref<GameFactory> m_factory;

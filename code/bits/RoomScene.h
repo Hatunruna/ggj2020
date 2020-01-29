@@ -1,9 +1,16 @@
 #ifndef TMPGAME_ROOM_SCENE_H
 #define TMPGAME_ROOM_SCENE_H
 
+#include <cstdint>
+#include <vector>
+
 #include <gf/ResourceManager.h>
 #include <gf/Scene.h>
-#include <gf/UI.h>
+
+#include "Chat.h"
+#include "ClientNetwork.h"
+#include "GameSettings.h"
+#include "ProtocolData.h"
 
 namespace ggj {
 
@@ -12,7 +19,9 @@ namespace ggj {
   class RoomScene : public gf::Scene {
   public:
 
-    RoomScene(Scenes& scenes, gf::ResourceManager& resources);
+    RoomScene(Scenes& scenes, ClientNetwork& network);
+
+    void startRoom(const GameInstanceSettings& settings);
 
   private:
     void doProcessEvent(gf::Event& event) override;
@@ -21,7 +30,15 @@ namespace ggj {
 
   private:
     Scenes& m_scenes;
-    gf::UI m_ui;
+    ClientNetwork& m_network;
+
+    GameInstanceSettings m_settings;
+    int32_t m_currentTeam;
+    bool m_ready;
+
+    std::vector<PlayerData> m_players;
+
+    Chat m_chat;
   };
 
 }

@@ -8,7 +8,15 @@ namespace {
 
   class DummyGameInstance : public ggj::GameInstance {
   public:
-    void update() override {
+    void start() override {
+
+    }
+
+    bool isFinished() override {
+      return false;
+    }
+
+    void update(ggj::ServerPlayer& player, ggj::ProtocolBytes& bytes) override {
 
     }
   };
@@ -28,7 +36,7 @@ int main() {
   ggj::GameSettings settings;
   settings.teamsMin = 2;
   settings.teamsMax = 4;
-  settings.playersByTeamMin = 2;
+  settings.playersByTeamMin = 1;
   settings.playersByTeamMax = 5;
 
   gf::Random random;

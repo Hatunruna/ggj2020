@@ -1,6 +1,7 @@
 #ifndef TMPGAME_SERVER_GROUP_H
 #define TMPGAME_SERVER_GROUP_H
 
+#include <cstdint>
 #include <vector>
 
 #include <gf/Ref.h>
@@ -19,6 +20,18 @@ namespace ggj {
     void removePlayer(ServerPlayer& player);
     std::vector<PlayerData> getPlayers();
 
+    bool isEmpty() const {
+      return m_players.empty();
+    }
+
+    int32_t getPlayersCount() {
+      return static_cast<int32_t>(m_players.size());
+    }
+
+    int32_t getPlayersCountInTeam(int32_t team);
+
+    bool areAllPlayersReady();
+
     virtual void update(ServerPlayer& player, ProtocolBytes& bytes) = 0;
 
     template<typename T>
@@ -30,6 +43,8 @@ namespace ggj {
         player.socket.sendPacket(bytes.packet);
       }
     }
+
+    void cloneTo(ServerGroup& group);
 
   private:
     virtual void doAddPlayer(ServerPlayer& player);

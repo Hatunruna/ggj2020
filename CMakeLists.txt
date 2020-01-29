@@ -23,6 +23,7 @@ endif()
 
 add_executable(tmpgame
   code/client.cc
+  code/bits/Chat.cc
   code/bits/ClientNetwork.cc
   code/bits/ConnectionScene.cc
   code/bits/IntroScene.cc

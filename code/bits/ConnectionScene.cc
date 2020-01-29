@@ -62,6 +62,7 @@ namespace ggj {
         ImGui::SameLine();
         ImGui::SetCursorPosX(x);
         ImGui::InputText("###name", m_nameBuffer.getData(), m_nameBuffer.getSize());
+        ImGui::SetItemDefaultFocus();
 
         ImGui::Indent();
 

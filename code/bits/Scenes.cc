@@ -13,7 +13,7 @@ namespace ggj {
   , intro(*this, resources)
   , connection(*this, network)
   , lobby(*this, network)
-  , room(*this, resources)
+  , room(*this, network)
   , waiting(*this, resources)
   {
     ImGui::CreateContext();

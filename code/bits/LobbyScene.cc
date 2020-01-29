@@ -16,15 +16,6 @@
 
 namespace ggj {
 
-  namespace {
-
-    ImVec4 toColor(gf::Id id) {
-      gf::Color4f color = gf::Color::lighter(gf::Color::fromRgba32(static_cast<uint32_t>(id)));
-      return ImVec4(color.r, color.g, color.b, 1.0f);
-    }
-
-  }
-
   LobbyScene::LobbyScene(Scenes& scenes, ClientNetwork& network)
   : gf::Scene(InitialSize)
   , m_scenes(scenes)
@@ -32,10 +23,9 @@ namespace ggj {
   , m_settings{ 0, 0, 0, 0 }
   , m_instance{ 0, 0 }
   , m_selectedRoom(-1)
-  , m_autoscroll(false)
+  , m_chat(network)
   {
     m_roomBuffer.clear();
-    m_lineBuffer.clear();
     m_nameBuffer.clear();
   }
 
@@ -84,21 +74,23 @@ namespace ggj {
           auto data = bytes.as<ServerListRooms>();
           m_rooms = std::move(data.rooms);
 
+          int32_t index = 0;
+          m_selectedRoom = -1;
           m_roomsView.clear();
           for (auto& room : m_rooms) {
             m_roomsView.push_back(room.name.c_str());
+            if (room.id == m_selectedRoomData.id) {
+              m_selectedRoom = index;
+              m_selectedRoomData = m_rooms[m_selectedRoom];
+            }
+            ++index;
           }
           break;
         }
 
-        case ServerAnswerRoom::type: {
-          auto data = bytes.as<ServerAnswerRoom>();
-          m_selectedRoomName = std::move(data.name);
-          m_selectedRoomSettings = data.settings;
-          break;
-        }
-
         case ServerJoinRoom::type: {
+          auto data = bytes.as<ServerJoinRoom>();
+          m_scenes.room.startRoom(data.settings);
           m_scenes.replaceScene(m_scenes.room);
           // do not poll any more message as the next messages are for the room
           return;
@@ -106,24 +98,19 @@ namespace ggj {
 
         case ServerChatMessage::type: {
           auto data = bytes.as<ServerChatMessage>();
-          m_autoscroll = true;
-          m_messages.push_back(std::move(data.message));
+          m_chat.appendMessage(std::move(data.message));
           break;
         }
       }
     }
   }
 
-/*
- * - players list | rooms list + join | chat
- * - change name  | room info         | create room
- * - Back
- */
   void LobbyScene::doRender(gf::RenderTarget& target) {
     gf::Coordinates coords(target);
     auto position = coords.getCenter();
 
     // UI
+
     ImGui::NewFrame();
     ImGui::SetNextWindowSize(ImVec2(1000.0f, 0.0f));
     ImGui::SetNextWindowPos(ImVec2(position.x, position.y), 0, ImVec2(0.5f, 0.5f));
@@ -149,9 +136,7 @@ namespace ggj {
 
       if (ImGui::ListBox("###rooms", &m_selectedRoom, m_roomsView.data(), m_roomsView.size(), 10)) {
         assert(m_selectedRoom != -1);
-        ClientQueryRoom data;
-        data.room = m_rooms[m_selectedRoom].id;
-        m_network.send(data);
+        m_selectedRoomData = m_rooms[m_selectedRoom];
       }
 
       ImGui::PopItemWidth();
@@ -169,36 +154,7 @@ namespace ggj {
       ImGui::NextColumn();
 
       ImGui::BeginGroup();
-      ImGui::Text("Chat");
-      ImGui::Spacing();
-      ImVec2 size(0.0f, 10 * ImGui::GetTextLineHeightWithSpacing());
-
-      if (ImGui::BeginChild("Messages", size, false)) {
-        for (auto& message : m_messages) {
-          std::string str = "[" + message.author + "] ";
-          ImGui::TextColored(toColor(message.origin), str.c_str());
-          ImGui::SameLine();
-          ImGui::TextWrapped(message.content.c_str());
-        }
-      }
-
-      if (m_autoscroll) {
-        ImGui::SetScrollHereY(1.0f); // bottom
-        m_autoscroll = false;
-      }
-
-      ImGui::EndChild();
-
-      ImGui::Spacing();
-
-      if (ImGui::InputText("###chat", m_lineBuffer.getData(), m_lineBuffer.getSize(), ImGuiInputTextFlags_EnterReturnsTrue) && m_lineBuffer[0] != '\0') {
-        ClientChatMessage data;
-        data.content = m_lineBuffer.getData();
-        m_network.send(data);
-        m_lineBuffer.clear();
-        ImGui::SetKeyboardFocusHere(-1);
-      }
-
+      m_chat.display(10);
       ImGui::EndGroup();
 
       ImGui::NextColumn();
@@ -227,11 +183,12 @@ namespace ggj {
       ImGui::BeginGroup();
       ImGui::Text("Room info");
 
-      if (!m_selectedRoomName.empty()) {
+      if (m_selectedRoom != -1) {
         ImGui::Indent();
-        ImGui::Text("Name: %s", m_selectedRoomName.c_str());
-        ImGui::Text("Teams: %" PRIi32, m_selectedRoomSettings.teams);
-        ImGui::Text("Players/team: %" PRIi32, m_selectedRoomSettings.playersByTeam);
+        ImGui::Text("Name: %s", m_selectedRoomData.name.c_str());
+        ImGui::Text("Teams: %" PRIi32, m_selectedRoomData.settings.teams);
+        ImGui::Text("Players/team: %" PRIi32, m_selectedRoomData.settings.playersByTeam);
+        ImGui::Text("Players: %" PRIi32 "/%" PRIi32, m_selectedRoomData.players, m_selectedRoomData.settings.teams * m_selectedRoomData.settings.playersByTeam);
       }
 
       ImGui::EndGroup();

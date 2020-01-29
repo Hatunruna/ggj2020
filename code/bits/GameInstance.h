@@ -1,12 +1,15 @@
 #ifndef TMPGAME_GAME_INSTANCE_H
 #define TMPGAME_GAME_INSTANCE_H
 
+#include "ProtocolBytes.h"
+#include "ServerGroup.h"
+
 namespace ggj {
 
-  class GameInstance {
+  class GameInstance : public ServerGroup {
   public:
-    virtual ~GameInstance();
-    virtual void update() = 0;
+    virtual void start() = 0;
+    virtual bool isFinished() = 0;
   };
 
 }
