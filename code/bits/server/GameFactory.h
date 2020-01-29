@@ -3,7 +3,7 @@
 
 #include <memory>
 
-#include "../common/GameSettings.h"
+#include "common/GameSettings.h"
 
 #include "GameInstance.h"
 

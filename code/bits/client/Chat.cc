@@ -4,7 +4,7 @@
 
 #include <imgui.h>
 
-#include "../common/Protocol.h"
+#include "common/Protocol.h"
 
 namespace ggj {
 

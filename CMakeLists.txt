@@ -46,6 +46,7 @@ target_include_directories(tmpgame
     ${CMAKE_CURRENT_SOURCE_DIR}/vendor/imgui
     ${CMAKE_CURRENT_SOURCE_DIR}/vendor/gf-imgui
     ${CMAKE_CURRENT_SOURCE_DIR}/code
+    ${CMAKE_CURRENT_SOURCE_DIR}/code/bits
     ${CMAKE_CURRENT_BINARY_DIR}
 )
 
@@ -68,12 +69,14 @@ add_executable(tmpgame-server
   code/bits/server/ServerGroup.cc
   code/bits/server/ServerLobby.cc
   code/bits/server/ServerNetwork.cc
+  code/bits/server/ServerPlayer.cc
   code/bits/server/ServerRoom.cc
 )
 
 target_include_directories(tmpgame-server
   PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/code
+    ${CMAKE_CURRENT_SOURCE_DIR}/code/bits
     ${CMAKE_CURRENT_BINARY_DIR}
 )
 

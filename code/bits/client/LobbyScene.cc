@@ -9,9 +9,9 @@
 #include <imgui.h>
 #include <imgui_impl_gf.h>
 
-#include "../common/Constants.h"
-#include "../common/ImGuiConstants.h"
-#include "../common/Protocol.h"
+#include "common/Constants.h"
+#include "common/ImGuiConstants.h"
+#include "common/Protocol.h"
 
 #include "Scenes.h"
 
@@ -100,6 +100,15 @@ namespace ggj {
         case ServerChatMessage::type: {
           auto data = bytes.as<ServerChatMessage>();
           m_chat.appendMessage(std::move(data.message));
+          break;
+        }
+
+        case ServerError::type: {
+          auto data = bytes.as<ServerError>();
+          MessageData message;
+          message.origin = gf::InvalidId;
+          message.author = "server";
+          message.content = serverErrorString(data.reason);
           break;
         }
       }

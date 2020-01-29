@@ -4,7 +4,7 @@
 #include <gf/Random.h>
 #include <gf/Ref.h>
 
-#include "../common/ProtocolData.h"
+#include "common/ProtocolData.h"
 
 #include "GameFactory.h"
 #include "ServerGroup.h"

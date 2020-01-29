@@ -1,7 +1,7 @@
 #ifndef TMPGAME_GAME_SETTINGS_H
 #define TMPGAME_GAME_SETTINGS_H
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace ggj {
 

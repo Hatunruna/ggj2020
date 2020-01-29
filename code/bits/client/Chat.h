@@ -5,7 +5,7 @@
 
 #include <gf/StaticString.h>
 
-#include "../common/ProtocolData.h"
+#include "common/ProtocolData.h"
 
 #include "ClientNetwork.h"
 

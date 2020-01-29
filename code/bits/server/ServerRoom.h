@@ -1,7 +1,7 @@
 #ifndef TMPGAME_SERVER_ROOM_H
 #define TMPGAME_SERVER_ROOM_H
 
-#include "../common/GameSettings.h"
+#include "common/GameSettings.h"
 
 #include "GameFactory.h"
 #include "GameInstance.h"

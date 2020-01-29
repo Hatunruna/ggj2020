@@ -9,9 +9,9 @@
 #include <imgui.h>
 #include <imgui_impl_gf.h>
 
-#include "../common/Constants.h"
-#include "../common/ImGuiConstants.h"
-#include "../common/Protocol.h"
+#include "common/Constants.h"
+#include "common/ImGuiConstants.h"
+#include "common/Protocol.h"
 
 #include "Scenes.h"
 

@@ -1,6 +1,6 @@
 #include "WaitingScene.h"
 
-#include "../common/Constants.h"
+#include "common/Constants.h"
 
 #include "Scenes.h"
 

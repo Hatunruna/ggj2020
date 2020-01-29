@@ -6,7 +6,7 @@
 
 #include <gf/TcpSocket.h>
 
-#include "../common/ProtocolBytes.h"
+#include "common/ProtocolBytes.h"
 
 namespace ggj {
 

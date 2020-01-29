@@ -1,6 +1,6 @@
 #include "IntroScene.h"
 
-#include "../common/Constants.h"
+#include "common/Constants.h"
 
 #include "Scenes.h"
 
