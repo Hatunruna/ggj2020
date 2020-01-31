@@ -68,6 +68,8 @@ add_executable(tmpgame-server
   code/server.cc
   code/bits/server/GameFactory.cc
   code/bits/server/GameInstance.cc
+  code/bits/server/PemFactory.cc
+  code/bits/server/PemInstance.cc
   code/bits/server/ServerGroup.cc
   code/bits/server/ServerLobby.cc
   code/bits/server/ServerNetwork.cc
