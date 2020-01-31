@@ -5,16 +5,21 @@
 
 namespace ggj {
 
-  enum PlaceType : uint16_t {
+  enum class CrewType : uint8_t {
+    Rebel,
+    Protector,
+  };
+
+  enum class PlaceType : uint16_t {
     Armory,
     Bathroom,
     CommunicationCenter,
-    Deck,
     Dormitory,
     GreenHouse,
     Infirmery,
     LeftEngine,
     LifeSupport,
+    MainBridge,
     MidEngine,
     Navigation,
     Prison,
@@ -23,25 +28,25 @@ namespace ggj {
     Storage,
   };
 
-  enum CardType : uint16_t {
-    // repair
-    Repair,
+  enum class CardType : uint16_t {
+    // protector
+    Demine,
+    Examine,
     Hide,
     Reinforce1,
     Reinforce2,
+    Repair,
     Track,
-    Examine,
-    Demine,
     // common
     Block,
     Release,
-    // destroy
+    // rebel
+    FalseAlarm,
+    FalseRepair1,
+    FalseRepair2,
     PlaceBomb0,
     PlaceBomb1,
     PlaceBomb2,
-    FalseRepair1,
-    FalseRepair2,
-    FalseAlarm,
     SetupJammer,
   };
 

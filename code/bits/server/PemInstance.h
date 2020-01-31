@@ -1,4 +1,10 @@
+#ifndef TMPGAME_PEM_INSTANCE_H
+#define TMPGAME_PEM_INSTANCE_H
+
+#include <gf/Random.h>
+
 #include "GameInstance.h"
+#include "Deck.h"
 
 namespace ggj {
 
@@ -13,7 +19,11 @@ namespace ggj {
     void update(ServerPlayer& player, ProtocolBytes& bytes) override;
 
   private:
+    gf::Random m_random;
     int32_t m_players;
+    Deck m_deck;
   };
 
 }
+
+#endif // TMPGAME_PEM_INSTANCE_H
