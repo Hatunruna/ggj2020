@@ -12,7 +12,7 @@ find_package(gf REQUIRED)
 find_package(gfnet REQUIRED)
 # find_package(Box2D REQUIRED)
 
-set(TMPGAME_DATA_DIR "${CMAKE_INSTALL_PREFIX}/share/games/tmpgame")
+set(TMPGAME_DATA_DIR "${CMAKE_INSTALL_PREFIX}/share/games/tmpgame" CACHE PATH "data path")
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/code/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h @ONLY)
 
 if(NOT MSVC)
