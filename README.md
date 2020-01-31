@@ -7,6 +7,10 @@ Game for GGJ2020
 #### Required libraries
 
 - GF (https://github.com/GamedevFramework/gf)
+Use develop branch
+```
+git checkout develop
+```
 
 - SFML-Audio
 
