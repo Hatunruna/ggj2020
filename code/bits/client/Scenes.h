@@ -6,6 +6,7 @@
 
 #include "ConnectionScene.h"
 #include "CreditsScene.h"
+#include "HelpScene.h"
 #include "IntroScene.h"
 #include "LobbyScene.h"
 #include "RoomScene.h"
@@ -30,6 +31,7 @@ namespace ggj {
     RoomScene room;
     WaitingScene waiting;
     CreditsScene credits;
+    HelpScene help;
   };
 
 }

@@ -8,11 +8,15 @@ namespace ggj {
   MenuEntity::MenuEntity(gf::ResourceManager& resources, MenuChoice& choice)
   : m_font(resources.getFont("DejaVuSans.ttf"))
   , m_startWidget("Start", m_font)
+  , m_helpWidget("Help", m_font)
   , m_creditsWidget("Credits", m_font)
   , m_quitWidget("Quit", m_font)
   {
     m_startWidget.setCallback([&choice]() { choice = MenuChoice::Start; });
     m_container.addWidget(m_startWidget);
+
+    m_helpWidget.setCallback([&choice]() { choice = MenuChoice::Help; });
+    m_container.addWidget(m_helpWidget);
 
     m_creditsWidget.setCallback([&choice]() { choice = MenuChoice::Credits; });
     m_container.addWidget(m_creditsWidget);
@@ -40,13 +44,19 @@ namespace ggj {
     m_startWidget.setPosition(startPosition);
     target.draw(m_startWidget, states);
 
-    auto creditsPosition = coords.getRelativePoint({ 0.5f, 0.4f });
+    auto helpPosition = coords.getRelativePoint({ 0.5f, 0.4f });
+    m_helpWidget.setCharacterSize(characterSize);
+    m_helpWidget.setAnchor(gf::Anchor::Center);
+    m_helpWidget.setPosition(helpPosition);
+    target.draw(m_helpWidget, states);
+
+    auto creditsPosition = coords.getRelativePoint({ 0.5f, 0.6f });
     m_creditsWidget.setCharacterSize(characterSize);
     m_creditsWidget.setAnchor(gf::Anchor::Center);
     m_creditsWidget.setPosition(creditsPosition);
     target.draw(m_creditsWidget, states);
 
-    auto quitPosition = coords.getRelativePoint({ 0.5f, 0.6f });
+    auto quitPosition = coords.getRelativePoint({ 0.5f, 0.8f });
     m_quitWidget.setCharacterSize(characterSize);
     m_quitWidget.setAnchor(gf::Anchor::Center);
     m_quitWidget.setPosition(quitPosition);

@@ -27,6 +27,7 @@ add_executable(tmpgame
   code/bits/client/ClientNetwork.cc
   code/bits/client/ConnectionScene.cc
   code/bits/client/CreditsScene.cc
+  code/bits/client/HelpScene.cc
   code/bits/client/IntroScene.cc
   code/bits/client/LobbyScene.cc
   code/bits/client/MenuEntity.cc
