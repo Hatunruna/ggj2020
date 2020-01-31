@@ -66,6 +66,7 @@ install(
 
 add_executable(tmpgame-server
   code/server.cc
+  code/bits/server/Deck.cc
   code/bits/server/GameFactory.cc
   code/bits/server/GameInstance.cc
   code/bits/server/PemFactory.cc

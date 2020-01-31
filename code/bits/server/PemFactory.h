@@ -1,3 +1,6 @@
+#ifndef TMPGAME_PEM_FACTORY_H
+#define TMPGAME_PEM_FACTORY_H
+
 #include "GameFactory.h"
 
 namespace ggj {
@@ -9,4 +12,4 @@ namespace ggj {
 
 }
 
-
+#endif // TMPGAME_PEM_FACTORY_H
