@@ -52,7 +52,14 @@ namespace ggj {
         std::string str = "[" + message.author + "] ";
         ImGui::TextColored(toColor(message.origin), str.c_str());
         ImGui::SameLine();
-        ImGui::TextWrapped(message.content.c_str());
+        if (message.origin == gf::InvalidId) {
+          ImGui::PushStyleColor(ImGuiCol_Text, toColor(message.origin));
+          ImGui::TextWrapped(message.content.c_str());
+          ImGui::PopStyleColor();
+        }
+        else {
+          ImGui::TextWrapped(message.content.c_str());
+        }
       }
     }
 
