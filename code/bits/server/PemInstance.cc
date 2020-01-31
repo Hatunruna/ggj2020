@@ -1,5 +1,8 @@
 #include "PemInstance.h"
 
+#include "common/PemProtocol.h"
+#include "Crew.h"
+
 namespace ggj {
   PemInstance::PemInstance(int32_t players)
   : m_players(players)
@@ -8,6 +11,33 @@ namespace ggj {
   }
 
   void PemInstance::start() {
+    assert(getPlayersCount() == m_players);
+
+    auto crew = Crew::createCrew(m_players);
+    std::shuffle(crew.begin(), crew.end(), m_random.getEngine());
+
+    auto players = getPlayers();
+
+    for (auto& player : players) {
+      PemServerInitRole data;
+      data.role = crew.back();
+      crew.pop_back();
+
+      switch (data.role) {
+        case CrewType::Protector:
+          for (auto& card : data.cards) {
+            card = m_deck.pickProtectorCard();
+          }
+          break;
+        case CrewType::Rebel:
+          for (auto& card : data.cards) {
+            card = m_deck.pickRebelCard();
+          }
+          break;
+      }
+
+      send(player.id, data);
+    }
 
   }
 

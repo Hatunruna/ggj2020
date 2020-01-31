@@ -36,6 +36,19 @@ namespace ggj {
     virtual void update(ServerPlayer& player, ProtocolBytes& bytes) = 0;
 
     template<typename T>
+    void send(gf::Id id, const T& data) {
+      ProtocolBytes bytes;
+      bytes.is(data);
+
+      for (ServerPlayer& player : m_players) {
+        if (player.id == id) {
+          player.socket.sendPacket(bytes.packet);
+          return;
+        }
+      }
+    }
+
+    template<typename T>
     void broadcast(const T& data) {
       ProtocolBytes bytes;
       bytes.is(data);
