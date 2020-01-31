@@ -50,6 +50,9 @@ namespace ggj {
       case MenuChoice::Start:
         m_scenes.replaceScene(m_scenes.connection);
         break;
+      case MenuChoice::Credits:
+        m_scenes.replaceScene(m_scenes.credits);
+        break;
       case MenuChoice::Quit:
         m_scenes.popScene();
         break;

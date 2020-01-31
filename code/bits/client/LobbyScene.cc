@@ -117,7 +117,7 @@ namespace ggj {
     }
   }
 
-  void LobbyScene::doRender(gf::RenderTarget& target) {
+  void LobbyScene::doRender(gf::RenderTarget& target, const gf::RenderStates &states) {
     gf::Coordinates coords(target);
     auto position = coords.getCenter();
 
@@ -259,8 +259,8 @@ namespace ggj {
 
     // Display
 
-    renderWorldEntities(target);
-    renderHudEntities(target);
+    renderWorldEntities(target, states);
+    renderHudEntities(target, states);
 
     ImGui::Render();
     ImGui_ImplGF_RenderDrawData(ImGui::GetDrawData());

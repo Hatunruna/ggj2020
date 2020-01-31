@@ -15,6 +15,7 @@ namespace ggj {
   , lobby(*this, network)
   , room(*this, network)
   , waiting(*this, resources)
+  , credits(*this, resources)
   {
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();

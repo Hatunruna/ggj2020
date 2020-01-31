@@ -12,6 +12,7 @@ namespace ggj {
   enum class MenuChoice {
     None,
     Start,
+    Credits,
     Quit,
   };
 
@@ -28,6 +29,7 @@ namespace ggj {
     gf::Font& m_font;
     gf::WidgetContainer m_container;
     gf::TextWidget m_startWidget;
+    gf::TextWidget m_creditsWidget;
     gf::TextWidget m_quitWidget;
   };
 

@@ -5,6 +5,7 @@
 #include <gf/ResourceManager.h>
 
 #include "ConnectionScene.h"
+#include "CreditsScene.h"
 #include "IntroScene.h"
 #include "LobbyScene.h"
 #include "RoomScene.h"
@@ -28,6 +29,7 @@ namespace ggj {
     LobbyScene lobby;
     RoomScene room;
     WaitingScene waiting;
+    CreditsScene credits;
   };
 
 }

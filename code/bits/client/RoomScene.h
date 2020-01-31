@@ -27,7 +27,7 @@ namespace ggj {
   private:
     void doProcessEvent(gf::Event& event) override;
     void doUpdate(gf::Time time) override;
-    void doRender(gf::RenderTarget& target) override;
+    void doRender(gf::RenderTarget& target, const gf::RenderStates &states) override;
 
   private:
     Scenes& m_scenes;

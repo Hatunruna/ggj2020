@@ -20,7 +20,7 @@ namespace ggj {
 //     void doHandleActions(gf::Window& window) override;
     void doUpdate(gf::Time time) override;
 
-    void doRender(gf::RenderTarget& target) override;
+    void doRender(gf::RenderTarget& target, const gf::RenderStates &states) override;
 
 
   private:
