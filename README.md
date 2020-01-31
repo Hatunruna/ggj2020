@@ -4,8 +4,15 @@ Game for GGJ2020
 
 ###To install :
 
+#### Required libraries
+
+- GF (https://github.com/GamedevFramework/gf)
+
+- SFML-Audio
+
+#### Download & Build
 ```
-git clone git@github.com:Hatunruna/ggj2020.git
+git clone https://github.com/Hatunruna/ggj2020.git
 cd ggj2020/
 git submodule update --init
 mkdir build
@@ -21,10 +28,10 @@ One server must be initialize
 ```
 ./tmpgame-server
 ```
-To run the game :
+To run the game (n times for n players):
 ```
 ./tmpgame
 ```
-And connect to the server IP or hostname.
+And connect to the server IP or hostname :
 
-![alt text](https://github.com//Hatunruna/ggj2020/tree/master/misc/LoginServer.png "Logo Title Text 1")
+![alt text](Misc/LoginServer.png "Connexion window")
