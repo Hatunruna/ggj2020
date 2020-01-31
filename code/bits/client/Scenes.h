@@ -6,15 +6,15 @@
 
 #include "ConnectionScene.h"
 #include "CreditsScene.h"
+#include "GameScene.h"
 #include "HelpScene.h"
 #include "IntroScene.h"
 #include "LobbyScene.h"
 #include "RoomScene.h"
-#include "WaitingScene.h"
 
 namespace ggj {
 
-  struct Scenes : gf::SceneManager {
+  struct Scenes : public gf::SceneManager {
     Scenes(ClientNetwork& network, gf::Path searchDir);
     Scenes(const Scenes&) = delete;
     Scenes(Scenes&&) = delete;
@@ -29,7 +29,7 @@ namespace ggj {
     ConnectionScene connection;
     LobbyScene lobby;
     RoomScene room;
-    WaitingScene waiting;
+    GameScene game;
     CreditsScene credits;
     HelpScene help;
   };
