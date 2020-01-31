@@ -243,7 +243,16 @@ namespace ggj {
 
       ImGui::EndGroup();
 
-      // TODO: back button?
+      ImGui::Columns();
+      ImGui::Separator();
+
+      ImGui::Spacing();
+      ImGui::Indent();
+
+      if (ImGui::Button("Back", DefaultButtonSize)) {
+        m_scenes.replaceScene(m_scenes.connection);
+        m_network.disconnect();
+      }
     }
 
     ImGui::End();
