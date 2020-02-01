@@ -34,6 +34,7 @@ namespace ggj {
             card = m_deck.pickProtectorCard();
           }
           break;
+
         case CrewType::Rebel:
           for (auto& card : data.cards) {
             card = m_deck.pickRebelCard();
@@ -41,10 +42,17 @@ namespace ggj {
           break;
       }
 
-      gf::Log::debug("[game] PemServerInitRole to @%" PRIX64 "\n\n", player.id);
+      Member member;
+      member.cards = data.cards;
+      m_members.emplace(player.id, std::move(member));
+
+      gf::Log::debug("(PemInstance) Init Role to @%" PRIX64 "\n\n", player.id);
       send(player.id, data);
     }
 
+    m_votes.clear();
+    PemServerStartVoteForCaptain data;
+    broadcast(data);
   }
 
   bool PemInstance::isFinished() {
@@ -72,7 +80,86 @@ namespace ggj {
         
         break;
       }
+
+      case PemClientVoteForCaptain::type: {
+        auto in = bytes.as<PemClientVoteForCaptain>();
+
+        auto it = m_members.find(player.id);
+        assert(it != m_members.end());
+
+        if (!it->second.voted && it->second.prison == 0) {
+          m_votes[in.member]++;
+          it->second.voted = true;
+        }
+
+        checkEndOfVote();
+        break;
+      }
     }
+  }
+
+  void PemInstance::checkEndOfVote() {
+    int32_t electors = 0;
+
+    for (auto& kv : m_members) {
+      if (kv.second.prison == 0) {
+        ++electors;
+      }
+    }
+
+    int32_t votes = 0;
+
+    for (auto& kv : m_votes) {
+      votes += kv.second;
+    }
+
+    if (votes < electors) {
+      return;
+    }
+
+    std::vector<gf::Id> captains;
+
+    for (auto& kv : m_votes) {
+      if (kv.first == gf::InvalidId) {
+        continue;
+      }
+
+      if (kv.second > votes) {
+        captains = { kv.first };
+        votes = kv.second;
+      } else if (kv.second == votes) {
+        captains.push_back(kv.first);
+      }
+    }
+
+    gf::Id captain = gf::InvalidId;
+
+    if (captains.empty()) {
+      std::vector<gf::Id> eligibles;
+
+      for (auto& kv : m_members) {
+        if (kv.second.prison == 0) {
+          eligibles.push_back(kv.first);
+        }
+      }
+
+      assert(!eligibles.empty());
+      captain = eligibles[m_random.computeUniformInteger<std::size_t>(0, eligibles.size() - 1)];
+    } else if (captains.size() == 1) {
+      captain = captains.front();
+    } else {
+      captain = captains[m_random.computeUniformInteger<std::size_t>(0, captains.size() - 1)];
+    }
+
+    m_votes.clear();
+
+    for (auto& kv : m_members) {
+      kv.second.voted = false;
+    }
+
+    PemServerChooseCaptain data;
+    data.member = captain;
+    broadcast(data);
   }
 
 }

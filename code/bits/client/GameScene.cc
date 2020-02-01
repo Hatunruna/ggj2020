@@ -30,6 +30,8 @@ namespace ggj {
   , m_info(resources)
   , m_chat(network, m_players)
   , m_electedPlayers(gf::InvalidId)
+  , m_gamePhase(GamePhase::CapitainElection)
+  , m_alreadyVote(false)
   {
     setWorldViewSize({2000.0f, 1000.0f});
     setWorldViewCenter({ 1000.0f, 500.0f});
@@ -43,8 +45,11 @@ namespace ggj {
     getWorldView().setViewport(gf::RectF::fromPositionSize({0.0f, 0.0f}, {1.0f, 2.f / 3.f}));
   }
 
-  void GameScene::setPlayersData(const std::vector<PlayerData> &players) {
+  void GameScene::initialize(const std::vector<PlayerData> &players) {
     m_players = players;
+    m_electedPlayers = gf::InvalidId;
+    m_gamePhase = GamePhase::CapitainElection;
+    m_alreadyVote = false;
   }
 
   void GameScene::doHandleActions(gf::Window& window) {
@@ -60,6 +65,22 @@ namespace ggj {
 
   void GameScene::doProcessEvent(gf::Event &event) {
     m_adaptator.processEvent(event);
+
+	if (event.type == gf::EventType::MouseButtonPressed && event.mouseButton.button == gf::MouseButton::Left) {
+		gf::Vector2f relativeCoords = gf::Vector2f(event.mouseButton.coords) / m_scenes.getRenderer().getSize();
+		CardType clickedCardType;
+		if (m_info.getCardType(relativeCoords, clickedCardType)) {
+			// TODO handle clickedCardType
+			gf::Log::debug("Clicked card: %s\n", cardTypeString(clickedCardType).c_str());
+		}
+
+		gf::Vector2f worldCoords = m_scenes.getRenderer().mapPixelToCoords(event.mouseButton.coords, getWorldView());
+		PlaceType clickedPlaceType;
+		if (m_ship.getPlaceType(worldCoords, clickedPlaceType)) {
+			// TODO handle clickedPlaceType
+			gf::Log::debug("Clicked place: %s\n", placeTypeString(clickedPlaceType).c_str());
+		}
+	}
   }
 
   void GameScene::doUpdate(gf::Time time) {
@@ -108,21 +129,34 @@ namespace ggj {
     gf::Vector2f electionWindowPos = coordinates.getCenter();
 
     ImGui::NewFrame();
-    ImGui::SetNextWindowSize(ImVec2(electionWindowSize.width, electionWindowSize.height));
-    ImGui::SetNextWindowPos(ImVec2(electionWindowPos.x, electionWindowPos.y), 0, ImVec2(0.5f, 0.5f));
+    if (m_gamePhase == GamePhase::CapitainElection && !m_alreadyVote) {
+      ImGui::SetNextWindowSize(ImVec2(electionWindowSize.width, electionWindowSize.height));
+      ImGui::SetNextWindowPos(ImVec2(electionWindowPos.x, electionWindowPos.y), 0, ImVec2(0.5f, 0.5f));
 
-    if (ImGui::Begin("Elect your Capitain", nullptr, DefaultWindowFlags))
-    {
-      // List players
-      for (auto &player: m_players) {
-        char buf[128];
-        sprintf(buf, "Player %" PRIX64, player.id);
-        if (ImGui::Selectable(buf, m_electedPlayers == player.id)) {
-          m_electedPlayers = player.id;
+      if (ImGui::Begin("Elect your Capitain", nullptr, DefaultWindowFlags)) {
+        // List players
+        for (unsigned i = 0; i < m_players.size(); ++i) {
+          auto &player = m_players[i];
+          std::string name = std::to_string(i) + ". " + player.name;
+          if (ImGui::Selectable(name.c_str(), m_electedPlayers == player.id)) {
+            m_electedPlayers = player.id;
+          }
+        }
+        if (ImGui::Selectable("None Of The Above", m_electedPlayers == gf::InvalidId)) {
+          m_electedPlayers = gf::InvalidId;
+        }
+        if (ImGui::Button("Connect", DefaultButtonSize)) {
+          gf::Log::debug("(GAME) Vote for: %" PRIX64 "\n", m_electedPlayers);
+
+          PemClientVoteForCaptain vote;
+          vote.member = m_electedPlayers;
+          m_network.send(vote);
+
+          m_alreadyVote = true;
         }
       }
+      ImGui::End();
     }
-    ImGui::End();
 
     // Chat window
     m_chat.display(10, coordinates);

@@ -56,13 +56,15 @@ namespace ggj {
         break;
 
       case gf::EventType::MouseButtonPressed:
-        if (isCursorOnView(event.mouseButton.coords, m_target.getSize(), m_view.getViewport())) {
+        if (isCursorOnView(event.mouseButton.coords, m_target.getSize(), m_view.getViewport()) && event.mouseButton.button == gf::MouseButton::Right) {
           m_state = State::Moving;
         }
         break;
 
       case gf::EventType::MouseButtonReleased:
-        m_state = State::Stationary;
+        if (event.mouseButton.button == gf::MouseButton::Right) {
+          m_state = State::Stationary;
+        }
         break;
 
       case gf::EventType::MouseWheelScrolled: {

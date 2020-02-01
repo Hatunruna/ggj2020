@@ -5,6 +5,7 @@
 
 #include "GameInstance.h"
 #include "Deck.h"
+#include "Member.h"
 
 namespace ggj {
 
@@ -19,9 +20,14 @@ namespace ggj {
     void update(ServerPlayer& player, ProtocolBytes& bytes) override;
 
   private:
+    void checkEndOfVote();
+
+  private:
     gf::Random m_random;
     int32_t m_players;
     Deck m_deck;
+    std::map<gf::Id, Member> m_members;
+    std::map<gf::Id, int32_t> m_votes;
   };
 
 }

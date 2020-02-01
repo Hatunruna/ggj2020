@@ -79,7 +79,7 @@ namespace ggj {
         case ServerStartGame::type: {
           m_scenes.replaceScene(m_scenes.game);
           m_scenes.setClearColor(gf::Color::Black);
-          m_scenes.game.setPlayersData(m_players);
+          m_scenes.game.initialize(m_players);
           // do not poll any more message as the next messages are for the game
           return;
         }
@@ -121,11 +121,11 @@ namespace ggj {
       for (auto& player : m_players) {
         if (player.team == -1)
         {
-          ImGui::BulletText("%s [connecting]", player.name.c_str()); 
+          ImGui::BulletText("%s [connecting]", player.name.c_str());
         }
         else
         {
-          ImGui::BulletText("%s [%s]", player.name.c_str(), player.ready ? "ready" : "not ready"); 
+          ImGui::BulletText("%s [%s]", player.name.c_str(), player.ready ? "ready" : "not ready");
         }
       }
 

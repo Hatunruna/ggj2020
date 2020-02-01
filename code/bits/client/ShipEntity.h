@@ -5,12 +5,15 @@
 #include <gf/ResourceManager.h>
 #include <gf/Shapes.h>
 
+#include "common/PemTypes.h"
+
 namespace ggj {
   class ShipEntity: public gf::Entity {
   public:
     ShipEntity(gf::ResourceManager& resources);
 
     void render(gf::RenderTarget& target, const gf::RenderStates& states) override;
+    bool getPlaceType(const gf::Vector2f& position, PlaceType& res) const;
 
   private:
     gf::Font &m_font;
