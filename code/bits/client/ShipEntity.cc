@@ -76,4 +76,17 @@ namespace ggj {
       target.draw(text, states);
     }
   }
+
+  bool ShipEntity::getPlaceType(const gf::Vector2f& position, PlaceType& res) const {
+    for (const auto &entry: placeLocations) {
+      const auto& location = entry.second;
+
+      auto bounds = location.placeBounds;
+      if (bounds.contains(position)) {
+        res = entry.first;
+        return true;
+      }
+    }
+    return false;
+  }
 }

@@ -61,12 +61,19 @@ namespace ggj {
   void GameScene::doProcessEvent(gf::Event &event) {
     m_adaptator.processEvent(event);
 
-	if (event.type == gf::EventType::MouseButtonPressed) {
+	if (event.type == gf::EventType::MouseButtonPressed && event.mouseButton.button == gf::MouseButton::Left) {
 		gf::Vector2f relativeCoords = gf::Vector2f(event.mouseButton.coords) / m_scenes.getRenderer().getSize();
 		CardType clickedCardType;
 		if (m_info.getCardType(relativeCoords, clickedCardType)) {
 			// TODO handle clickedCardType
-			gf::Log::debug("%hu\n", static_cast<std::uint16_t>(clickedCardType));
+			gf::Log::debug("Clicked card: %s\n", cardTypeString(clickedCardType).c_str());
+		}
+
+		gf::Vector2f worldCoords = m_scenes.getRenderer().mapPixelToCoords(event.mouseButton.coords, getWorldView());
+		PlaceType clickedPlaceType;
+		if (m_ship.getPlaceType(worldCoords, clickedPlaceType)) {
+			// TODO handle clickedPlaceType
+			gf::Log::debug("Clicked place: %s\n", placeTypeString(clickedPlaceType).c_str());
 		}
 	}
   }
