@@ -125,7 +125,7 @@ namespace ggj {
     gf::Coordinates coordinates(target);
 
     // Election window
-    gf::Vector2f electionWindowSize = coordinates.getRelativeSize({ 0.25f, 0.25 });
+    gf::Vector2f electionWindowSize = coordinates.getRelativeSize({ 0.25f, 0.28f });
     gf::Vector2f electionWindowPos = coordinates.getCenter();
 
     ImGui::NewFrame();
@@ -145,7 +145,8 @@ namespace ggj {
         if (ImGui::Selectable("None Of The Above", m_electedPlayers == gf::InvalidId)) {
           m_electedPlayers = gf::InvalidId;
         }
-        if (ImGui::Button("Vote", DefaultButtonSize)) {
+
+        if (ImGui::Button("Vote", ImVec2(ImGui::GetWindowWidth(), DefaultButtonSize.y))) {
           gf::Log::debug("(GAME) Vote for: %" PRIX64 "\n", m_electedPlayers);
 
           PemClientVoteForCaptain vote;
