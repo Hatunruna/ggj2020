@@ -4,6 +4,7 @@
 #include <gf/Coordinates.h>
 #include <gf/Log.h>
 #include <gf/RenderTarget.h>
+#include <gf/Sprite.h>
 #include <gf/Text.h>
 
 #include "common/PemTypes.h"
@@ -38,17 +39,18 @@ namespace {
 
 namespace ggj {
   ShipEntity::ShipEntity(gf::ResourceManager& resources)
-  : m_font(resources.getFont("DejaVuSans.ttf")) {
-    m_rect.setColor(gf::Color::White);
-    m_rect.setSize({6000.0f, 500.0f});
-    m_rect.setPosition({0.f, 500.0f});
-    m_rect.setAnchor(gf::Anchor::CenterLeft);
+  : m_font(resources.getFont("DejaVuSans.ttf"))
+  , m_shipTexture(resources.getTexture("image/ship.png")) {
+
   }
 
   void ShipEntity::render(gf::RenderTarget& target, const gf::RenderStates& states) {
     gf::Coordinates coordinates(target);
-    target.draw(m_rect, states);
+    gf::Sprite ship(m_shipTexture);
+    ship.setPosition({ 0.0f, 0.0f });
+    target.draw(ship, states);
 
+    // Display cards
     for (const auto &entry: placeLocations) {
       const auto& location = entry.second;
 

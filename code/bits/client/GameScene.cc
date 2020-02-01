@@ -33,15 +33,15 @@ namespace ggj {
   , m_gamePhase(GamePhase::CapitainElection)
   , m_alreadyVote(false)
   {
-    setWorldViewSize({2000.0f, 1000.0f});
-    setWorldViewCenter({ 1000.0f, 500.0f});
+    setWorldViewSize(WorldSize);
+    setWorldViewCenter(WorldSize * 0.5f);
 
     m_escapeAction.addKeycodeKeyControl(gf::Keycode::Escape);
     addAction(m_escapeAction);
 
     addWorldEntity(m_ship);
 
-    addHudEntity(m_info);
+    // addHudEntity(m_info);
     getWorldView().setViewport(gf::RectF::fromPositionSize({0.0f, 0.0f}, {1.0f, 2.f / 3.f}));
   }
 

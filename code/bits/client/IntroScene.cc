@@ -48,9 +48,9 @@ namespace ggj {
       case MenuChoice::None:
         break;
       case MenuChoice::Start:
-        m_scenes.replaceScene(m_scenes.connection);
-        // m_scenes.replaceScene(m_scenes.game);
-        // m_scenes.setClearColor(gf::Color::Black);
+        // m_scenes.replaceScene(m_scenes.connection);
+        m_scenes.replaceScene(m_scenes.game);
+        m_scenes.setClearColor(gf::Color::Gray(0.85f));
         break;
       case MenuChoice::Help:
         m_scenes.replaceScene(m_scenes.help);

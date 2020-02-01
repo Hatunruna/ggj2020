@@ -17,6 +17,7 @@ namespace ggj {
 
   private:
     gf::Font &m_font;
+    gf::Texture &m_shipTexture;
     gf::RectangleShape m_rect;
   };
 }
