@@ -18,6 +18,7 @@ namespace ggj {
   public:
     GameScene(Scenes& scenes, ClientNetwork& network, gf::ResourceManager& resources);
 
+    void setPlayersData(const std::vector<PlayerData> &players);
     void initializeHand(CardType cards[MaxCards]);
 
   private:
@@ -39,6 +40,9 @@ namespace ggj {
     PlayerInfo m_info;
 
     GameChat m_chat;
+
+    std::vector<PlayerData> m_players;
+    gf::Id m_electedPlayers;
   };
 
 }
