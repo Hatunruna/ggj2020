@@ -17,24 +17,6 @@
 
 namespace ggj {
 
-  namespace {
-
-    struct TeamInfo {
-      const char *name;
-      gf::Color4f color;
-    };
-
-    constexpr TeamInfo g_teamInfo[] = {
-      { "Team Red", gf::Color::Red },
-      { "Team Blue", gf::Color::Blue },
-      { "Team Green", gf::Color::Green },
-      { "Team Yellow", gf::Color::Yellow },
-      { "Team Magenta", gf::Color::Magenta },
-      { "Team Cyan", gf::Color::Cyan },
-    };
-
-  }
-
   RoomScene::RoomScene(Scenes& scenes, ClientNetwork& network)
   : gf::Scene(InitialSize)
   , m_scenes(scenes)
@@ -47,6 +29,10 @@ namespace ggj {
     m_currentTeam = -1;
     m_settings = settings;
     m_ready = false;
+
+    ClientChangeTeam data;
+    data.team = 0;
+    m_network.send(data);
   }
 
   void RoomScene::doProcessEvent(gf::Event& event) {
@@ -122,54 +108,28 @@ namespace ggj {
     ImGui::SetNextWindowSize(ImVec2(1000.0f, 0.0f));
 
     if (ImGui::Begin("Room", nullptr, DefaultWindowFlags)) {
-      ImGui::Text("Teams: %" PRIi32 " | Players by team: %" PRIi32, m_settings.teams, m_settings.playersByTeam);
+      ImGui::Text("Players required: %" PRIi32, m_settings.playersByTeam);
       ImGui::Separator();
 
-      ImGui::Columns(3);
+      ImGui::Columns(2);
 
       ImGui::BeginGroup();
-      ImGui::Text("No team");
+      ImGui::Text("Players");
       ImGui::Spacing();
 
       for (auto& player : m_players) {
-        if (player.team == -1) {
-          ImGui::BulletText("%s", player.name.c_str());
+        if (player.team == -1)
+        {
+          ImGui::BulletText("%s [connecting]", player.name.c_str()); 
+        }
+        else
+        {
+          ImGui::BulletText("%s [%s]", player.name.c_str(), player.ready ? "ready" : "not ready"); 
         }
       }
 
-      ImGui::EndGroup();
-
-      ImGui::NextColumn();
-
-      ImGui::BeginGroup();
-
-      auto ShowTeam = [&](const char *name, gf::Color4f color, int32_t team) {
-        if (ImGui::Selectable(name, m_currentTeam == team)) {
-          ClientChangeTeam data;
-          data.team = team;
-          m_network.send(data);
-        }
-
-        auto lighter = gf::Color::lighter(color);
-
-        int32_t index = 0;
-
-        for (auto& player : m_players) {
-          if (player.team == team) {
-            ImGui::Bullet();
-            ImGui::TextColored(ImVec4(lighter.r, lighter.g, lighter.b, lighter.a), "%s [%s]", player.name.c_str(), player.ready ? "ready" : "not ready");
-            ++index;
-          }
-        }
-
-        while (index < m_settings.playersByTeam) {
-          ImGui::BulletText("-");
-          ++index;
-        }
-      };
-
-      for (int32_t i = 0; i < m_settings.teams; ++i) {
-        ShowTeam(g_teamInfo[i].name, g_teamInfo[i].color, i);
+      for (int i = m_players.size(); i < m_settings.playersByTeam; ++i) {
+        ImGui::BulletText("-");
       }
 
       ImGui::EndGroup();

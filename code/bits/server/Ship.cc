@@ -7,44 +7,82 @@
 #include "Ship.h"
 
 namespace ggj {
+
+  namespace {
+    ShipPlace createPlace(PlaceState state){
+      ShipPlace place;
+      place.state = state; 
+
+      return place;
+    }
+
+    std::map<PlaceType,ShipPlace> createShip(int32_t players){
+      std::map<PlaceType,ShipPlace> ship = {
+        { PlaceType::Infirmery,           createPlace(PlaceState::Working) }, 
+        { PlaceType::CommunicationCenter, createPlace(PlaceState::Working) },
+        { PlaceType::Navigation,          createPlace(PlaceState::Working) },
+        { PlaceType::Prison,              createPlace(PlaceState::Working) },
+        { PlaceType::Refectory,           createPlace(PlaceState::Working) },
+        { PlaceType::RightEngine,         createPlace(PlaceState::Working) },
+        { PlaceType::LeftEngine,          createPlace(PlaceState::Working) },
+        { PlaceType::Storage,             createPlace(PlaceState::Working) },
+        { PlaceType::MainBridge,          createPlace(PlaceState::Working) },
+      };
+
+      if (players > 4){
+        ship.insert({ PlaceType::LifeSupport,   createPlace(PlaceState::Working)});
+        ship.insert({ PlaceType::MidEngine,     createPlace(PlaceState::Working)});
+      }
+
+      if (players > 5){
+        ship.insert({ PlaceType::Bathroom,      createPlace(PlaceState::Working)});
+        ship.insert({ PlaceType::Dormitory,     createPlace(PlaceState::Working)});
+      }
+
+      if (players > 6){
+        ship.insert({ PlaceType::Armory,        createPlace(PlaceState::Working)});
+        ship.insert({ PlaceType::GreenHouse,    createPlace(PlaceState::Working)});
+      }
+
+      return ship;
+    }
+
+  }
+
+  Ship::Ship(int32_t players)
+  : places(createShip(players))
+  {
+  }
+
+  void Ship::changeState(PlaceType type ,PlaceState state){
+    auto it = places.find(type);
+    assert(it != places.end());
+    it->second.state = state;
+  }
+
+  void Ship::addCrew(PlaceType type, gf::Id id){
+    auto it = places.find(type);
+    assert(it != places.end());
+    it->second.members.insert(id);
+  }
+
+  void Ship::clear() {
+    for (auto& kv : places) {
+      kv.second.members.clear();
+    }
+  }
+
+  std::map<PlaceType, bool> Ship::getState(){
+    std::map<PlaceType, bool> state;
+
+    for (auto& kv : places) {
+      if(kv.second.state == PlaceState::FalseAlarm || kv.second.state == PlaceState::Saboted) {
+        state.insert({ kv.first, false });
+      }else{
+        state.insert({ kv.first, true });
+      }
+    }
     
-    std::map<PlaceType,PlaceState> BaseShip = {
-      { PlaceType::Infirmery,           PlaceState::Working       }, 
-      { PlaceType::CommunicationCenter, PlaceState::Working       },
-      { PlaceType::MainBridge,          PlaceState::Working       },
-      { PlaceType::Navigation,          PlaceState::Working       },
-      { PlaceType::Prison,              PlaceState::Working       },
-      { PlaceType::Refectory,           PlaceState::Working       },
-      { PlaceType::RightEngine,         PlaceState::Working       },
-      { PlaceType::LeftEngine,          PlaceState::Working       },
-      { PlaceType::Storage,             PlaceState::Working       },
-    };
-
-    std::map<PlaceType,PlaceState> createShip(int32_t players){
-
-      if(players > 4){
-        BaseShip.insert({ PlaceType::LifeSupport,   PlaceState::Working});
-        BaseShip.insert({ PlaceType::MidEngine,     PlaceState::Working});
-      }
-      if(players > 5){
-        BaseShip.insert({ PlaceType::Bathroom,      PlaceState::Working});
-        BaseShip.insert({ PlaceType::Dormitory,     PlaceState::Working});
-      }
-      if(players > 6){
-        BaseShip.insert({ PlaceType::Armory,        PlaceState::Working});
-        BaseShip.insert({ PlaceType::GreenHouse,    PlaceState::Working});
-      }
-      return BaseShip;
-    }
-
-    Ship::Ship(int32_t players)
-    : ShipRooms(createShip(players))
-    {
-    }
-
-    void Ship::changeState(PlaceType type ,PlaceState state){
-      auto it = ShipRooms.find(type);
-      assert(it != ShipRooms.end());
-      it->second = state;
-    }
+    return state;
+  }
 }

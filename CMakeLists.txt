@@ -17,8 +17,17 @@ pkg_check_modules(SFML2 REQUIRED sfml-audio>=2.1)
 set(TMPGAME_DATA_DIR "${CMAKE_INSTALL_PREFIX}/share/games/tmpgame" CACHE PATH "data path")
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/code/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h @ONLY)
 
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+
+option(ENABLE_ASAN OFF)
+
+if (ENABLE_ASAN)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address ")
+endif (ENABLE_ASAN)
+
 if(NOT MSVC)
-  add_definitions(-Wall -Wextra -g -O2 -std=c++14 -pedantic)
+  add_definitions(-Wall -Wextra -g -pedantic)
 endif()
 
 # client

@@ -198,8 +198,6 @@ namespace ggj {
       if (m_selectedRoom != -1) {
         ImGui::Indent();
         ImGui::Text("Name: %s", m_selectedRoomData.name.c_str());
-        ImGui::Text("Teams: %" PRIi32, m_selectedRoomData.settings.teams);
-        ImGui::Text("Players/team: %" PRIi32, m_selectedRoomData.settings.playersByTeam);
         ImGui::Text("Players: %" PRIi32 "/%" PRIi32, m_selectedRoomData.players, m_selectedRoomData.settings.teams * m_selectedRoomData.settings.playersByTeam);
       }
 
@@ -213,22 +211,7 @@ namespace ggj {
       ImGui::Text("Name:");
       ImGui::SameLine();
       ImGui::InputText("###room_name", m_roomBuffer.getData(), m_roomBuffer.getSize());
-
-      if (m_settings.teamsMin == m_settings.teamsMax) {
-        ImGui::Text("Teams:");
-        ImGui::SameLine();
-        ImGui::Text("%" PRIi32, m_instance.teams);
-      } else {
-        ImGui::SliderScalar("teams", ImGuiDataType_S32, &m_instance.teams, &m_settings.teamsMin, &m_settings.teamsMax);
-      }
-
-      if (m_settings.playersByTeamMin == m_settings.playersByTeamMax) {
-        ImGui::Text("Players/team:");
-        ImGui::SameLine();
-        ImGui::Text("%" PRIi32, m_instance.playersByTeam);
-      } else {
-        ImGui::SliderScalar("#/team", ImGuiDataType_S32, &m_instance.playersByTeam, &m_settings.playersByTeamMin, &m_settings.playersByTeamMax);
-      }
+      ImGui::SliderScalar(" players", ImGuiDataType_S32, &m_instance.playersByTeam, &m_settings.playersByTeamMin, &m_settings.playersByTeamMax);
 
       ImGui::Spacing();
       ImGui::Indent();

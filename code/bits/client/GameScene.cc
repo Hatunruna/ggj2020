@@ -46,8 +46,11 @@ namespace ggj {
     }
   }
 
+  bool GameScene::doEarlyProcessEvent(gf::Event &event) {
+    return ImGui_ImplGF_ProcessEvent(event);
+  }
+
   void GameScene::doProcessEvent(gf::Event &event) {
-    ImGui_ImplGF_ProcessEvent(event);
     m_adaptator.processEvent(event);
   }
 
@@ -67,7 +70,7 @@ namespace ggj {
           m_info.initializeHand(data.cards);
           break;
         }
-        
+
         case ServerChatMessage::type: {
           gf::Log::debug("[game] receive ServerChatMessage\n");
           auto data = bytes.as<ServerChatMessage>();
@@ -104,7 +107,7 @@ namespace ggj {
       m_chat.display(10);
     }
     ImGui::End();
-    
+
 
     // Default display
     renderWorldEntities(target, states);
