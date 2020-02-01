@@ -195,11 +195,21 @@ namespace ggj {
           if (data.member == m_scenes.myPlayerId) {
             m_showStartMoveAndPlayButton = true;
           }
+          break;
         }
 
         case PemServerStartMoveAndPlay::type: {
+          gf::Log::debug("[game] receive PemServerStartMoveAndPlay\n");
+          MessageData message;
+          message.origin = gf::InvalidId;
+          message.author = "server";
+          message.content = "It's your turn to play";
+
+          m_chat.appendMessage(std::move(message));
+
           m_selectRoom = true;
           m_selectCard = false;
+          break;
         }
       }
     }
