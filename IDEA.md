@@ -2,14 +2,14 @@
  ## A Quest for Pandalium
  Gameplay :
  - Asymmetric :
-    - Destruction
-    - Repair
+    - Protector
+    - Rebel
  - Roles : Hidden / The Werewolves of Millers Hollow 
     https://en.wikipedia.org/wiki/The_Werewolves_of_Millers_Hollow
  
  - Cards :
   
-  |     Repair        |      Destroy         |
+  |     Protector     |      Rebel           |
   |:-----------------:|:--------------------:|
   | Repair            | Bomb +0              |
   | Hide              | Bomb +1              |

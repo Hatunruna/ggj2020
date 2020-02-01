@@ -5,6 +5,8 @@
 #include <gf/Scene.h>
 #include <gf/Widgets.h>
 
+#include <SFML/Audio.hpp>
+
 #include "ClientNetwork.h"
 #include "ShipEntity.h"
 #include "PlayerInfo.h"
@@ -50,6 +52,10 @@ namespace ggj {
 
     bool m_showStartMoveAndPlayButton;
     gf::TextButtonWidget m_startMoveAndPlayButton;
+    
+    sf::Sound m_fx;
+    sf::Sound m_ambiantBackground;
+    sf::Sound m_cardShuffle;
   };
 
 }

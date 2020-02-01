@@ -10,8 +10,6 @@
 
 #include "config.h"
 
-static constexpr float MaxVolume = 100.0f;
-
 int main() {
   ggj::ClientNetwork network;
 
@@ -22,8 +20,8 @@ int main() {
   // Background music
   ggj::gBackgroundMusic.setBuffer(ggj::gResourceManager().getSound("audio/main_theme.ogg"));
   ggj::gBackgroundMusic.setLoop(true);
-  ggj::gBackgroundMusic.setVolume(0.0f);
-  //ggj::gBackgroundMusic.play();
+  ggj::gBackgroundMusic.setVolume(ggj::BackgroundAmbiantVolume);
+  ggj::gBackgroundMusic.play();
 
   ggj::Scenes scenes(network, TMPGAME_DATA_DIR);
   scenes.pushScene(scenes.intro);
