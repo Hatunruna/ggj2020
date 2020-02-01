@@ -50,6 +50,13 @@ namespace ggj {
     SetupJammer,
   };
 
+  enum class PlaceState : uint8_t{
+    Blocked, // true
+    FalseAlarm, // false
+    Jammed, // true
+    Saboted, // false
+    Working, // true
+  };
 
 }
 
