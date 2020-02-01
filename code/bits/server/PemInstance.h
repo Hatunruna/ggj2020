@@ -36,7 +36,7 @@ namespace ggj {
     Deck m_deck;
     std::map<gf::Id, Member> m_members;
     std::map<gf::Id, int32_t> m_votes;
-    std::map<PlaceType, std::map<CardType,int>> m_action;
+    std::map<PlaceType, std::map<CardType,int>> m_action ;
     Ship m_ship;
   };
 
