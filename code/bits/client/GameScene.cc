@@ -43,6 +43,12 @@ namespace ggj {
 
     addHudEntity(m_info);
     getWorldView().setViewport(gf::RectF::fromPositionSize({0.0f, 0.0f}, {1.0f, 2.f / 3.f}));
+
+    m_ambiantBackground.setBuffer(gResourceManager().getSound("audio/ambiant.ogg"));
+    m_ambiantBackground.setVolume(BackgroundAmbiantVolume);
+    m_ambiantBackground.setLoop(true);
+    m_cardShuffle.setBuffer(gResourceManager().getSound("audio/shuffle_card.ogg"));
+    m_cardShuffle.setVolume(FxsVolume);
   }
 
   void GameScene::initialize(const std::vector<PlayerData> &players) {
@@ -50,11 +56,15 @@ namespace ggj {
     m_electedPlayers = gf::InvalidId;
     m_gamePhase = GamePhase::CapitainElection;
     m_alreadyVote = false;
+    m_ambiantBackground.play();
+    m_cardShuffle.play();
   }
 
   void GameScene::doHandleActions(gf::Window& window) {
     if (m_escapeAction.isActive()) {
       m_scenes.setClearColor(gf::Color::White);
+      m_ambiantBackground.stop();
+      gBackgroundMusic.play();
       m_scenes.replaceScene(m_scenes.intro);
     }
   }
@@ -75,12 +85,20 @@ namespace ggj {
       switch (clickedCardType)
       {
       case CardType::Repair:
+      case CardType::FalseRepair1:
+      case CardType::FalseRepair2:
       {
         m_fx.setBuffer(gResourceManager().getSound("audio/repair.ogg"));
-        m_fx.setVolume(100.0f);
+        m_fx.setVolume(FxsVolume);
         m_fx.play();
       }
         break;
+      case CardType::SetupJammer:
+      {
+        m_fx.setBuffer(gResourceManager().getSound("audio/jammer.ogg"));
+        m_fx.setVolume(FxsVolume);
+        m_fx.play();
+      }
       default:
         break;
       }
@@ -92,7 +110,7 @@ namespace ggj {
 			// TODO handle clickedPlaceType
 			gf::Log::debug("Clicked place: %s\n", placeTypeString(clickedPlaceType).c_str());
       m_fx.setBuffer(gResourceManager().getSound("audio/foot_steps.ogg"));
-      m_fx.setVolume(100.0f);
+      m_fx.setVolume(FxsVolume);
       m_fx.play();
 		}
 	}
