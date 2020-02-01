@@ -93,13 +93,13 @@ namespace ggj {
     return ar | data.member;
   }
 
-  struct PemClientVoteForPrison {
-    static constexpr gf::Id type = "PemClientVoteForPrison"_id;
+  struct PemServerChoosePrisoner {
+    static constexpr gf::Id type = "PemServerChoosePrisoner"_id;
     gf::Id member;
   };
 
   template<typename Archive>
-  Archive operator|(Archive& ar, PemClientVoteForCaptain& data) {
+  Archive operator|(Archive& ar, PemServerChoosePrisoner& data) {
     return ar | data.member;
   }
 

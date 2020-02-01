@@ -20,7 +20,7 @@ namespace ggj {
     void update(ServerPlayer& player, ProtocolBytes& bytes) override;
 
   private:
-    void checkEndOfVote();
+    void checkEndOfVote(VoteType type);
 
   private:
     gf::Random m_random;
