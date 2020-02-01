@@ -37,11 +37,12 @@ namespace ggj {
     gf::Id origin;
     std::string author;
     std::string content;
+    gf::Id recipient = gf::InvalidId;
   };
 
   template<typename Archive>
   Archive operator|(Archive& ar, MessageData& data) {
-    return ar | data.origin | data.author | data.content;
+    return ar | data.origin | data.author | data.content | data.recipient;
   }
 
 }

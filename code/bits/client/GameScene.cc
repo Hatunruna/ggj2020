@@ -66,7 +66,7 @@ namespace ggj {
         }
         
         case ServerChatMessage::type: {
-          gf::Log::debug("Test\n");
+          gf::Log::debug("[game] receive ServerChatMessage\n");
           auto data = bytes.as<ServerChatMessage>();
           m_chat.appendMessage(std::move(data.message));
           break;
