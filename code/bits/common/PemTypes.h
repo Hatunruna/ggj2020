@@ -120,22 +120,28 @@ namespace ggj {
     SetupJammer,
   };
 
-  enum class PlaceState : uint8_t{
-    Blocked, // true
+  enum class PlaceState : uint8_t {
+    Blocked,    // true
     FalseAlarm, // false
-    Jammed, // true
-    Saboted, // false
-    Working, // true
+    Jammed,     // true
+    Saboted,    // false
+    Working,    // true
+  };
 
   enum class ResolutionType : uint16_t {
-    CrewInPrison,
+    Examine,
+    Hide,
+    Block,
+    Release,
   };
 
   struct Resolution {
     ResolutionType type;
 
     union {
-      gf::Id member;
+      bool bomb; // Examine
+      gf::Id member; // Hide
+      PlaceType place; // Block
     };
   };
 
