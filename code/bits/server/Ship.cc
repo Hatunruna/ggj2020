@@ -81,8 +81,10 @@ namespace ggj {
       }else{
         state.insert({ kv.first, true });
       }
+
+      // TODO : Jammed
     }
-    
+
     return state;
   }
 }

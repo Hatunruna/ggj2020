@@ -95,6 +95,21 @@ namespace ggj {
         checkEndOfVote();
         break;
       }
+      
+      case PemClientVoteForPrison::type: {
+        auto in = bytes.as<PemClientVoteForPrison>();
+
+        auto it = m_members.find(player.id);
+        assert(it != m_members.end());
+
+        if (!it->second.voted && it->second.prison == 0) {
+          m_votes[in.member]++;
+          it->second.voted = true;
+        }
+
+        checkEndOfVote();
+        break;
+      }
     }
   }
 
