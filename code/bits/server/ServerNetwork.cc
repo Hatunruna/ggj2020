@@ -112,6 +112,7 @@ namespace ggj {
   }
 
   void ServerNetwork::signalHandler(int sig) {
+    assert(sig == SIGINT);
     g_running = false;
   }
 

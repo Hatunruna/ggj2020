@@ -18,7 +18,7 @@ namespace ggj {
   {
   }
 
-  void GameChat::display(int lines, gf::Coordinates& coordinates) {
+  void GameChat::display(gf::Coordinates& coordinates) {
 
     // Chat window
     gf::Vector2f chatWindowSize = coordinates.getRelativeSize({ 0.35f, 0.46f });
@@ -120,7 +120,7 @@ namespace ggj {
         // List players
         for (auto &player: m_players) {
           ImGui::TextColored(toColor(player.second.id), player.second.name.c_str());
-          
+
           if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
             m_selectedUserName = "@" + player.second.name;
             m_selectedUserId = player.second.id;
