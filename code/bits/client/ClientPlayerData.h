@@ -10,6 +10,7 @@ namespace ggj
       gf::Id id;
       std::string name;
       bool captain = false;
+      bool jail = false;
     };
 }
 

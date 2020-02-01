@@ -97,6 +97,17 @@ namespace ggj {
       gf::Vector2f coords = gf::Vector2f(event.mouseButton.coords);
       CardType clickedCardType;
       if (m_gamePhase == GamePhase::Action && m_placeTypeSelected != PlaceType::None && m_info.getCardType(coords, m_scenes.getRenderer().getSize(), clickedCardType)) {
+        //Can select only release type card when in jail
+        if (m_players[m_scenes.myPlayerId].jail && clickedCardType != CardType::Release) {
+          MessageData message;
+          message.origin = gf::InvalidId;
+          message.author = "server";
+          message.content = "You can only select Release type card when you are in jail!";
+
+          m_chat.appendMessage(std::move(message));
+          return;
+        }
+
         // TODO handle clickedCardType
         gf::Log::debug("Clicked card: %s\n", cardTypeString(clickedCardType).c_str());
         PemClientMoveAndPlay moveAndPlay;
@@ -131,7 +142,7 @@ namespace ggj {
 
       gf::Vector2f worldCoords = m_scenes.getRenderer().mapPixelToCoords(event.mouseButton.coords, getWorldView());
       PlaceType clickedPlaceType;
-      if (m_gamePhase == GamePhase::Action && m_ship.getPlaceType(worldCoords, clickedPlaceType)) {
+      if (m_gamePhase == GamePhase::Action && !(m_players[m_scenes.myPlayerId].jail) && m_ship.getPlaceType(worldCoords, clickedPlaceType)) {
         // TODO handle clickedPlaceType
         gf::Log::debug("Clicked place: %s\n", placeTypeString(clickedPlaceType).c_str());
         m_placeTypeSelected = clickedPlaceType;
@@ -205,13 +216,71 @@ namespace ggj {
           m_chat.appendMessage(std::move(message));
 
           m_gamePhase = GamePhase::Action;
+
+          if (m_players[m_scenes.myPlayerId].jail) {
+            m_placeTypeSelected = PlaceType::Prison;
+          }
           break;
         }
 
         case PemServerChoosePrisoner::type: {
           gf::Log::debug("[game] receive PemServerChoosePrisoner\n");
+          auto data = bytes.as<PemServerChoosePrisoner>();
           m_alreadyVote = false;
+          m_players[data.member].jail = true;
           m_gamePhase = GamePhase::Meeting;
+          break;
+        }
+
+        case PemServerUpdateShip::type: {
+          //TODO: do the implementation
+          break;
+        }
+
+        case PemServerResolution::type: {
+          auto data = bytes.as<PemServerResolution>();
+          //TODO: do this when server guys done it correctly
+          /*for(auto &resolution: data.conclusion)
+          {
+            MessageData message;
+            message.origin = gf::InvalidId;
+            message.author = "server";
+
+            switch (resolution.type)
+            {
+              case ResolutionType::Examine:
+              {
+                if (resolution.bomb) {
+                  message.content = "There is a bomb.";
+                } else {
+                  message.content = "There is no bomb.";
+                }
+                break;
+              }
+              case ResolutionType::Hide:
+              {
+                message.content = "I saw " + m_players[resolution.member].name + " hiding.";
+                break;
+              }
+              case ResolutionType::Track:
+              {
+                message.content = "It's your turn to play";
+                break;
+              }
+              case ResolutionType::Block:
+              {
+                message.content = "It's your turn to play";
+                break;
+              }
+              case ResolutionType::Release:
+              {
+                message.content = "It's your turn to play";
+                break;
+              }
+            }
+
+            m_chat.appendMessage(std::move(message));
+          }*/
         }
       }
     }
