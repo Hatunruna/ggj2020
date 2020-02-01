@@ -88,7 +88,8 @@ namespace ggj {
 
         if (ImGui::IsItemActive() && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Backspace)) && oldSize == 0)
         {
-            gf::Log::debug("Backspace Hello!!!\n");
+            m_selectedUserId = gf::InvalidId;
+            m_selectedUserName = "";
         }
     }
 
