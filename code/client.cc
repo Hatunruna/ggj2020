@@ -20,7 +20,7 @@ int main() {
   ggj::gResourceManager().addSearchDir(TMPGAME_DATA_DIR);
 
   // Background music
-  ggj::gBackgroundMusic.setBuffer(ggj::gResourceManager().getSound("audio/main_theme.wav"));
+  ggj::gBackgroundMusic.setBuffer(ggj::gResourceManager().getSound("audio/main_theme.ogg"));
   ggj::gBackgroundMusic.setLoop(true);
   ggj::gBackgroundMusic.setVolume(0.0f);
   //ggj::gBackgroundMusic.play();
