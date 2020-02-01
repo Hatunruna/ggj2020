@@ -133,7 +133,7 @@ namespace ggj {
       ImGui::SetNextWindowSize(ImVec2(electionWindowSize.width, electionWindowSize.height));
       ImGui::SetNextWindowPos(ImVec2(electionWindowPos.x, electionWindowPos.y), 0, ImVec2(0.5f, 0.5f));
 
-      if (ImGui::Begin("Elect your Capitain", nullptr, DefaultWindowFlags)) {
+      if (ImGui::Begin("Vote for your Capitain", nullptr, DefaultWindowFlags)) {
         // List players
         for (unsigned i = 0; i < m_players.size(); ++i) {
           auto &player = m_players[i];
@@ -145,7 +145,7 @@ namespace ggj {
         if (ImGui::Selectable("None Of The Above", m_electedPlayers == gf::InvalidId)) {
           m_electedPlayers = gf::InvalidId;
         }
-        if (ImGui::Button("Connect", DefaultButtonSize)) {
+        if (ImGui::Button("Vote", DefaultButtonSize)) {
           gf::Log::debug("(GAME) Vote for: %" PRIX64 "\n", m_electedPlayers);
 
           PemClientVoteForCaptain vote;

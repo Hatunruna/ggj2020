@@ -46,7 +46,7 @@ namespace ggj {
       member.cards = data.cards;
       m_members.emplace(player.id, std::move(member));
 
-      gf::Log::debug("(PemInstance) Init Role to @%" PRIX64 "\n\n", player.id);
+      gf::Log::debug("(PemInstance) Init Role to @%" PRIX64 "\n", player.id);
       send(player.id, data);
     }
 
@@ -82,6 +82,8 @@ namespace ggj {
       }
 
       case PemClientVoteForCaptain::type: {
+        gf::Log::info("(PemInstance) {%" PRIX64 "} Vote for captain.\n", player.id);
+
         auto in = bytes.as<PemClientVoteForCaptain>();
 
         auto it = m_members.find(player.id);
@@ -171,6 +173,8 @@ namespace ggj {
     for (auto& kv : m_members) {
       kv.second.voted = false;
     }
+
+    gf::Log::info("(PemInstance) Captain is %" PRIX64 ".\n", captain);
 
     PemServerChooseCaptain data;
     data.member = captain;
