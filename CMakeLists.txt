@@ -32,6 +32,8 @@ add_executable(tmpgame
   code/bits/client/IntroScene.cc
   code/bits/client/LobbyScene.cc
   code/bits/client/MenuEntity.cc
+  code/bits/client/ResourceManager.cc
+  code/bits/client/PlayerInfo.cc
   code/bits/client/RoomScene.cc
   code/bits/client/Scenes.cc
   code/bits/client/ShipEntity.cc

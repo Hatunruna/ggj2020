@@ -1,5 +1,9 @@
 #include "PemInstance.h"
 
+#include <cinttypes>
+
+#include <gf/Log.h>
+
 #include "common/PemProtocol.h"
 #include "Crew.h"
 
@@ -36,6 +40,7 @@ namespace ggj {
           break;
       }
 
+      gf::Log::debug("[game] PemServerInitRole to @%" PRIX64 "\n\n", player.id);
       send(player.id, data);
     }
 
