@@ -3,12 +3,14 @@
 
 #include <gf/ResourceManager.h>
 #include <gf/Scene.h>
+#include <gf/Widgets.h>
 
 #include "ClientNetwork.h"
 #include "ShipEntity.h"
 #include "PlayerInfo.h"
 #include "ViewAdaptator.h"
 #include "GameChat.h"
+#include "ClientPlayerData.h"
 
 namespace ggj {
 
@@ -41,10 +43,13 @@ namespace ggj {
 
     GameChat m_chat;
 
-    std::vector<PlayerData> m_players;
+    std::map<gf::Id, ClientPlayerData> m_players;
     GamePhase m_gamePhase;
     gf::Id m_electedPlayers;
     bool m_alreadyVote;
+
+    bool m_showStartMoveAndPlayButton;
+    gf::TextButtonWidget m_startMoveAndPlayButton;
   };
 
 }

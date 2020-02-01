@@ -55,6 +55,7 @@ namespace ggj {
         // send an acknowledgement to the player
         ServerHello hello;
         hello.settings = m_settings;
+        hello.playerId = player.id;
         player.send(hello);
         // send list of rooms
         ServerListRooms list;

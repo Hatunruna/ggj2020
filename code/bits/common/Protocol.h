@@ -22,11 +22,12 @@ namespace ggj {
   struct ServerHello {
     static constexpr gf::Id type = "ServerHello"_id;
     GameSettings settings;
+    gf::Id playerId;
   };
 
   template<typename Archive>
   Archive operator|(Archive& ar, ServerHello& data) {
-    return ar | data.settings;
+    return ar | data.settings | data.playerId;
   }
 
   struct ServerDisconnect {

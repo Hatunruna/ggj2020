@@ -46,6 +46,7 @@ namespace ggj {
           m_settings = data.settings;
           m_instance.teams = m_settings.teamsMin;
           m_instance.playersByTeam = m_settings.playersByTeamMin;
+          m_scenes.myPlayerId = data.playerId;
           break;
         }
 
