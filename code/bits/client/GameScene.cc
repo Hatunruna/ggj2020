@@ -35,6 +35,7 @@ namespace ggj {
     addWorldEntity(m_ship);
 
     addHudEntity(m_info);
+    getWorldView().setViewport(gf::RectF::fromPositionSize({0.0f, 0.0f}, {1.0f, 2.f / 3.f}));
   }
 
   void GameScene::doHandleActions(gf::Window& window) {
