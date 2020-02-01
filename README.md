@@ -13,6 +13,9 @@ git checkout develop
 ```
 
 - SFML-Audio
+```
+apt install dev
+```
 
 #### Download & Build
 ```

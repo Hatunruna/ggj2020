@@ -4,7 +4,8 @@
  - Asymmetric :
     - Destruction
     - Repair
- - Roles : Hidden (loup garou)
+ - Roles : Hidden / The Werewolves of Millers Hollow 
+    https://en.wikipedia.org/wiki/The_Werewolves_of_Millers_Hollow
  
  - Cards :
   
@@ -41,7 +42,7 @@
     - You lose if you spend more than 20 turns in the spaceship
     
   - 15 rooms + Meeting Room :
-    - Deck
+    - Bridge
     - Left Engine + Right Engine + Mid engine
     - Storage
     - Infirmary
@@ -60,10 +61,10 @@
     - Move
     - Play your Card
     
-    - Résolution des actions
-    - Retour des joueurs
+    - Action
+    - Players returns into the meeting room
     
-    - Réunion
-    - Décision (éventuel) de prison
-            0, 1, 2, 3 tours
+    - Meeting
+    - (possible) Prison vote
+            0, 1, 2, 3 turns
     
