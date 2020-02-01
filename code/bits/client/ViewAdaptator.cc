@@ -38,7 +38,6 @@ namespace ggj {
           gf::Vector2f newPosition = m_target.mapPixelToCoords(event.mouseCursor.coords, m_view);
 
           gf::Vector2f move = oldPosition - newPosition;
-          move.y = 0.0f;
 
           auto center = m_view.getCenter();
 
@@ -47,6 +46,13 @@ namespace ggj {
           }
           if (center.x + move.x > WorldSize.x) {
             move.x = WorldSize.x - center.x;
+          }
+
+          if (center.y + move.y < 0.f) {
+            move.y = -center.y;
+          }
+          if (center.y + move.y > WorldSize.y) {
+            move.y = WorldSize.y - center.y;
           }
 
           m_view.move(move);
