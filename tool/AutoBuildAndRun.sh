@@ -14,12 +14,14 @@ ctrl_c() {
   #kill -9 $client6
   #kill -9 $client7
   #kill -9 $client8
+  fuser 2020/tcp
   exit 0
 }
 
 while true
 do
-  echo "Building ..."
+  fuser 2020/tcp
+  echo "Compiling ..."
   make
   echo "Running Server..."
   ./tmpgame-server &
