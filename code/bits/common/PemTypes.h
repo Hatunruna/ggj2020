@@ -105,11 +105,11 @@ namespace ggj {
 
   enum class CardType : uint16_t {
     // protector
-    Demine, // first to be used if the room is not working 
+    Demine, // first to be used if the room is not working
     Examine, // define if we can know the cooldown reamining on the bomb if there is one
     Hide, // must be used first
     Reinforce1, // must be used first if the room is working
-    Reinforce2, // must be used first if the room is working 
+    Reinforce2, // must be used first if the room is working
     Repair, // must be used first if the room is not working
     Track, // no priority ?
     // common
@@ -117,15 +117,15 @@ namespace ggj {
     Release, // no priority
     // rebel
     FalseAlarm, // false alarm of a bomb no matter what
-    FalseRepair1, // first to be used if the room is not working 
+    FalseRepair1, // first to be used if the room is not working
     FalseRepair2, // first to be used if the room is not working
-    PlaceBomb0, // last if the room is working 
+    PlaceBomb0, // last if the room is working
     PlaceBomb1, // last if the room is working
     PlaceBomb2, // last if the room is working
     SetupJammer, // next turn ?
   };
 
-  // WORKING : 
+  // WORKING :
       // NOT USEABLE : Demine, Repair, FalseRepair1/2
   // NOT WORKING
       // NOT USEABLE : PlaceBomb1/2/3, Reinforce1/2/3, Examine
@@ -137,14 +137,6 @@ namespace ggj {
   // SABOTED : HIDE -> REPAIR -> FALSE REPAIR2 -> FALSE REPAIR1 ->             -> BLOCK/SETUP JAMMER/TRACK/FALSE ALARM
   // WORKING : HIDE -> EXAMINE -> REINFORCE2 -> REINFORCE1 -> BOMB0 -> BOMB1 -> BOMB2 ->       -> BLOCK/SETUP JAMMER/TRACK/FALSE ALARM
 
-  enum class PlaceState : uint8_t {
-    Blocked,    // true
-    FalseAlarm, // false
-    Jammed,     // true
-    Saboted,    // false
-    Working,    // true
-  };
-
   enum class ResolutionType : uint16_t {
     Examine,
     Hide,
@@ -153,20 +145,17 @@ namespace ggj {
     Release,
   };
 
-  enum class VoteType : uint8_t {
-    Captain,
-    Prison,
-  };
-
   struct Resolution {
     ResolutionType type;
 
-    union {
-      bool bomb; // Examine
-      gf::Id member; // Hide, Track
-      PlaceType place; // Block
-    };
+    bool bomb; // Examine
+    std::vector<gf::Id> members; // Hide, Track
   };
+
+  template<typename Archive>
+  Archive operator|(Archive& ar, Resolution& data) {
+    return ar | data.type | data.bomb | data.members;
+  }
 
   inline std::string cardTypeString(CardType type) {
     switch (type) {
@@ -228,6 +217,11 @@ namespace ggj {
     Action,
     Resolution,
     Meeting,
+  };
+
+  enum class VoteType : uint8_t {
+    Captain,
+    Prison,
   };
 
 }

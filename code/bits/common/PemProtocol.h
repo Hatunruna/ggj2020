@@ -48,7 +48,7 @@ namespace ggj {
   Archive operator|(Archive& ar, PemServerChooseCaptain& data) {
     return ar | data.member;
   }
-  
+
   struct PemServerChoosePrisoner {
     static constexpr gf::Id type = "PemServerChoosePrisoner"_id;
     gf::Id member;
@@ -67,7 +67,7 @@ namespace ggj {
   template<typename Archive>
   Archive operator|(Archive& ar, PemServerStartMoveAndPlay&) {
     return ar;
-  } 
+  }
 
   struct PemServerCardRemoved {
     static constexpr gf::Id type = "PemServerCardRemoved"_id;
@@ -90,12 +90,12 @@ namespace ggj {
 
   struct PemServerResolution {
     static constexpr gf::Id type = "PemServerResolution"_id;
-
+    std::vector<Resolution> conclusion;
   };
 
   template<typename Archive>
   Archive operator|(Archive& ar, PemServerResolution& data) {
-    return ar;
+    return ar | data.conclusion;
   }
 
 
