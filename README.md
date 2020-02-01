@@ -2,7 +2,7 @@
  ## A Quest for Pandalium
 Game for GGJ2020
 
-###To install :
+### To install :
 
 #### Required libraries
 
@@ -26,7 +26,7 @@ make
 make install (May need elevated privileges)
 ```
 
-###To Run :
+### To Run :
 
 One server must be initialize
 ```
