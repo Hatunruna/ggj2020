@@ -72,6 +72,18 @@ namespace ggj {
 		if (m_info.getCardType(relativeCoords, clickedCardType)) {
 			// TODO handle clickedCardType
 			gf::Log::debug("Clicked card: %s\n", cardTypeString(clickedCardType).c_str());
+      switch (clickedCardType)
+      {
+      case CardType::Repair:
+      {
+        m_fx.setBuffer(gResourceManager().getSound("audio/repair.ogg"));
+        m_fx.setVolume(100.0f);
+        m_fx.play();
+      }
+        break;
+      default:
+        break;
+      }
 		}
 
 		gf::Vector2f worldCoords = m_scenes.getRenderer().mapPixelToCoords(event.mouseButton.coords, getWorldView());
@@ -79,6 +91,9 @@ namespace ggj {
 		if (m_ship.getPlaceType(worldCoords, clickedPlaceType)) {
 			// TODO handle clickedPlaceType
 			gf::Log::debug("Clicked place: %s\n", placeTypeString(clickedPlaceType).c_str());
+      m_fx.setBuffer(gResourceManager().getSound("audio/foot_steps.ogg"));
+      m_fx.setVolume(100.0f);
+      m_fx.play();
 		}
 	}
   }
@@ -88,7 +103,7 @@ namespace ggj {
 
     ProtocolBytes bytes;
 
-    //ggj::gBackgroundMusic.stop();
+    ggj::gBackgroundMusic.stop();
 
     while (m_network.queue.poll(bytes)) {
       switch (bytes.getType()) {

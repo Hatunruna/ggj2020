@@ -23,7 +23,7 @@ int main() {
   ggj::gBackgroundMusic.setBuffer(ggj::gResourceManager().getSound("audio/main_theme.ogg"));
   ggj::gBackgroundMusic.setLoop(true);
   ggj::gBackgroundMusic.setVolume(0.0f);
-  //ggj::gBackgroundMusic.play();
+  ggj::gBackgroundMusic.play();
 
   ggj::Scenes scenes(network, TMPGAME_DATA_DIR);
   scenes.pushScene(scenes.intro);

@@ -4,6 +4,8 @@
 #include <gf/ResourceManager.h>
 #include <gf/Scene.h>
 
+#include <SFML/Audio.hpp>
+
 #include "ClientNetwork.h"
 #include "ShipEntity.h"
 #include "PlayerInfo.h"
@@ -45,6 +47,8 @@ namespace ggj {
     GamePhase m_gamePhase;
     gf::Id m_electedPlayers;
     bool m_alreadyVote;
+
+    sf::Sound m_fx;
   };
 
 }
