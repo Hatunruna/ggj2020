@@ -5,6 +5,8 @@
 #include <cstdint>
 #include <string>
 
+#include <gf/Id.h>
+
 namespace ggj {
 
   enum class CrewType : uint8_t {
@@ -124,6 +126,17 @@ namespace ggj {
     Jammed, // true
     Saboted, // false
     Working, // true
+
+  enum class ResolutionType : uint16_t {
+    CrewInPrison,
+  };
+
+  struct Resolution {
+    ResolutionType type;
+
+    union {
+      gf::Id member;
+    };
   };
 
   inline std::string cardTypeString(CardType type) {
