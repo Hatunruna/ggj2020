@@ -2,9 +2,10 @@
 
 #include <cinttypes>
 
+#include <gf/Coordinates.h>
 #include <gf/Log.h>
 #include <gf/Shapes.h>
-#include <gf/Coordinates.h>
+#include <gf/Unused.h>
 
 #include <imgui.h>
 #include <imgui_impl_gf.h>
@@ -70,6 +71,8 @@ namespace ggj {
   }
 
   void GameScene::doHandleActions(gf::Window& window) {
+    gf::unused(window);
+
     if (m_escapeAction.isActive()) {
       m_scenes.setClearColor(gf::Color::White);
       m_ambiantBackground.stop();
@@ -93,7 +96,7 @@ namespace ggj {
 
       gf::Vector2f coords = gf::Vector2f(event.mouseButton.coords);
       CardType clickedCardType;
-      if (m_gamePhase == GamePhase::Action && m_placeTypeSelected != PlaceType::None && m_info.getCardType(relativeCoords, clickedCardType)) {
+      if (m_gamePhase == GamePhase::Action && m_placeTypeSelected != PlaceType::None && m_info.getCardType(coords, m_scenes.getRenderer().getSize(), clickedCardType)) {
         // TODO handle clickedCardType
         gf::Log::debug("Clicked card: %s\n", cardTypeString(clickedCardType).c_str());
         PemClientMoveAndPlay moveAndPlay;
@@ -286,7 +289,7 @@ namespace ggj {
     }
 
     // Chat window
-    m_chat.display(10, coordinates);
+    m_chat.display(coordinates);
 
     // Default display
     renderWorldEntities(target, states);

@@ -92,6 +92,10 @@ namespace ggj {
 
     case PlaceType::Storage:
       return "Storage";
+
+    case PlaceType::None:
+      assert(false);
+      return "";
     }
 
     assert(false);
