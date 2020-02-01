@@ -12,7 +12,7 @@ namespace ggj {
     PlayerInfo(gf::ResourceManager& resources);
 
     void render(gf::RenderTarget& target, const gf::RenderStates& states) override;
-	  bool getCardType(const gf::Vector2f& pos, CardType& res) const;
+	  bool getCardType(const gf::Vector2f& screenPosition, const gf::Vector2f& screenSize, CardType& res) const;
 
     void initializeHand(const std::array<CardType, MaxCards>& cards);
 
@@ -21,10 +21,11 @@ namespace ggj {
     }
 
   private:
-    gf::RectF getCardBounds(std::size_t i) const;
+    gf::RectF getCardBounds(gf::Vector2f screeSize, std::size_t i) const;
 
   private:
     gf::Font &m_font;
+    gf::Texture &m_emptyCardTexture;
     std::string m_role;
     std::array<CardType, MaxCards> m_cards;
   };
