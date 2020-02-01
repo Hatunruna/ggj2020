@@ -4,8 +4,10 @@
 #include <gf/ResourceManager.h>
 #include <gf/Scene.h>
 
-#include "ViewAdaptator.h"
+#include "ClientNetwork.h"
 #include "ShipEntity.h"
+#include "PlayerInfo.h"
+#include "ViewAdaptator.h"
 
 namespace ggj {
 
@@ -13,22 +15,24 @@ namespace ggj {
 
   class GameScene : public gf::Scene {
   public:
-    GameScene(Scenes& scenes, gf::ResourceManager& resources);
+    GameScene(Scenes& scenes, ClientNetwork& network, gf::ResourceManager& resources);
 
   private:
     void doHandleActions(gf::Window& window) override;
     void doProcessEvent(gf::Event &event) override;
+    void doUpdate(gf::Time time) override;
     // void doRender(gf::RenderTarget &target, const gf::RenderStates &states);
 
   private:
     Scenes& m_scenes;
+    ClientNetwork& m_network;
 
     gf::Action m_escapeAction;
 
     ViewAdaptator m_adaptator;
 
     ShipEntity m_ship;
-
+    PlayerInfo m_info;
   };
 
 }

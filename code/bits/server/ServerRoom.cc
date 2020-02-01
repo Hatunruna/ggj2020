@@ -140,13 +140,12 @@ namespace ggj {
     if (getPlayersCount() < settings.teams * settings.playersByTeam || !areAllPlayersReady()) {
       return;
     }
+    ServerStartGame data;
+    broadcast(data);
 
     m_instance = m_factory.get().createInstance(settings);
     cloneTo(*m_instance);
     m_instance->start();
-
-    ServerStartGame data;
-    broadcast(data);
   }
 
   void ServerRoom::doAddPlayer(ServerPlayer& player) {
