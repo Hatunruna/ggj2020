@@ -100,25 +100,37 @@ namespace ggj {
 
   enum class CardType : uint16_t {
     // protector
-    Demine,
-    Examine,
-    Hide,
-    Reinforce1,
-    Reinforce2,
-    Repair,
-    Track,
+    Demine, // first to be used if the room is not working 
+    Examine, // define if we can know the cooldown reamining on the bomb if there is one
+    Hide, // must be used first
+    Reinforce1, // must be used first if the room is working
+    Reinforce2, // must be used first if the room is working 
+    Repair, // must be used first if the room is not working
+    Track, // no priority ?
     // common
-    Block,
-    Release,
+    Block, // block for the enxt room -> no priority
+    Release, // no priority
     // rebel
-    FalseAlarm,
-    FalseRepair1,
-    FalseRepair2,
-    PlaceBomb0,
-    PlaceBomb1,
-    PlaceBomb2,
-    SetupJammer,
+    FalseAlarm, // false alarm of a bomb no matter what
+    FalseRepair1, // first to be used if the room is not working 
+    FalseRepair2, // first to be used if the room is not working
+    PlaceBomb0, // last if the room is working 
+    PlaceBomb1, // last if the room is working
+    PlaceBomb2, // last if the room is working
+    SetupJammer, // next turn ?
   };
+
+  // WORKING : 
+      // NOT USEABLE : Demine, Repair, FalseRepair1/2
+  // NOT WORKING
+      // NOT USEABLE : PlaceBomb1/2/3, Reinforce1/2/3, Examine
+
+
+  // BLOCKED : NULL
+  // FALSE ALARM : SABOTED
+  // JAMMED  : WORKING
+  // SABOTED : HIDE -> REPAIR -> FALSE REPAIR2 -> FALSE REPAIR1 ->             -> BLOCK/SETUP JAMMER/TRACK/FALSE ALARM
+  // WORKING : HIDE -> EXAMINE -> REINFORCE2 -> REINFORCE1 -> BOMB0 -> BOMB1 -> BOMB2 ->       -> BLOCK/SETUP JAMMER/TRACK/FALSE ALARM
 
   enum class PlaceState : uint8_t {
     Blocked,    // true
