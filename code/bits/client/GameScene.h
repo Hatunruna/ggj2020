@@ -52,7 +52,11 @@ namespace ggj {
 
     bool m_showStartMoveAndPlayButton;
     gf::TextButtonWidget m_startMoveAndPlayButton;
-    
+
+    PemClientMoveAndPlay m_clientMoveAndPlay;
+    bool m_selectRoom;
+    bool m_selectCard;
+
     sf::Sound m_fx;
     sf::Sound m_ambiantBackground;
     sf::Sound m_cardShuffle;

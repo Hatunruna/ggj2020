@@ -34,6 +34,8 @@ namespace ggj {
   , m_alreadyVote(false)
   , m_showStartMoveAndPlayButton(false)
   , m_startMoveAndPlayButton("Start", resources.getFont("DejaVuSans.ttf"))
+  , m_selectRoom(false)
+  , m_selectCard(false)
   {
     setWorldViewSize(WorldSize);
     setWorldViewCenter(WorldSize * 0.5f);
@@ -91,12 +93,16 @@ namespace ggj {
         PemClientStartMoveAndPlay message;
         m_network.send(message);
       }
-      
+
       gf::Vector2f relativeCoords = gf::Vector2f(event.mouseButton.coords) / m_scenes.getRenderer().getSize();
       CardType clickedCardType;
-      if (m_info.getCardType(relativeCoords, clickedCardType)) {
+      if (m_selectCard && m_info.getCardType(relativeCoords, clickedCardType)) {
         // TODO handle clickedCardType
         gf::Log::debug("Clicked card: %s\n", cardTypeString(clickedCardType).c_str());
+        m_selectCard = false;
+        m_clientMoveAndPlay.card = clickedCardType;
+        m_network.send(m_clientMoveAndPlay);
+
         switch (clickedCardType)
         {
         case CardType::Repair:
@@ -121,9 +127,13 @@ namespace ggj {
 
       gf::Vector2f worldCoords = m_scenes.getRenderer().mapPixelToCoords(event.mouseButton.coords, getWorldView());
       PlaceType clickedPlaceType;
-      if (m_ship.getPlaceType(worldCoords, clickedPlaceType)) {
+      if (m_selectRoom && m_ship.getPlaceType(worldCoords, clickedPlaceType)) {
         // TODO handle clickedPlaceType
         gf::Log::debug("Clicked place: %s\n", placeTypeString(clickedPlaceType).c_str());
+        m_clientMoveAndPlay.place = clickedPlaceType;
+        m_selectRoom = false;
+        m_selectCard = true;
+
         m_fx.setBuffer(gResourceManager().getSound("audio/foot_steps.ogg"));
         m_fx.setVolume(FxsVolume);
         m_fx.play();
@@ -188,7 +198,8 @@ namespace ggj {
         }
 
         case PemServerStartMoveAndPlay::type: {
-
+          m_selectRoom = true;
+          m_selectCard = false;
         }
       }
     }
