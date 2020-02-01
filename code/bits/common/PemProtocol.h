@@ -67,6 +67,15 @@ namespace ggj {
   template<typename Archive>
   Archive operator|(Archive& ar, PemServerStartMoveAndPlay&) {
     return ar;
+  } 
+
+  struct PemServerCardRemoved {
+    static constexpr gf::Id type = "PemServerCardRemoved"_id;
+  };
+
+  template<typename Archive>
+  Archive operator|(Archive& ar, PemServerCardRemoved&) {
+    return ar;
   }
 
   struct PemServerUpdateShip {
@@ -81,7 +90,7 @@ namespace ggj {
 
   struct PemServerResolution {
     static constexpr gf::Id type = "PemServerResolution"_id;
-    std::vector<Resolution> conclusion;
+
   };
 
   template<typename Archive>

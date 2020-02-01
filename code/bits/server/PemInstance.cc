@@ -12,6 +12,7 @@ namespace ggj {
   PemInstance::PemInstance(int32_t players)
   : m_players(players)
   , m_deck(players, m_random)
+  , m_ship(Ship(m_players))
   {
   }
 
@@ -51,8 +52,11 @@ namespace ggj {
     }
 
     m_votes.clear();
-    PemServerStartVoteForCaptain data;
+    PemServerStartVoteForCaptain data; // start vote phase
     broadcast(data);
+
+    PemServerStartMoveAndPlay moveAndPlay; // start move and play phase
+    broadcast(moveAndPlay);
   }
 
   bool PemInstance::isFinished() {
@@ -106,11 +110,36 @@ namespace ggj {
         assert(it != m_members.end());
 
         if (!it->second.voted && it->second.prison == 0) {
-          m_votes[in.member]++;
+          auto ut = m_members.find(player.id);
+          if(ut->second.captain){
+            m_votes[in.member]+= 2;
+          }else{
+            m_votes[in.member]++;
+          }
           it->second.voted = true;
         }
 
         checkEndOfVote(VoteType::Prison);
+        break;
+      }
+
+      case PemClientStartMoveAndPlay::type: {
+        gf::Log::info("(PemInstance) {%" PRIX64 "} Captain started the round.\n", player.id);
+        PemServerStartMoveAndPlay data;
+        broadcast(data);
+        break;
+      }
+
+      case PemClientMoveAndPlay::type: {
+        gf::Log::info("(PemInstance) {%" PRIX64 "} Sended his action.\n", player.id);
+        auto in = bytes.as<PemClientMoveAndPlay>();
+        m_ship.addCrew(in.place, player.id);
+        auto it = m_members.find(player.id);
+        assert(it != m_members.end());
+
+        it->second.card = in.card;
+        it->second.place = in.place;
+        checkEndOfTurn();
         break;
       }
 
@@ -166,7 +195,7 @@ namespace ggj {
       captain = eligibles[m_random.computeUniformInteger<std::size_t>(0, eligibles.size() - 1)];
     } else if (captains.size() == 1) {
       captain = captains.front();
-    } else {
+    } else { // draw 
       captain = captains[m_random.computeUniformInteger<std::size_t>(0, captains.size() - 1)];
     }
 
@@ -176,7 +205,7 @@ namespace ggj {
       kv.second.voted = false;
     }
 
-    if(type == VoteType::Captain){
+    if (type == VoteType::Captain){
       gf::Log::info("(PemInstance) Captain is %" PRIX64 ".\n", captain);
       PemServerChooseCaptain data;
       data.member = captain;
@@ -192,6 +221,234 @@ namespace ggj {
 
   }
 
+
+  void PemInstance::checkEndOfTurn(){
+    int32_t canPlay = 0; // todo
+
+    m_currentlyPlaying++;
+
+    if ( m_currentlyPlaying < canPlay ) {
+      return;
+    }
+
+    for( auto &ship : m_ship.places ){
+      std::map<CardType,int> cardMap;
+      m_action.insert({ ship.first,cardMap });
+
+      for( auto &memberId : ship.second.members ){
+
+        auto it = m_members.find(memberId);
+        if ( isPlayable( ship.second.state, it->second.card) ){
+          auto at = m_action.find( ship.first );
+          auto ut = at->second.find( it->second.card );
+          if( ut == at->second.end() ){
+            at->second.insert( { it->second.card, 1 } );
+          }else{
+            ut->second++;
+          }
+        }else{
+          PemServerCardRemoved data;
+          send( memberId, data );
+        }
+      }
+    }
+    resolution();
+  }
+
+  bool PemInstance::isPlayable( PlaceState state,CardType type ){
+    switch ( state )
+    {
+      case PlaceState::Working:{
+        if ( type == CardType::Demine || type == CardType::FalseRepair1 || type == CardType::FalseRepair2 || type == CardType::Repair ){
+          return false;
+        }
+        break;
+      }
+      case PlaceState::Blocked:{
+        return false;
+      }
+      case PlaceState::FalseAlarm:{
+        return true;
+      }
+      case PlaceState::Saboted:{
+        if ( type == CardType::Reinforce1 || type == CardType::Reinforce2 || type == CardType::PlaceBomb0 || type == CardType::PlaceBomb1 || type == CardType::PlaceBomb2 ){
+          return false;
+        }
+        break;
+      }
+      
+      case PlaceState::Jammed:{
+        return true;
+      }
+
+      default:
+        break;
+    }
+
+    return true;
+  }
+
+  void PemInstance::resolution(){
+    for(auto &place : m_action){
+      auto it = m_ship.places.find(place.first);
+      switch (it->second.state){
+        case PlaceState::Blocked:{
+          // todo resolution
+          continue;
+          break;
+        }
+        case PlaceState::Jammed: case PlaceState::Working:{
+          
+          auto ut = m_action.find(place.first);
+          auto at = ut->second.find(CardType::Hide);
+          if(at != ut->second.end()){
+            for(ssize_t i = 0; i < at->second; i++){
+              execute( place.first ,CardType::Hide );
+            }
+          }
+          at = ut->second.find(CardType::Examine);
+          if(at != ut->second.end()){
+            for(ssize_t i = 0; i < at->second; i++){
+              execute( place.first ,CardType::Examine );
+            }
+          }
+          at = ut->second.find(CardType::Reinforce2);
+          if(at != ut->second.end()){
+            for(ssize_t i = 0; i < at->second; i++){
+              execute( place.first ,CardType::Reinforce2 );
+            }
+          }
+          at = ut->second.find(CardType::Reinforce1);
+          if(at != ut->second.end()){
+            for(ssize_t i = 0; i < at->second; i++){
+              execute( place.first ,CardType::Reinforce1 );
+            }
+          }
+          at = ut->second.find(CardType::PlaceBomb0);
+          if(at != ut->second.end()){
+            for(ssize_t i = 0; i < at->second; i++){
+              execute( place.first ,CardType::PlaceBomb0 );
+            }
+          }
+          at = ut->second.find(CardType::PlaceBomb1);
+          if(at != ut->second.end()){
+            for(ssize_t i = 0; i < at->second; i++){
+              execute( place.first ,CardType::PlaceBomb1 );
+            }
+          }
+          at = ut->second.find(CardType::PlaceBomb2);
+          if(at != ut->second.end()){
+            for(ssize_t i = 0; i < at->second; i++){
+              execute( place.first ,CardType::PlaceBomb2 );
+            }
+          }
+          at = ut->second.find(CardType::Track);
+          if(at != ut->second.end()){
+            for(ssize_t i = 0; i < at->second; i++){
+              execute( place.first ,CardType::Track );
+            }
+          }
+          at = ut->second.find(CardType::SetupJammer);
+          if(at != ut->second.end()){
+            for(ssize_t i = 0; i < at->second; i++){
+              execute( place.first ,CardType::SetupJammer );
+            }
+          }
+          at = ut->second.find(CardType::Block);
+          if(at != ut->second.end()){
+            for(ssize_t i = 0; i < at->second; i++){
+              execute( place.first ,CardType::Block );
+            }
+          }
+          at = ut->second.find(CardType::FalseAlarm);
+          if(at != ut->second.end()){
+            for(ssize_t i = 0; i < at->second; i++){
+              execute( place.first ,CardType::FalseAlarm );
+            }
+          }
+          break;
+        }
+
+        case PlaceState::FalseAlarm: case PlaceState::Saboted:{
+          
+          break;
+        }
+        
+        default:
+          break;
+      }
+    }
+  }
+
+  void PemInstance::execute(PlaceType place,CardType type){
+    switch (type){
+      case CardType::Demine:{
+
+        break;
+      }
+      case CardType::Examine:{
+        
+        break;
+      }
+      case CardType::Hide:{
+        
+        break;
+      }
+      case CardType::Reinforce1:{
+        
+        break;
+      }
+      case CardType::Reinforce2:{
+        
+        break;
+      }
+      case CardType::Repair:{
+        
+        break;
+      }
+      case CardType::Track:{
+        
+        break;
+      }
+      case CardType::Block:{
+        
+        break;
+      }
+      case CardType::Release:{
+        
+        break;
+      }
+      case CardType::FalseAlarm:{
+        
+        break;
+      }
+      case CardType::FalseRepair1:{
+        
+        break;
+      }
+      case CardType::FalseRepair2:{
+        
+        break;
+      }
+      case CardType::PlaceBomb0:{
+        
+        break;
+      }
+      case CardType::PlaceBomb1:{
+        
+        break;
+      }
+      case CardType::PlaceBomb2:{
+        
+        break;
+      }
+      case CardType::SetupJammer:{
+        
+        break;
+      }
+      default:
+        break;
+    }
+  }
+
 }
-
-
