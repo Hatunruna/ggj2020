@@ -52,6 +52,15 @@ namespace ggj {
 
   void GameScene::doProcessEvent(gf::Event &event) {
     m_adaptator.processEvent(event);
+
+	if (event.type == gf::EventType::MouseButtonPressed) {
+		gf::Vector2f relativeCoords = gf::Vector2f(event.mouseButton.coords) / m_scenes.getRenderer().getSize();
+		CardType clickedCardType;
+		if (m_info.getCardType(relativeCoords, clickedCardType)) {
+			// TODO handle clickedCardType
+			gf::Log::debug("%hu\n", static_cast<std::uint16_t>(clickedCardType));
+		}
+	}
   }
 
   void GameScene::doUpdate(gf::Time time) {

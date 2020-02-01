@@ -12,12 +12,16 @@ namespace ggj {
     PlayerInfo(gf::ResourceManager& resources);
 
     void render(gf::RenderTarget& target, const gf::RenderStates& states) override;
+	  bool getCardType(const gf::Vector2f& pos, CardType& res) const;
 
     void initializeHand(CardType cards[MaxCards]);
 
     void setRole(const std::string &role) {
       m_role = role;
     }
+
+  private:
+    gf::RectF getCardBounds(std::size_t i) const;
 
   private:
     gf::Font &m_font;
