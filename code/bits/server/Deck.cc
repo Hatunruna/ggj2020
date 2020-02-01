@@ -5,6 +5,8 @@
 
 #include <gf/ArrayRef.h>
 
+#include "Crew.h"
+
 namespace ggj {
 
   namespace {
@@ -38,19 +40,6 @@ namespace ggj {
       { CardType::Release,       1 },
     };
 
-    int computeRebels(int32_t players) {
-      assert(4 <= players && players <= 8);
-
-      if (players <= 6) {
-        return 1;
-      }
-
-      return 2;
-    }
-
-    int computeProtectors(int32_t players) {
-      return players - computeRebels(players);
-    }
 
     std::vector<CardType> createDeck(int32_t players, gf::ArrayRef<DeckData> config, gf::Random& random) {
       std::vector<CardType> deck;
@@ -70,9 +59,9 @@ namespace ggj {
 
   Deck::Deck(int32_t players, gf::Random& random)
   : m_protectorIndex(0)
-  , m_protectorsDeck(createDeck(computeProtectors(players), ProtectorDeckConfig, random))
+  , m_protectorsDeck(createDeck(Crew::computeProtectors(players), ProtectorDeckConfig, random))
   , m_rebelIndex(0)
-  , m_rebelsDeck(createDeck(computeRebels(players), RebelDeckConfig, random))
+  , m_rebelsDeck(createDeck(Crew::computeRebels(players), RebelDeckConfig, random))
   {
   }
 

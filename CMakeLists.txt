@@ -12,7 +12,7 @@ find_package(gf REQUIRED)
 find_package(gfnet REQUIRED)
 # find_package(Box2D REQUIRED)
 
-set(TMPGAME_DATA_DIR "${CMAKE_INSTALL_PREFIX}/share/games/tmpgame")
+set(TMPGAME_DATA_DIR "${CMAKE_INSTALL_PREFIX}/share/games/tmpgame" CACHE PATH "data path")
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/code/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h @ONLY)
 
 if(NOT MSVC)
@@ -27,13 +27,15 @@ add_executable(tmpgame
   code/bits/client/ClientNetwork.cc
   code/bits/client/ConnectionScene.cc
   code/bits/client/CreditsScene.cc
+  code/bits/client/GameScene.cc
   code/bits/client/HelpScene.cc
   code/bits/client/IntroScene.cc
   code/bits/client/LobbyScene.cc
   code/bits/client/MenuEntity.cc
   code/bits/client/RoomScene.cc
   code/bits/client/Scenes.cc
-  code/bits/client/WaitingScene.cc
+  code/bits/client/ShipEntity.cc
+  code/bits/client/ViewAdaptator.cc
 
   vendor/imgui/imgui.cpp
   vendor/imgui/imgui_demo.cpp
@@ -66,6 +68,7 @@ install(
 
 add_executable(tmpgame-server
   code/server.cc
+  code/bits/server/Crew.cc
   code/bits/server/Deck.cc
   code/bits/server/GameFactory.cc
   code/bits/server/GameInstance.cc
