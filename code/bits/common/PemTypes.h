@@ -136,6 +136,11 @@ namespace ggj {
     Release,
   };
 
+  enum class VoteType : uint8_t {
+    Captain,
+    Prison,
+  };
+
   struct Resolution {
     ResolutionType type;
 

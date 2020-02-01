@@ -77,7 +77,7 @@ namespace ggj {
         } else {
           broadcast(out);
         }
-        
+
         break;
       }
 
@@ -94,13 +94,30 @@ namespace ggj {
           it->second.voted = true;
         }
 
-        checkEndOfVote();
+        checkEndOfVote(VoteType::Captain);
         break;
       }
+      
+      case PemClientChoosePrisoner::type: {
+        gf::Log::info("(PemInstance) {%" PRIX64 "} Vote for prisoner.\n", player.id);
+        auto in = bytes.as<PemClientChoosePrisoner>();
+
+        auto it = m_members.find(player.id);
+        assert(it != m_members.end());
+
+        if (!it->second.voted && it->second.prison == 0) {
+          m_votes[in.member]++;
+          it->second.voted = true;
+        }
+
+        checkEndOfVote(VoteType::Prison);
+        break;
+      }
+
     }
   }
 
-  void PemInstance::checkEndOfVote() {
+  void PemInstance::checkEndOfVote(VoteType type = VoteType::Captain) {
     int32_t electors = 0;
 
     for (auto& kv : m_members) {
@@ -159,11 +176,20 @@ namespace ggj {
       kv.second.voted = false;
     }
 
-    gf::Log::info("(PemInstance) Captain is %" PRIX64 ".\n", captain);
+    if(type == VoteType::Captain){
+      gf::Log::info("(PemInstance) Captain is %" PRIX64 ".\n", captain);
+      PemServerChooseCaptain data;
+      data.member = captain;
+      broadcast(data);
+    } else {
+      gf::Log::info("(PemInstance) Prisoner is %" PRIX64 ".\n", captain);
+      PemServerChoosePrisoner data;
+      data.member = captain;
+      broadcast(data);
+      auto it = m_members.find(captain);
+      it->second.prison = 2;
+    }
 
-    PemServerChooseCaptain data;
-    data.member = captain;
-    broadcast(data);
   }
 
 }
