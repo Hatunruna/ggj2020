@@ -200,6 +200,12 @@ namespace ggj {
     return "";
   }
 
+  enum class GamePhase: uint8_t {
+    CapitainElection,
+    Action,
+    Meeting,
+  };
+
 }
 
 #endif // TMPGAME_PEM_TYPES_H
