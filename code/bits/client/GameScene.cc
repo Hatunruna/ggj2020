@@ -14,6 +14,7 @@
 #include "common/ImGuiConstants.h"
 
 #include "Scenes.h"
+#include "Singletons.h"
 
 namespace ggj {
 
@@ -54,6 +55,8 @@ namespace ggj {
     ImGui_ImplGF_Update(time);
 
     ProtocolBytes bytes;
+
+    //ggj::gBackgroundMusic.stop();
 
     while (m_network.queue.poll(bytes)) {
       switch (bytes.getType()) {
