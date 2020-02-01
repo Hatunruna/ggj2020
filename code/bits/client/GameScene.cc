@@ -22,15 +22,15 @@ namespace ggj {
 
   GameScene::GameScene(Scenes& scenes, ClientNetwork& network, gf::ResourceManager& resources)
   : gf::Scene(InitialSize)
-  , m_network(network)
   , m_scenes(scenes)
+  , m_network(network)
   , m_escapeAction("Escape")
   , m_adaptator(m_scenes.getRenderer(), getWorldView())
   , m_ship(resources)
   , m_info(resources)
   , m_chat(network, m_players)
-  , m_votedPlayer(gf::InvalidId)
   , m_gamePhase(GamePhase::CapitainElection)
+  , m_votedPlayer(gf::InvalidId)
   , m_alreadyVote(false)
   , m_startMoveAndPlayButton("Start", resources.getFont("DejaVuSans.ttf"))
   , m_placeTypeSelected(PlaceType::None)
@@ -85,13 +85,13 @@ namespace ggj {
   void GameScene::doProcessEvent(gf::Event &event) {
     m_adaptator.processEvent(event);
 
-	  if (event.type == gf::EventType::MouseButtonPressed && event.mouseButton.button == gf::MouseButton::Left) {
+    if (event.type == gf::EventType::MouseButtonPressed && event.mouseButton.button == gf::MouseButton::Left) {
       if (m_startMoveAndPlayButton.contains(event.mouseButton.coords)) {
         PemClientStartMoveAndPlay message;
         m_network.send(message);
       }
 
-      gf::Vector2f relativeCoords = gf::Vector2f(event.mouseButton.coords) / m_scenes.getRenderer().getSize();
+      gf::Vector2f coords = gf::Vector2f(event.mouseButton.coords);
       CardType clickedCardType;
       if (m_gamePhase == GamePhase::Action && m_placeTypeSelected != PlaceType::None && m_info.getCardType(relativeCoords, clickedCardType)) {
         // TODO handle clickedCardType
@@ -100,7 +100,7 @@ namespace ggj {
         moveAndPlay.place = m_placeTypeSelected;
         moveAndPlay.card = clickedCardType;
         m_network.send(moveAndPlay);
-        
+
         m_gamePhase = GamePhase::Resolution;
         m_placeTypeSelected = PlaceType::None;
 
