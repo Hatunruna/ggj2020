@@ -20,7 +20,7 @@ namespace ggj {
   struct PemServerInitRole {
     static constexpr gf::Id type = "PemServerInitRole"_id;
     CrewType role;
-    CardType cards[3];
+    CardType cards[MaxCards];
   };
 
   template<typename Archive>

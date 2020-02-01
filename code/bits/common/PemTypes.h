@@ -1,7 +1,9 @@
 #ifndef TMPGAME_PEM_TYPES_H
 #define TMPGAME_PEM_TYPES_H
 
+#include <cassert>
 #include <cstdint>
+#include <string>
 
 namespace ggj {
 
@@ -9,6 +11,20 @@ namespace ggj {
     Rebel,
     Protector,
   };
+
+  inline std::string crewTypeString(CrewType type) {
+    switch (type)
+    {
+    case CrewType::Rebel:
+      return "Rebel";
+
+    case CrewType::Protector:
+      return "Protector";
+    }
+
+    assert(false);
+    return "";
+  }
 
   enum class PlaceType : uint16_t {
     Armory,

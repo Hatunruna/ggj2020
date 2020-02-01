@@ -14,7 +14,7 @@ namespace ggj {
   , connection(*this, network)
   , lobby(*this, network)
   , room(*this, network)
-  , game(*this, resources)
+  , game(*this, network, resources)
   , credits(*this, resources)
   , help(*this, resources)
   {
