@@ -14,10 +14,8 @@ namespace ggj {
 
   }
 
-  void PlayerInfo::initializeHand(CardType cards[MaxCards]) {
-    for (int i = 0; i < MaxCards; ++i) {
-      m_cards[i] = cards[i];
-    }
+  void PlayerInfo::initializeHand(const std::array<CardType, MaxCards>& cards) {
+    m_cards = cards;
   }
 
   bool PlayerInfo::getCardType(const gf::Vector2f& relativePos, CardType& res) const {

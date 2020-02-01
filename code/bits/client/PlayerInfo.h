@@ -14,7 +14,7 @@ namespace ggj {
     void render(gf::RenderTarget& target, const gf::RenderStates& states) override;
 	  bool getCardType(const gf::Vector2f& pos, CardType& res) const;
 
-    void initializeHand(CardType cards[MaxCards]);
+    void initializeHand(const std::array<CardType, MaxCards>& cards);
 
     void setRole(const std::string &role) {
       m_role = role;

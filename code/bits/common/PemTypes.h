@@ -131,6 +131,7 @@ namespace ggj {
   enum class ResolutionType : uint16_t {
     Examine,
     Hide,
+    Track,
     Block,
     Release,
   };
@@ -140,7 +141,7 @@ namespace ggj {
 
     union {
       bool bomb; // Examine
-      gf::Id member; // Hide
+      gf::Id member; // Hide, Track
       PlaceType place; // Block
     };
   };
