@@ -14,7 +14,7 @@ git checkout develop
 
 - SFML-Audio
 ```
-apt install dev
+apt install libsfml-audio2.4
 ```
 
 #### Download & Build
