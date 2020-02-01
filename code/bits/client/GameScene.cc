@@ -14,6 +14,7 @@
 #include "common/ImGuiConstants.h"
 
 #include "Scenes.h"
+#include "Singletons.h"
 
 namespace ggj {
 
@@ -45,8 +46,11 @@ namespace ggj {
     }
   }
 
+  bool GameScene::doEarlyProcessEvent(gf::Event &event) {
+    return ImGui_ImplGF_ProcessEvent(event);
+  }
+
   void GameScene::doProcessEvent(gf::Event &event) {
-    ImGui_ImplGF_ProcessEvent(event);
     m_adaptator.processEvent(event);
   }
 
@@ -54,6 +58,8 @@ namespace ggj {
     ImGui_ImplGF_Update(time);
 
     ProtocolBytes bytes;
+
+    //ggj::gBackgroundMusic.stop();
 
     while (m_network.queue.poll(bytes)) {
       switch (bytes.getType()) {
@@ -64,7 +70,7 @@ namespace ggj {
           m_info.initializeHand(data.cards);
           break;
         }
-        
+
         case ServerChatMessage::type: {
           gf::Log::debug("[game] receive ServerChatMessage\n");
           auto data = bytes.as<ServerChatMessage>();
@@ -101,7 +107,7 @@ namespace ggj {
       m_chat.display(10);
     }
     ImGui::End();
-    
+
 
     // Default display
     renderWorldEntities(target, states);

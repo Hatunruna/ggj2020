@@ -20,12 +20,10 @@ int main() {
   ggj::gResourceManager().addSearchDir(TMPGAME_DATA_DIR);
 
   // Background music
-  //float bgmVolume = 10.0f;
-  //bool bgmMuted = true;
-  //sf::Sound bgm(ggj::gResourceManager().getSound("audio/bgmTest.ogg"));
-  //bgm.setLoop(true);
-  //bgm.setVolume(MaxVolume);
-  //bgm.play();
+  ggj::gBackgroundMusic.setBuffer(ggj::gResourceManager().getSound("audio/main_theme.wav"));
+  ggj::gBackgroundMusic.setLoop(true);
+  ggj::gBackgroundMusic.setVolume(0.0f);
+  //ggj::gBackgroundMusic.play();
 
   ggj::Scenes scenes(network, TMPGAME_DATA_DIR);
   scenes.pushScene(scenes.intro);

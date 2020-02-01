@@ -8,6 +8,7 @@
 namespace ggj {
 
   extern gf::Singleton<ResourceManager> gResourceManager;
+  extern sf::Sound gBackgroundMusic;
 
 }
 

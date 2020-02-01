@@ -5,6 +5,8 @@
 #include <cstdint>
 #include <string>
 
+#include <gf/Id.h>
+
 namespace ggj {
 
   enum class CrewType : uint8_t {
@@ -118,12 +120,29 @@ namespace ggj {
     SetupJammer,
   };
 
-  enum class PlaceState : uint8_t{
-    Blocked, // true
+  enum class PlaceState : uint8_t {
+    Blocked,    // true
     FalseAlarm, // false
-    Jammed, // true
-    Saboted, // false
-    Working, // true
+    Jammed,     // true
+    Saboted,    // false
+    Working,    // true
+  };
+
+  enum class ResolutionType : uint16_t {
+    Examine,
+    Hide,
+    Block,
+    Release,
+  };
+
+  struct Resolution {
+    ResolutionType type;
+
+    union {
+      bool bomb; // Examine
+      gf::Id member; // Hide
+      PlaceType place; // Block
+    };
   };
 
   inline std::string cardTypeString(CardType type) {
