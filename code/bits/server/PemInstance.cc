@@ -98,9 +98,9 @@ namespace ggj {
         break;
       }
       
-      case PemServerChoosePrisoner::type: {
+      case PemClientChoosePrisoner::type: {
         gf::Log::info("(PemInstance) {%" PRIX64 "} Vote for prisoner.\n", player.id);
-        auto in = bytes.as<PemServerChoosePrisoner>();
+        auto in = bytes.as<PemClientChoosePrisoner>();
 
         auto it = m_members.find(player.id);
         assert(it != m_members.end());
@@ -175,7 +175,7 @@ namespace ggj {
       kv.second.voted = false;
     }
 
-    if (type == VoteType::Captain){
+    if(type == VoteType::Captain){
       gf::Log::info("(PemInstance) Captain is %" PRIX64 ".\n", captain);
       PemServerChooseCaptain data;
       data.member = captain;
