@@ -47,15 +47,12 @@ namespace ggj {
 
     std::map<gf::Id, ClientPlayerData> m_players;
     GamePhase m_gamePhase;
-    gf::Id m_electedPlayers;
+    gf::Id m_votedPlayer;
     bool m_alreadyVote;
 
-    bool m_showStartMoveAndPlayButton;
     gf::TextButtonWidget m_startMoveAndPlayButton;
 
-    PemClientMoveAndPlay m_clientMoveAndPlay;
-    bool m_selectRoom;
-    bool m_selectCard;
+    PlaceType m_placeTypeSelected;
 
     sf::Sound m_fx;
     sf::Sound m_ambiantBackground;

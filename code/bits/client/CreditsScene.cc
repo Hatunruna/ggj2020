@@ -2,6 +2,7 @@
 
 #include <gf/Coordinates.h>
 #include <gf/Text.h>
+#include <gf/Unused.h>
 
 #include "common/Constants.h"
 
@@ -20,6 +21,8 @@ namespace ggj {
   }
 
   void CreditsScene::doHandleActions(gf::Window& window) {
+    gf::unused(window);
+
     if (m_escapeAction.isActive()) {
       m_scenes.replaceScene(m_scenes.intro);
     }

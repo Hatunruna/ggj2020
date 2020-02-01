@@ -43,6 +43,7 @@ namespace ggj {
     Refectory,
     RightEngine,
     Storage,
+    None,
   };
 
   inline std::string placeTypeString(PlaceType type) {
@@ -91,6 +92,10 @@ namespace ggj {
 
     case PlaceType::Storage:
       return "Storage";
+
+    case PlaceType::None:
+      assert(false);
+      return "";
     }
 
     assert(false);
@@ -221,6 +226,7 @@ namespace ggj {
   enum class GamePhase: uint8_t {
     CapitainElection,
     Action,
+    Resolution,
     Meeting,
   };
 

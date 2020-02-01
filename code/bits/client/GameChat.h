@@ -18,7 +18,7 @@ namespace ggj {
   public:
     GameChat(ClientNetwork& network, std::map<gf::Id, ClientPlayerData>& players);
 
-    void display(int lines, gf::Coordinates& coordinates);
+    void display(gf::Coordinates& coordinates);
 
   private:
     std::string m_selectedUserName;

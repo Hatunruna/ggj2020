@@ -2,6 +2,8 @@
 
 #include <algorithm>
 
+#include <gf/Unused.h>
+
 namespace ggj {
   ServerGroup::~ServerGroup() = default;
 
@@ -52,10 +54,12 @@ namespace ggj {
   }
 
   void ServerGroup::doAddPlayer(ServerPlayer& player) {
+    gf::unused(player);
     // nothing by default
   }
 
   void ServerGroup::doRemovePlayer(ServerPlayer& player) {
+    gf::unused(player);
     // nothing by default
   }
 

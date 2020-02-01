@@ -2,9 +2,10 @@
 
 #include <cinttypes>
 
+#include <gf/Coordinates.h>
 #include <gf/Log.h>
 #include <gf/Shapes.h>
-#include <gf/Coordinates.h>
+#include <gf/Unused.h>
 
 #include <imgui.h>
 #include <imgui_impl_gf.h>
@@ -30,12 +31,10 @@ namespace ggj {
   , m_info(resources)
   , m_chat(network, m_players)
   , m_gamePhase(GamePhase::CapitainElection)
-  , m_electedPlayers(gf::InvalidId)
+  , m_votedPlayer(gf::InvalidId)
   , m_alreadyVote(false)
-  , m_showStartMoveAndPlayButton(false)
   , m_startMoveAndPlayButton("Start", resources.getFont("DejaVuSans.ttf"))
-  , m_selectRoom(false)
-  , m_selectCard(false)
+  , m_placeTypeSelected(PlaceType::None)
   {
     setWorldViewSize(WorldSize);
     setWorldViewCenter(WorldSize * 0.5f);
@@ -64,7 +63,7 @@ namespace ggj {
       playerData.name = player.name;
       m_players.emplace(player.id, playerData);
     }
-    m_electedPlayers = gf::InvalidId;
+    m_votedPlayer = gf::InvalidId;
     m_gamePhase = GamePhase::CapitainElection;
     m_alreadyVote = false;
     m_ambiantBackground.play();
@@ -72,6 +71,8 @@ namespace ggj {
   }
 
   void GameScene::doHandleActions(gf::Window& window) {
+    gf::unused(window);
+
     if (m_escapeAction.isActive()) {
       m_scenes.setClearColor(gf::Color::White);
       m_ambiantBackground.stop();
@@ -89,19 +90,22 @@ namespace ggj {
 
     if (event.type == gf::EventType::MouseButtonPressed && event.mouseButton.button == gf::MouseButton::Left) {
       if (m_startMoveAndPlayButton.contains(event.mouseButton.coords)) {
-        m_showStartMoveAndPlayButton = false;
         PemClientStartMoveAndPlay message;
         m_network.send(message);
       }
 
       gf::Vector2f coords = gf::Vector2f(event.mouseButton.coords);
       CardType clickedCardType;
-      if (m_selectCard && m_info.getCardType(coords, m_scenes.getRenderer().getSize(), clickedCardType)) {
+      if (m_gamePhase == GamePhase::Action && m_placeTypeSelected != PlaceType::None && m_info.getCardType(coords, m_scenes.getRenderer().getSize(), clickedCardType)) {
         // TODO handle clickedCardType
         gf::Log::debug("Clicked card: %s\n", cardTypeString(clickedCardType).c_str());
-        m_selectCard = false;
-        m_clientMoveAndPlay.card = clickedCardType;
-        m_network.send(m_clientMoveAndPlay);
+        PemClientMoveAndPlay moveAndPlay;
+        moveAndPlay.place = m_placeTypeSelected;
+        moveAndPlay.card = clickedCardType;
+        m_network.send(moveAndPlay);
+
+        m_gamePhase = GamePhase::Resolution;
+        m_placeTypeSelected = PlaceType::None;
 
         switch (clickedCardType)
         {
@@ -127,12 +131,10 @@ namespace ggj {
 
       gf::Vector2f worldCoords = m_scenes.getRenderer().mapPixelToCoords(event.mouseButton.coords, getWorldView());
       PlaceType clickedPlaceType;
-      if (m_selectRoom && m_ship.getPlaceType(worldCoords, clickedPlaceType)) {
+      if (m_gamePhase == GamePhase::Action && m_ship.getPlaceType(worldCoords, clickedPlaceType)) {
         // TODO handle clickedPlaceType
         gf::Log::debug("Clicked place: %s\n", placeTypeString(clickedPlaceType).c_str());
-        m_clientMoveAndPlay.place = clickedPlaceType;
-        m_selectRoom = false;
-        m_selectCard = true;
+        m_placeTypeSelected = clickedPlaceType;
 
         m_fx.setBuffer(gResourceManager().getSound("audio/foot_steps.ogg"));
         m_fx.setVolume(FxsVolume);
@@ -191,10 +193,6 @@ namespace ggj {
 
             m_chat.appendMessage(std::move(message));
           }
-
-          if (data.member == m_scenes.myPlayerId) {
-            m_showStartMoveAndPlayButton = true;
-          }
           break;
         }
 
@@ -204,12 +202,16 @@ namespace ggj {
           message.origin = gf::InvalidId;
           message.author = "server";
           message.content = "It's your turn to play";
-
           m_chat.appendMessage(std::move(message));
 
-          m_selectRoom = true;
-          m_selectCard = false;
+          m_gamePhase = GamePhase::Action;
           break;
+        }
+
+        case PemServerChoosePrisoner::type: {
+          gf::Log::debug("[game] receive PemServerChoosePrisoner\n");
+          m_alreadyVote = false;
+          m_gamePhase = GamePhase::Meeting;
         }
       }
     }
@@ -232,20 +234,52 @@ namespace ggj {
         unsigned i = 0;
         for (auto &player: m_players) {
           std::string name = std::to_string(i) + ". " + player.second.name;
-          if (ImGui::Selectable(name.c_str(), m_electedPlayers == player.second.id)) {
-            m_electedPlayers = player.second.id;
+          if (ImGui::Selectable(name.c_str(), m_votedPlayer == player.second.id)) {
+            m_votedPlayer = player.second.id;
           }
           ++i;
         }
-        if (ImGui::Selectable("None Of The Above", m_electedPlayers == gf::InvalidId)) {
-          m_electedPlayers = gf::InvalidId;
+        if (ImGui::Selectable("None Of The Above", m_votedPlayer == gf::InvalidId)) {
+          m_votedPlayer = gf::InvalidId;
         }
 
         if (ImGui::Button("Vote", ImVec2(ImGui::GetWindowWidth(), DefaultButtonSize.y))) {
-          gf::Log::debug("(GAME) Vote for: %" PRIX64 "\n", m_electedPlayers);
+          gf::Log::debug("(GAME) Vote for: %" PRIX64 "\n", m_votedPlayer);
 
           PemClientVoteForCaptain vote;
-          vote.member = m_electedPlayers;
+          vote.member = m_votedPlayer;
+          m_network.send(vote);
+
+          m_alreadyVote = true;
+        }
+      }
+      ImGui::End();
+    }
+
+    //Prisoner vote window
+    if (m_gamePhase == GamePhase::Meeting && !m_alreadyVote) {
+      ImGui::SetNextWindowSize(ImVec2(electionWindowSize.width, electionWindowSize.height));
+      ImGui::SetNextWindowPos(ImVec2(electionWindowPos.x, electionWindowPos.y), 0, ImVec2(0.5f, 0.5f));
+
+      if (ImGui::Begin("Vote for the next prisoner", nullptr, DefaultWindowFlags)) {
+        // List players
+        unsigned i = 0;
+        for (auto &player: m_players) {
+          std::string name = std::to_string(i) + ". " + player.second.name;
+          if (ImGui::Selectable(name.c_str(), m_votedPlayer == player.second.id)) {
+            m_votedPlayer = player.second.id;
+          }
+          ++i;
+        }
+        if (ImGui::Selectable("None Of The Above", m_votedPlayer == gf::InvalidId)) {
+          m_votedPlayer = gf::InvalidId;
+        }
+
+        if (ImGui::Button("Vote", ImVec2(ImGui::GetWindowWidth(), DefaultButtonSize.y))) {
+          gf::Log::debug("(GAME) Vote for: %" PRIX64 "\n", m_votedPlayer);
+
+          PemClientChoosePrisoner vote;
+          vote.member = m_votedPlayer;
           m_network.send(vote);
 
           m_alreadyVote = true;
@@ -255,14 +289,14 @@ namespace ggj {
     }
 
     // Chat window
-    m_chat.display(10, coordinates);
+    m_chat.display(coordinates);
 
     // Default display
     renderWorldEntities(target, states);
     renderHudEntities(target, states);
 
     //Start move and play button
-    if (m_showStartMoveAndPlayButton) {
+    if (m_gamePhase == GamePhase::CapitainElection && m_players[m_scenes.myPlayerId].captain) {
       m_startMoveAndPlayButton.setCharacterSize(coordinates.getRelativeCharacterSize(0.05f));
       m_startMoveAndPlayButton.setPosition(coordinates.getRelativePoint({0.05f, 0.6f}));
 

@@ -1,10 +1,12 @@
 #include "IntroScene.h"
 
+#include <gf/Log.h>
+#include <gf/Unused.h>
+
 #include "common/Constants.h"
 
 #include "Scenes.h"
 
-#include <gf/Log.h>
 
 namespace ggj {
 
@@ -38,12 +40,16 @@ namespace ggj {
   }
 
   void IntroScene::doHandleActions(gf::Window& window) {
+    gf::unused(window);
+
     if (m_escapeAction.isActive()) {
       m_scenes.popScene();
     }
   }
 
   void IntroScene::doUpdate(gf::Time time) {
+    gf::unused(time);
+
     switch (m_choice) {
       case MenuChoice::None:
         break;
