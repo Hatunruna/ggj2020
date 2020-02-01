@@ -10,7 +10,7 @@
 #include "common/GameSettings.h"
 #include "common/ProtocolData.h"
 
-#include "Chat.h"
+#include "LobbyChat.h"
 #include "ClientNetwork.h"
 
 namespace ggj {
@@ -39,7 +39,7 @@ namespace ggj {
 
     std::vector<PlayerData> m_players;
 
-    Chat m_chat;
+    LobbyChat m_chat;
   };
 
 }

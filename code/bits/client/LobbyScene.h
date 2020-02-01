@@ -7,7 +7,7 @@
 #include "common/GameSettings.h"
 #include "common/ProtocolData.h"
 
-#include "Chat.h"
+#include "LobbyChat.h"
 #include "ClientNetwork.h"
 
 namespace ggj {
@@ -40,7 +40,7 @@ namespace ggj {
     int m_selectedRoom;
     RoomData m_selectedRoomData;
 
-    Chat m_chat;
+    LobbyChat m_chat;
   };
 
 }

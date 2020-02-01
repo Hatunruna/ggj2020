@@ -8,7 +8,7 @@
 #include "ShipEntity.h"
 #include "PlayerInfo.h"
 #include "ViewAdaptator.h"
-#include "Chat.h"
+#include "GameChat.h"
 
 namespace ggj {
 
@@ -37,7 +37,7 @@ namespace ggj {
     ShipEntity m_ship;
     PlayerInfo m_info;
 
-    Chat m_chat;
+    GameChat m_chat;
   };
 
 }

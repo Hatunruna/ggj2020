@@ -25,7 +25,8 @@ endif()
 
 add_executable(tmpgame
   code/client.cc
-  code/bits/client/Chat.cc
+  code/bits/client/LobbyChat.cc
+  code/bits/client/GameChat.cc
   code/bits/client/ClientNetwork.cc
   code/bits/client/ConnectionScene.cc
   code/bits/client/CreditsScene.cc

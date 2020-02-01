@@ -1,9 +1,11 @@
-#ifndef TMPGAME_CHAT_H
-#define TMPGAME_CHAT_H
+#ifndef TMPGAME_LOBBY_CHAT_H
+#define TMPGAME_LOBBY_CHAT_H
 
 #include <vector>
 
 #include <gf/StaticString.h>
+
+#include <imgui.h>
 
 #include "common/ProtocolData.h"
 
@@ -11,17 +13,20 @@
 
 namespace ggj {
 
-  class Chat {
+  class LobbyChat {
   public:
-    Chat(ClientNetwork& network);
+    static ImVec4 toColor(gf::Id id);
+
+  public:
+    LobbyChat(ClientNetwork& network);
 
     void appendMessage(const MessageData& message);
     void appendMessage(MessageData&& message);
 
-    void display(int lines);
+    virtual void display(int lines);
 
 
-  private:
+  protected:
     ClientNetwork& m_network;
     gf::StaticString<255> m_lineBuffer;
     std::vector<MessageData> m_messages;
@@ -33,4 +38,4 @@ namespace ggj {
 
 
 
-#endif // TMPGAME_CHAT_H
+#endif // TMPGAME_LOBBY_CHAT_H

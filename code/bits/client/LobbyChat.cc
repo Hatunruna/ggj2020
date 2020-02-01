@@ -1,48 +1,43 @@
-#include "Chat.h"
+#include "LobbyChat.h"
 
 #include <gf/Color.h>
-
-#include <imgui.h>
+#include <gf/Log.h>
 
 #include "common/Protocol.h"
 
 namespace ggj {
 
-  namespace {
+  ImVec4 LobbyChat::toColor(gf::Id id) {
+    gf::Color4f color;
 
-    ImVec4 toColor(gf::Id id) {
-      gf::Color4f color;
-
-      if (id == gf::InvalidId) { // Server message
-        color = gf::Color::lighter(gf::Color::Red);
-      }
-      else {
-        color = gf::Color::lighter(gf::Color::fromRgba32(static_cast<uint32_t>(id)));
-      }
-
-      return ImVec4(color.r, color.g, color.b, 1.0f);
+    if (id == gf::InvalidId) { // Server message
+      color = gf::Color::lighter(gf::Color::Red);
+    }
+    else {
+      color = gf::Color::lighter(gf::Color::fromRgba32(static_cast<uint32_t>(id)));
     }
 
+    return ImVec4(color.r, color.g, color.b, 1.0f);
   }
 
-  Chat::Chat(ClientNetwork& network)
+  LobbyChat::LobbyChat(ClientNetwork& network)
   : m_network(network)
   , m_autoscroll(false)
   {
     m_lineBuffer.clear();
   }
 
-  void Chat::appendMessage(const MessageData& message) {
+  void LobbyChat::appendMessage(const MessageData& message) {
     m_messages.push_back(message);
     m_autoscroll = true;
   }
 
-  void Chat::appendMessage(MessageData&& message) {
+  void LobbyChat::appendMessage(MessageData&& message) {
     m_messages.push_back(std::move(message));
     m_autoscroll = true;
   }
 
-  void Chat::display(int lines) {
+  void LobbyChat::display(int lines) {
     ImGui::Text("Chat");
     ImGui::Spacing();
     ImVec2 size(0.0f, lines * ImGui::GetTextLineHeightWithSpacing());
@@ -71,6 +66,9 @@ namespace ggj {
     ImGui::EndChild();
 
     ImGui::Spacing();
+
+    //Fix InputText not resized correctly
+    ImGui::SetNextItemWidth(ImGui::GetWindowWidth());
 
     if (ImGui::InputText("###chat", m_lineBuffer.getData(), m_lineBuffer.getSize(), ImGuiInputTextFlags_EnterReturnsTrue) && m_lineBuffer[0] != '\0') {
       ClientChatMessage data;

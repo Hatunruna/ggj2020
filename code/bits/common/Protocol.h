@@ -311,11 +311,12 @@ namespace ggj {
   struct ClientChatMessage {
     static constexpr gf::Id type = "ClientChatMessage"_id;
     std::string content;
+    gf::Id recipient = gf::InvalidId;
   };
 
   template<typename Archive>
   Archive operator|(Archive& ar, ClientChatMessage& data) {
-    return ar | data.content;
+    return ar | data.content | data.recipient;
   }
 
 }
