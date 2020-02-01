@@ -21,6 +21,8 @@ namespace ggj {
     addAction(m_escapeAction);
 
     addWorldEntity(m_ship);
+
+    getWorldView().setViewport(gf::RectF::fromPositionSize({0.0f, 0.0f}, {1.0f, 2.f / 3.f}));
   }
 
   void GameScene::doHandleActions(gf::Window& window) {
@@ -34,15 +36,10 @@ namespace ggj {
     m_adaptator.processEvent(event);
   }
 
-  // void GameScene::doRender(gf::RenderTarget &target, const gf::RenderStates &states) {
-  //   // Default display
-  //   renderWorldEntities(target, states);
-  //   renderHudEntities(target, states);
-
-  //   gf::RectangleShape rectangle;
-  //   rectangle.setColor(gf::Color::White);
-  //   rectangle.setSize({ 6000.0f, 500.0f});
-  //   target.draw(rectangle, states);
-  // }
+  void GameScene::doRender(gf::RenderTarget &target, const gf::RenderStates &states) {
+    // Default display
+    renderWorldEntities(target, states);
+    renderHudEntities(target, states);
+  }
 
 }
