@@ -5,6 +5,7 @@
 #include <gf/Log.h>
 
 #include "common/PemProtocol.h"
+#include "common/Protocol.h"
 #include "Crew.h"
 
 namespace ggj {
@@ -51,7 +52,20 @@ namespace ggj {
   }
 
   void PemInstance::update(ServerPlayer& player, ProtocolBytes& bytes) {
-
+    switch (bytes.getType()) {
+      case ClientChatMessage::type: {
+        gf::Log::info("(PemInstance) {%" PRIX64 "} Chat message.\n", player.id);
+        // deserialize
+        auto in = bytes.as<ClientChatMessage>();
+        // broadcast the message
+        ServerChatMessage out;
+        out.message.origin = player.id;
+        out.message.author = player.name;
+        out.message.content = std::move(in.content);
+        broadcast(out);
+        break;
+      }
+    }
   }
 
 }

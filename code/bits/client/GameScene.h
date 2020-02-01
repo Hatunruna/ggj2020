@@ -8,6 +8,7 @@
 #include "ShipEntity.h"
 #include "PlayerInfo.h"
 #include "ViewAdaptator.h"
+#include "Chat.h"
 
 namespace ggj {
 
@@ -23,7 +24,7 @@ namespace ggj {
     void doHandleActions(gf::Window& window) override;
     void doProcessEvent(gf::Event &event) override;
     void doUpdate(gf::Time time) override;
-    // void doRender(gf::RenderTarget &target, const gf::RenderStates &states);
+    void doRender(gf::RenderTarget &target, const gf::RenderStates &states);
 
   private:
     Scenes& m_scenes;
@@ -35,6 +36,8 @@ namespace ggj {
 
     ShipEntity m_ship;
     PlayerInfo m_info;
+
+    Chat m_chat;
   };
 
 }
