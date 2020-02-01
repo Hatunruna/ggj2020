@@ -77,7 +77,7 @@ namespace ggj {
         } else {
           broadcast(out);
         }
-        
+
         break;
       }
 
@@ -113,6 +113,7 @@ namespace ggj {
         checkEndOfVote(VoteType::Prison);
         break;
       }
+
     }
   }
 

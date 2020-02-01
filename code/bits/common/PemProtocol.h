@@ -81,7 +81,7 @@ namespace ggj {
 
   struct PemServerResolution {
     static constexpr gf::Id type = "PemServerResolution"_id;
-
+    std::vector<Resolution> conclusion;
   };
 
   template<typename Archive>
