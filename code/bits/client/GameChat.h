@@ -4,6 +4,7 @@
 #include <vector>
 
 #include <gf/StaticString.h>
+#include <gf/Coordinates.h>
 
 #include "common/ProtocolData.h"
 
@@ -14,13 +15,15 @@ namespace ggj {
 
   class GameChat: public LobbyChat {
   public:
-    GameChat(ClientNetwork& network);
+    GameChat(ClientNetwork& network, std::vector<PlayerData>& players);
 
-    virtual void display(int lines) override;
+    void display(int lines, gf::Coordinates& coordinates);
 
   private:
     std::string m_selectedUserName;
     gf::Id m_selectedUserId;
+
+    std::vector<PlayerData>& m_players;
   };
 
 }

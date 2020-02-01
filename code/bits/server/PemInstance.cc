@@ -62,7 +62,14 @@ namespace ggj {
         out.message.origin = player.id;
         out.message.author = player.name;
         out.message.content = std::move(in.content);
-        broadcast(out);
+
+        if (in.recipient != gf::InvalidId) {
+          out.message.recipient = in.recipient;
+          send(in.recipient, out);
+        } else {
+          broadcast(out);
+        }
+        
         break;
       }
     }

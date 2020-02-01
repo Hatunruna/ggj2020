@@ -23,7 +23,7 @@ namespace ggj {
     void appendMessage(const MessageData& message);
     void appendMessage(MessageData&& message);
 
-    virtual void display(int lines);
+    void display(int lines);
 
 
   protected:

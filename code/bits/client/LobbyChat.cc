@@ -51,8 +51,7 @@ namespace ggj {
           ImGui::PushStyleColor(ImGuiCol_Text, toColor(message.origin));
           ImGui::TextWrapped(message.content.c_str());
           ImGui::PopStyleColor();
-        }
-        else {
+        } else {
           ImGui::TextWrapped(message.content.c_str());
         }
       }

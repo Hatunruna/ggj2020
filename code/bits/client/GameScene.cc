@@ -28,7 +28,7 @@ namespace ggj {
   , m_adaptator(m_scenes.getRenderer(), getWorldView())
   , m_ship(resources)
   , m_info(resources)
-  , m_chat(network)
+  , m_chat(network, m_players)
   , m_electedPlayers(gf::InvalidId)
   {
     setWorldViewSize({2000.0f, 1000.0f});
@@ -125,18 +125,7 @@ namespace ggj {
     ImGui::End();
 
     // Chat window
-    gf::Vector2f chatWindowSize = coordinates.getRelativeSize({ 0.25f, 0.42f });
-    gf::Vector2f chatWindowPos = coordinates.getRelativePoint({ 0.80f, 0.78f });
-
-    ImGui::SetNextWindowSize(ImVec2(chatWindowSize[0], chatWindowSize[1]));
-    ImGui::SetNextWindowPos(ImVec2(chatWindowPos[0], chatWindowPos[1]), 0, ImVec2(0.5f, 0.5f));
-
-    if (ImGui::Begin("Chat", nullptr, DefaultWindowFlags | ImGuiWindowFlags_NoTitleBar))
-    {
-      m_chat.display(10);
-    }
-    ImGui::End();
-
+    m_chat.display(10, coordinates);
 
     // Default display
     renderWorldEntities(target, states);
