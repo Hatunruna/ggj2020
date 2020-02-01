@@ -52,6 +52,7 @@ namespace ggj {
           gf::Log::debug("[game] receive PemServerInitRole\n");
           auto data = bytes.as<PemServerInitRole>();
           m_info.setRole(crewTypeString(data.role));
+          m_info.initializeHand(data.cards);
           break;
         }
         // case ServerChatMessage::type: {
