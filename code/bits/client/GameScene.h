@@ -3,6 +3,7 @@
 
 #include <gf/ResourceManager.h>
 #include <gf/Scene.h>
+#include <gf/Widgets.h>
 
 #include <SFML/Audio.hpp>
 
@@ -11,6 +12,7 @@
 #include "PlayerInfo.h"
 #include "ViewAdaptator.h"
 #include "GameChat.h"
+#include "ClientPlayerData.h"
 
 namespace ggj {
 
@@ -43,12 +45,18 @@ namespace ggj {
 
     GameChat m_chat;
 
-    std::vector<PlayerData> m_players;
+    std::map<gf::Id, ClientPlayerData> m_players;
     GamePhase m_gamePhase;
-    gf::Id m_electedPlayers;
+    gf::Id m_votedPlayer;
     bool m_alreadyVote;
 
+    gf::TextButtonWidget m_startMoveAndPlayButton;
+
+    PlaceType m_placeTypeSelected;
+
     sf::Sound m_fx;
+    sf::Sound m_ambiantBackground;
+    sf::Sound m_cardShuffle;
   };
 
 }

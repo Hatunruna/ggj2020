@@ -10,7 +10,7 @@
 
 namespace ggj {
 
-  GameChat::GameChat(ClientNetwork& network, std::vector<PlayerData>& players)
+  GameChat::GameChat(ClientNetwork& network, std::map<gf::Id, ClientPlayerData>& players)
   : LobbyChat(network)
   , m_selectedUserName("")
   , m_selectedUserId(gf::InvalidId)
@@ -119,11 +119,11 @@ namespace ggj {
       if (ImGui::BeginChild("Players", size, false)) {
         // List players
         for (auto &player: m_players) {
-          ImGui::TextColored(toColor(player.id), player.name.c_str());
+          ImGui::TextColored(toColor(player.second.id), player.second.name.c_str());
           
           if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
-            m_selectedUserName = "@" + player.name;
-            m_selectedUserId = player.id;
+            m_selectedUserName = "@" + player.second.name;
+            m_selectedUserId = player.second.id;
             m_lineBuffer.clear();
           }
         }

@@ -43,6 +43,7 @@ namespace ggj {
     Refectory,
     RightEngine,
     Storage,
+    None,
   };
 
   inline std::string placeTypeString(PlaceType type) {
@@ -209,6 +210,7 @@ namespace ggj {
   enum class GamePhase: uint8_t {
     CapitainElection,
     Action,
+    Resolution,
     Meeting,
   };
 

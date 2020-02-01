@@ -10,12 +10,13 @@
 
 #include "ClientNetwork.h"
 #include "LobbyChat.h"
+#include "ClientPlayerData.h"
 
 namespace ggj {
 
   class GameChat: public LobbyChat {
   public:
-    GameChat(ClientNetwork& network, std::vector<PlayerData>& players);
+    GameChat(ClientNetwork& network, std::map<gf::Id, ClientPlayerData>& players);
 
     void display(int lines, gf::Coordinates& coordinates);
 
@@ -23,7 +24,7 @@ namespace ggj {
     std::string m_selectedUserName;
     gf::Id m_selectedUserId;
 
-    std::vector<PlayerData>& m_players;
+    std::map<gf::Id, ClientPlayerData>& m_players;
   };
 
 }

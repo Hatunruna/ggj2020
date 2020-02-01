@@ -17,6 +17,7 @@ namespace ggj {
   , game(*this, network, resources)
   , credits(*this, resources)
   , help(*this, resources)
+  , myPlayerId(gf::InvalidId)
   {
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();

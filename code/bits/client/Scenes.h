@@ -32,6 +32,8 @@ namespace ggj {
     GameScene game;
     CreditsScene credits;
     HelpScene help;
+
+    gf::Id myPlayerId;
   };
 
 }
