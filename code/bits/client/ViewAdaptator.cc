@@ -31,8 +31,6 @@ namespace ggj {
     static constexpr float ZoomMax = WorldSize.y / MinimalHeight;
     static constexpr float ZoomMin = WorldSize.y / MaximalHeight;
 
-    // gf::Log::debug("max: %f min %f\n", ZoomMax, ZoomMin);
-
     switch (event.type) {
       case gf::EventType::MouseMoved:
         if (m_state == State::Moving) {
@@ -42,7 +40,14 @@ namespace ggj {
           gf::Vector2f move = oldPosition - newPosition;
           move.y = 0.0f;
 
-          // gf::clamp(move.x, m_bounds.getTopLeft().x, m_bounds.getTopRight().x);
+          auto center = m_view.getCenter();
+
+          if (center.x + move.x < 0.f) {
+            move.x = -center.x;
+          }
+          if (center.x + move.x > WorldSize.x) {
+            move.x = WorldSize.x - center.x;
+          }
 
           m_view.move(move);
         }
@@ -65,24 +70,20 @@ namespace ggj {
         auto fixed = m_target.mapPixelToCoords(m_mousePosition, m_view);
         fixed.y = center.y;
 
-
         if (event.mouseWheel.offset.y > 0) {
-          m_view.zoom(ZoomInFactor, fixed);
+          m_zoomLevel *= ZoomInFactor;
+          m_zoomLevel = gf::clamp(m_zoomLevel, ZoomMin, ZoomMax);
+          if (m_zoomLevel > ZoomMin) {
+            m_view.zoom(ZoomInFactor, fixed);
+          }
         } else {
-          m_view.zoom(ZoomOutFactor, fixed);
+          m_zoomLevel *= ZoomOutFactor;
+          m_zoomLevel = gf::clamp(m_zoomLevel, ZoomMin, ZoomMax);
+          if (m_zoomLevel < ZoomMax) {
+            m_view.zoom(ZoomOutFactor, fixed);
+          }
         }
 
-        // if (event.mouseWheel.offset.y > 0 && m_zoomLevel > ZoomMin) {
-        //   m_zoomLevel *= ZoomInFactor;
-        //   m_zoomLevel = gf::clamp(m_zoomLevel, ZoomMin, ZoomMax);
-        //   m_view.zoom(m_zoomLevel, fixed);
-        // } else {
-        //   m_zoomLevel *= ZoomOutFactor;
-        //   m_zoomLevel = gf::clamp(m_zoomLevel, ZoomMin, ZoomMax);
-        //   m_view.zoom(m_zoomLevel, fixed);
-        // }
-
-        gf::Log::debug("current zoom %f\n", m_zoomLevel);
         break;
       }
 
