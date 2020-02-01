@@ -11,6 +11,8 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/modules")
 find_package(gf REQUIRED)
 find_package(gfnet REQUIRED)
 # find_package(Box2D REQUIRED)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(SFML2 REQUIRED sfml-audio>=2.1)
 
 set(TMPGAME_DATA_DIR "${CMAKE_INSTALL_PREFIX}/share/games/tmpgame" CACHE PATH "data path")
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/code/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h @ONLY)
@@ -32,9 +34,11 @@ add_executable(tmpgame
   code/bits/client/IntroScene.cc
   code/bits/client/LobbyScene.cc
   code/bits/client/MenuEntity.cc
+  code/bits/client/ResourceManager.cc
   code/bits/client/RoomScene.cc
   code/bits/client/Scenes.cc
   code/bits/client/ShipEntity.cc
+  code/bits/client/Singletons.cc
   code/bits/client/ViewAdaptator.cc
 
   vendor/imgui/imgui.cpp
@@ -57,6 +61,7 @@ target_include_directories(tmpgame
 target_link_libraries(tmpgame
   gf::gf0
   gf::gfnet0
+  ${SFML2_LIBRARIES}
 )
 
 install(
