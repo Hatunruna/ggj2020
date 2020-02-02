@@ -7,11 +7,18 @@
 
 namespace ggj {
   BackgroundEntity::BackgroundEntity(gf::ResourceManager& resources)
-  : m_texture(resources.getTexture("image/ship.png")) {
+  : m_texture(resources.getTexture("image/ship.png"))
+  , m_stars(gf::RectF::fromMinMax({-3000.0f, -1000.0f}, {6000.0f, 3000.0f})) {
 
   }
 
+  void BackgroundEntity::update(gf::Time time) {
+    m_stars.update(time);
+  }
+
   void BackgroundEntity::render(gf::RenderTarget& target, const gf::RenderStates& states) {
+    m_stars.render(target, states);
+
     static constexpr gf::Vector2f TextureSize = { 4030.0f, 1521.0f };
     static constexpr float RatioTexture = TextureSize.x / TextureSize.y;
 
@@ -28,12 +35,5 @@ namespace ggj {
     ship.scale(scaleFactors);
     ship.setAnchor(gf::Anchor::Center);
     target.draw(ship, states);
-
-    gf::RectangleShape alpha;
-    alpha.setSize(screenSize);
-    alpha.setColor(gf::Color::Opaque());
-    alpha.setPosition(coordinates.getCenter());
-    alpha.setAnchor(gf::Anchor::Center);
-    target.draw(alpha, states);
   }
 }

@@ -42,24 +42,40 @@ namespace ggj {
     m_startWidget.setCharacterSize(characterSize);
     m_startWidget.setAnchor(gf::Anchor::Center);
     m_startWidget.setPosition(startPosition);
+    m_startWidget.setDefaultTextColor(gf::Color::White);
+    m_startWidget.setDefaultTextOutlineColor(gf::Color::Black);
+    m_startWidget.setSelectedTextOutlineColor(gf::Color::Black);
+    m_startWidget.setTextOutlineThickness(characterSize * 0.05f);
     target.draw(m_startWidget, states);
 
     auto helpPosition = coords.getRelativePoint({ 0.5f, 0.4f });
     m_helpWidget.setCharacterSize(characterSize);
     m_helpWidget.setAnchor(gf::Anchor::Center);
     m_helpWidget.setPosition(helpPosition);
+    m_helpWidget.setDefaultTextColor(gf::Color::White);
+    m_helpWidget.setDefaultTextOutlineColor(gf::Color::Black);
+    m_helpWidget.setSelectedTextOutlineColor(gf::Color::Black);
+    m_helpWidget.setTextOutlineThickness(characterSize * 0.05f);
     target.draw(m_helpWidget, states);
 
     auto creditsPosition = coords.getRelativePoint({ 0.5f, 0.6f });
     m_creditsWidget.setCharacterSize(characterSize);
     m_creditsWidget.setAnchor(gf::Anchor::Center);
     m_creditsWidget.setPosition(creditsPosition);
+    m_creditsWidget.setDefaultTextColor(gf::Color::White);
+    m_creditsWidget.setDefaultTextOutlineColor(gf::Color::Black);
+    m_creditsWidget.setSelectedTextOutlineColor(gf::Color::Black);
+    m_creditsWidget.setTextOutlineThickness(characterSize * 0.05f);
     target.draw(m_creditsWidget, states);
 
     auto quitPosition = coords.getRelativePoint({ 0.5f, 0.8f });
     m_quitWidget.setCharacterSize(characterSize);
     m_quitWidget.setAnchor(gf::Anchor::Center);
     m_quitWidget.setPosition(quitPosition);
+    m_quitWidget.setDefaultTextColor(gf::Color::White);
+    m_quitWidget.setDefaultTextOutlineColor(gf::Color::Black);
+    m_quitWidget.setSelectedTextOutlineColor(gf::Color::Black);
+    m_quitWidget.setTextOutlineThickness(characterSize * 0.05f);
     target.draw(m_quitWidget, states);
   }
 
