@@ -6,9 +6,10 @@
 #include <gf/Sprite.h>
 
 namespace ggj {
-  BackgroundEntity::BackgroundEntity(gf::ResourceManager& resources)
+  BackgroundEntity::BackgroundEntity(gf::ResourceManager& resources, bool displayShip)
   : m_texture(resources.getTexture("image/ship.png"))
-  , m_stars(gf::RectF::fromMinMax({-3000.0f, -1000.0f}, {6000.0f, 3000.0f})) {
+  , m_stars(gf::RectF::fromMinMax({-3000.0f, -1000.0f}, {6000.0f, 3000.0f}))
+  , m_displayShip(displayShip) {
 
   }
 
@@ -18,6 +19,10 @@ namespace ggj {
 
   void BackgroundEntity::render(gf::RenderTarget& target, const gf::RenderStates& states) {
     m_stars.render(target, states);
+
+    if (!m_displayShip) {
+      return;
+    }
 
     static constexpr gf::Vector2f TextureSize = { 4030.0f, 1521.0f };
     static constexpr float RatioTexture = TextureSize.x / TextureSize.y;

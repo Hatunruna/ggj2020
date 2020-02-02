@@ -10,7 +10,7 @@ namespace ggj {
 
   class BackgroundEntity: public gf::Entity {
   public:
-    BackgroundEntity(gf::ResourceManager& resources);
+    BackgroundEntity(gf::ResourceManager& resources, bool displayShip = true);
 
     void update(gf::Time time) override;
     void render(gf::RenderTarget& target, const gf::RenderStates& states) override;
@@ -18,6 +18,7 @@ namespace ggj {
   private:
     gf::Texture &m_texture;
     StarsEntity m_stars;
+    bool m_displayShip;
   };
 
 }
