@@ -78,6 +78,7 @@ namespace ggj {
         if (in.recipient != gf::InvalidId) {
           out.message.recipient = in.recipient;
           send(in.recipient, out);
+          send(player.id, out);
         } else {
           broadcast(out);
         }
@@ -375,10 +376,14 @@ namespace ggj {
 
         // everything else has no effect
       }
-      
+
       PemServerUpdateShip update;
       update.state = m_ship.getState();
       broadcast(update);
+      m_ship.clear();
+
+      PemServerStartVoteForPrisoner prisoner;
+      broadcast(prisoner);
     }
   }
 
