@@ -54,15 +54,15 @@ namespace ggj {
       case MenuChoice::None:
         break;
       case MenuChoice::Start:
-        m_scenes.replaceScene(m_scenes.connection);
+        m_scenes.transitionToScene(m_scenes.connection, 0.4f, m_scenes.slideEffect);
         // m_scenes.replaceScene(m_scenes.game);
         // m_scenes.setClearColor(gf::Color::Gray(0.85f));
         break;
       case MenuChoice::Help:
-        m_scenes.replaceScene(m_scenes.help);
+        m_scenes.transitionToScene(m_scenes.help, 0.4f, m_scenes.slideEffect);
         break;
       case MenuChoice::Credits:
-        m_scenes.replaceScene(m_scenes.credits);
+        m_scenes.transitionToScene(m_scenes.credits, 0.4f, m_scenes.slideEffect);
         break;
       case MenuChoice::Quit:
         m_scenes.popScene();
