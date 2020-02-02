@@ -33,7 +33,7 @@ namespace ggj {
   , m_gamePhase(GamePhase::CapitainElection)
   , m_votedPlayer(gf::InvalidId)
   , m_alreadyVote(false)
-  , m_startMoveAndPlayButton("Start", resources.getFont("DejaVuSans.ttf"))
+  , m_startMoveAndPlayButton("Continue", resources.getFont("DejaVuSans.ttf"))
   , m_placeTypeSelected(PlaceType::None)
   {
     setWorldViewSize(WorldSize);
@@ -47,8 +47,10 @@ namespace ggj {
     addHudEntity(m_info);
     getWorldView().setViewport(gf::RectF::fromPositionSize({0.0f, 0.0f}, {1.0f, 2.f / 3.f}));
 
-    m_startMoveAndPlayButton.setDefaultBackgroundColor(gf::Color::Gray(0.75f));
+    m_startMoveAndPlayButton.setAnchor(gf::Anchor::Center);
+    m_startMoveAndPlayButton.setDefaultBackgroundColor(gf::Color4f(0.5f,0.5f,0.5f,0.65f));
     m_startMoveAndPlayButton.setDefault();
+
     m_ambiantBackground.setBuffer(gResourceManager().getSound("audio/ambiant.ogg"));
     m_ambiantBackground.setVolume(BackgroundAmbiantVolume);
     m_ambiantBackground.setLoop(true);
@@ -278,7 +280,17 @@ namespace ggj {
         case PemServerChoosePrisoner::type: {
           gf::Log::debug("[game] receive PemServerChoosePrisoner\n");
           auto data = bytes.as<PemServerChoosePrisoner>();
-          m_players[data.member].jail = true;
+
+          auto it = m_players.find(data.member);
+          if (it != m_players.end()) {
+            it->second.jail = true;
+
+            MessageData message;
+            message.origin = gf::InvalidId;
+            message.author = "server";
+            message.content = it->second.name + " is now jailed";
+            m_chat.appendMessage(std::move(message));
+          }
 
           m_gamePhase = GamePhase::CapitainElection;
           m_alreadyVote = true;
@@ -424,7 +436,7 @@ namespace ggj {
     //Start move and play button
     if (m_gamePhase == GamePhase::CapitainElection && m_players[m_scenes.myPlayerId].captain) {
       m_startMoveAndPlayButton.setCharacterSize(coordinates.getRelativeCharacterSize(0.05f));
-      m_startMoveAndPlayButton.setPosition(coordinates.getRelativePoint({0.05f, 0.6f}));
+      m_startMoveAndPlayButton.setPosition(coordinates.getRelativePoint({0.5f, 0.05f}));
 
       target.draw(m_startMoveAndPlayButton, states);
     }
