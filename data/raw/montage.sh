@@ -16,4 +16,5 @@ montage empty_card.png \
         release.png \
         reinforce_1.png \
         track.png \
-        -background none -tile 4x4 -geometry 400x500+0  png32:cards.png
+        examine.png\
+        -background none -tile 4x5 -geometry 400x500+0  png32:cards.png
