@@ -44,6 +44,9 @@ namespace ggj {
     title.setCharacterSize(characterSize);
     title.setAnchor(gf::Anchor::Center);
     title.setPosition(titlePosition);
+    title.setColor(gf::Color::White);
+    title.setOutlineColor(gf::Color::Black);
+    title.setOutlineThickness(characterSize * 0.05f);
     target.draw(title, states);
   }
 
