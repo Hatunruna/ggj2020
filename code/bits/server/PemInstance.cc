@@ -175,6 +175,7 @@ namespace ggj {
 
     for (auto& kv : m_votes) {
       if (kv.first == gf::InvalidId) {
+        gf::Log::debug("CONTINUE \n\n\n\n");
         continue;
       }
 
@@ -526,6 +527,29 @@ namespace ggj {
       broadcast(prisoner);
       m_currentlyPlaying = 0;
     }
+
+    turn++;
+    for(auto place : m_ship.places){
+      if(place.second.state == PlaceState::Broken){
+
+        if(place.first == PlaceType::LeftEngine || place.first == PlaceType::RightEngine || place.first == PlaceType::MidEngine){
+          notWorking += 3;
+        }
+
+        
+        ++notWorking;
+      }
+    }
+
+    distance += BasicMoveSpeed / notWorking/5;
+    if(turn == 10 && distance < ligthyear){
+      // REBEL WON
+    }else{
+      // PROTECTOR WON
+    }
+    notWorking = 0;
   }
+
+  //  15   ::: 100000 
 
 }

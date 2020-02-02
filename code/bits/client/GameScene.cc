@@ -230,6 +230,11 @@ namespace ggj {
         case PemServerInitRole::type: {
           gf::Log::debug("[game] receive PemServerInitRole\n");
           auto data = bytes.as<PemServerInitRole>();
+          if(data.role == CrewType::Rebel){
+            gf::Log::debug("[game] ROLE IS REBEL\n");
+          }else{
+            gf::Log::debug("[game] ROLE IS PROTECTOR\n");
+          }
           m_info.setRole(data.role);
           m_info.initializeHand(data.cards);
           break;

@@ -32,6 +32,10 @@ namespace ggj {
     std::map<gf::Id, Member> m_members;
     std::map<gf::Id, int32_t> m_votes;
     Ship m_ship;
+    int turn = 0;
+    float distance = 0;
+    float ligthyear = 10000;
+    int notWorking = 0;
   };
 
 }

@@ -27,11 +27,11 @@ namespace ggj {
         { PlaceType::LeftEngine,          createPlace(PlaceState::Working) },
         { PlaceType::Storage,             createPlace(PlaceState::Working) },
         { PlaceType::MainBridge,          createPlace(PlaceState::Working) },
-        { PlaceType::LifeSupport,          createPlace(PlaceState::Working) },
-        { PlaceType::MidEngine,          createPlace(PlaceState::Working) },
-        { PlaceType::Bathroom,          createPlace(PlaceState::Working) },
-        { PlaceType::Dormitory,          createPlace(PlaceState::Working) },
-        { PlaceType::Armory,          createPlace(PlaceState::Working) },
+        { PlaceType::LifeSupport,         createPlace(PlaceState::Working) },
+        { PlaceType::MidEngine,           createPlace(PlaceState::Working) },
+        { PlaceType::Bathroom,            createPlace(PlaceState::Working) },
+        { PlaceType::Dormitory,           createPlace(PlaceState::Working) },
+        { PlaceType::Armory,              createPlace(PlaceState::Working) },
         { PlaceType::GreenHouse,          createPlace(PlaceState::Working) },
       };
 

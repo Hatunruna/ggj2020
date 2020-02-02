@@ -21,6 +21,7 @@ namespace ggj {
     constexpr float MaximalHeight = 1500.0f;
 
     constexpr int MaxCards = 3;
+    constexpr float BasicMoveSpeed = 1000;
 }
 
 #endif // TMPGAME_CONSTANTS_H

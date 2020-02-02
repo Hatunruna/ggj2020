@@ -15,22 +15,22 @@ namespace ggj {
   };
 
   enum class PlaceType : uint16_t {
-    Armory,
-    Bathroom,
-    CommunicationCenter,
-    Dormitory,
-    GreenHouse,
-    Infirmery,
-    LeftEngine,
-    LifeSupport,
-    MainBridge,
-    MidEngine,
-    Navigation,
-    Prison,
-    Refectory,
-    RightEngine,
-    Storage,
-    None,
+    Armory, // 1
+    Bathroom, // 1
+    CommunicationCenter, // 3
+    Dormitory, // 1
+    GreenHouse, // 2
+    Infirmery, // 2
+    LeftEngine, // 3
+    LifeSupport, // 2
+    MainBridge, // 3
+    MidEngine, // 3
+    Navigation, // 3
+    Prison, // 0
+    Refectory, // 1
+    RightEngine, // 3
+    Storage, // 1
+    None, // 0
   };
 
   inline std::string placeTypeString(PlaceType type) {
