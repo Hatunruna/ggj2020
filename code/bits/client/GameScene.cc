@@ -117,6 +117,8 @@ namespace ggj {
         PemClientMoveAndPlay moveAndPlay;
         moveAndPlay.place = m_placeTypeSelected;
         moveAndPlay.card = clickedCardType;
+
+        gf::Log::debug("(GAME) Action is: %s %s\n", placeTypeString(m_placeTypeSelected).c_str(), cardTypeString(clickedCardType).c_str());
         m_network.send(moveAndPlay);
 
         m_gamePhase = GamePhase::Resolution;
@@ -262,6 +264,7 @@ namespace ggj {
           message.author = "server";
           message.content = "It's your turn to play";
           m_chat.appendMessage(std::move(message));
+          m_ship.stopDrawWarnings();
 
           m_gamePhase = GamePhase::Action;
 
@@ -303,7 +306,12 @@ namespace ggj {
 
         case PemServerUpdateShip::type: {
           gf::Log::debug("[game] receive PemServerUpdateShip\n");
-          //TODO: do the implementation
+
+          auto data = bytes.as<PemServerUpdateShip>();
+          for (auto &entry: data.state) {
+            m_ship.setPlaceState(entry.first, entry.second);
+          }
+
           break;
         }
 

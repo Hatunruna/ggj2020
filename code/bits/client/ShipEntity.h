@@ -14,6 +14,8 @@ namespace ggj {
 
     void updateMouseCoords(const gf::Vector2i& coords);
     void selectPlace(PlaceType place);
+    void setPlaceState(PlaceType place, bool state);
+    void stopDrawWarnings();
 
     void render(gf::RenderTarget& target, const gf::RenderStates& states) override;
     bool getPlaceType(const gf::Vector2f& position, PlaceType& res) const;
@@ -24,6 +26,7 @@ namespace ggj {
     gf::RectangleShape m_rect;
     gf::Vector2i m_mouseCoords;
     PlaceType m_selectedPlace;
+    bool m_drawWarning;
   };
 }
 
