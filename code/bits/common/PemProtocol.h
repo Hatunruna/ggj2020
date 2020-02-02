@@ -81,12 +81,11 @@ namespace ggj {
   struct PemServerUpdateHand {
     static constexpr gf::Id type = "PemServerUpdateHand"_id;
     CardType card;
-    uint index;
   };
 
   template<typename Archive>
   Archive operator|(Archive& ar, PemServerUpdateHand& data) {
-    return ar | data.card | data.index;
+    return ar | data.card;
   }
 
   struct PemServerUpdateShip {

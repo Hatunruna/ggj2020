@@ -383,26 +383,22 @@ namespace ggj {
       // draw the next card
       for (auto member : m_members) {
         CardType newCard;
-        uint index;
         
         for(uint i = 0 ; i < member.second.cards.size() ; ++i){
           if (member.second.cards[i] == member.second.card){
             if (member.second.type == CrewType::Protector){
               newCard = m_deck.pickProtectorCard();
               member.second.cards[i] = newCard;
-              index = i;
             }else{
               assert(member.second.type == CrewType::Rebel);
               newCard = m_deck.pickRebelCard();
               member.second.cards[i] =newCard;
-              index = i;
             } 
             break;
           }
         }
         PemServerUpdateHand updateHand;
         updateHand.card = newCard;
-        updateHand.index = index;
         send(member.first,updateHand);
       }
 
