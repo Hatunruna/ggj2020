@@ -45,8 +45,8 @@ namespace ggj {
   gf::RectF PlayerInfo::getCardBounds(gf::Vector2f screeSize, std::size_t i) const {
     float newHeight = screeSize.height * RelativeCardHeight;
     float newWidth = newHeight * TextureRatio;
-    float xPosition = 0.01f * screeSize.width + i * (newWidth + 0.01f * screeSize.width);
-    float yPositon = 0.99f * screeSize.height - newHeight;
+    float xPosition = 0.02f * screeSize.width + i * (newWidth + 0.01f * screeSize.width);
+    float yPositon = 0.98f * screeSize.height - newHeight;
 
     return gf::RectF::fromPositionSize({xPosition, yPositon}, {newWidth, newHeight});
   }
@@ -58,8 +58,8 @@ namespace ggj {
     gf::RectangleShape m_rectRole;
     m_rectRole.setColor(gf::Color::Transparent);
     m_rectRole.setPosition({outlineThickness,outlineThickness});
-    auto screenSize = coordinates.getRelativeSize({1.0f, 2.f / 3.f});
-    m_rectRole.setSize(screenSize - gf::Vector2f(outlineThickness * 2, outlineThickness));
+    auto screenSize = coordinates.getRelativeSize({1.0f, 1.0f});
+    m_rectRole.setSize(screenSize - gf::Vector2f(outlineThickness * 2, outlineThickness * 2));
     if (m_role == CrewType::Protector)
     {
       m_rectRole.setOutlineColor(gf::Color::Blue);
