@@ -5,6 +5,7 @@
 #include <gf/ResourceManager.h>
 #include <gf/Shapes.h>
 
+#include <gf/Animation.h>
 #include "common/PemTypes.h"
 
 namespace ggj {
@@ -17,12 +18,15 @@ namespace ggj {
     void setPlaceState(PlaceType place, bool state);
     void stopDrawWarnings();
 
+    void update(gf::Time time) override;
     void render(gf::RenderTarget& target, const gf::RenderStates& states) override;
     bool getPlaceType(const gf::Vector2f& position, PlaceType& res) const;
 
   private:
     gf::Font &m_font;
     gf::Texture &m_shipTexture;
+    gf::Texture &m_engineTexture;
+    gf::Animation m_engineAnimation;
     gf::RectangleShape m_rect;
     gf::Vector2i m_mouseCoords;
     PlaceType m_selectedPlace;

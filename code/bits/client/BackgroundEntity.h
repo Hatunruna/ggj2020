@@ -1,6 +1,7 @@
 #ifndef TMPGAME_BACKGROUND_ENTITY
 #define TMPGAME_BACKGROUND_ENTITY
 
+#include <gf/Animation.h>
 #include <gf/Entity.h>
 #include <gf/ResourceManager.h>
 
@@ -17,6 +18,8 @@ namespace ggj {
 
   private:
     gf::Texture &m_texture;
+    gf::Texture &m_engineTexture;
+    gf::Animation m_engineAnimation;
     StarsEntity m_stars;
     bool m_displayShip;
   };

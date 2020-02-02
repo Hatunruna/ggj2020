@@ -1,5 +1,6 @@
 #include "ShipEntity.h"
 
+#include <gf/AnimatedSprite.h>
 #include <gf/Coordinates.h>
 #include <gf/Log.h>
 #include <gf/Polygon.h>
@@ -282,9 +283,19 @@ namespace ggj {
   ShipEntity::ShipEntity(gf::ResourceManager& resources)
   : m_font(resources.getFont("DejaVuSans.ttf"))
   , m_shipTexture(resources.getTexture("image/ship.png"))
+  , m_engineTexture(resources.getTexture("image/engine.png"))
   , m_selectedPlace(PlaceType::None)
   , m_drawWarning(false) {
     initializeBounds();
+
+    static constexpr gf::Vector2f EngineTextureSize = { 1072.0f / 6432.0f, 1521.0f / 6084.0f };
+
+    for (int j = 0; j < 4; ++j) {
+      for (int i = 0; i < 6; ++i) {
+        auto rectTexture = gf::RectF::fromPositionSize({ i * EngineTextureSize.width, j * EngineTextureSize.height }, EngineTextureSize);
+        m_engineAnimation.addFrame(m_engineTexture, rectTexture, gf::seconds(1.0f/25.0f));
+      }
+    }
   }
 
   void ShipEntity::updateMouseCoords(const gf::Vector2i& coords) {
@@ -304,7 +315,17 @@ namespace ggj {
     m_drawWarning = false;
   }
 
+  void ShipEntity::update(gf::Time time) {
+    m_engineAnimation.update(time);
+  }
+
   void ShipEntity::render(gf::RenderTarget& target, const gf::RenderStates& states) {
+    gf::AnimatedSprite animation;
+    animation.setAnimation(m_engineAnimation);
+    animation.setPosition({ 625.0f, 0.0f });
+    animation.setAnchor(gf::Anchor::TopRight);
+    target.draw(animation, states);
+
     gf::Coordinates coordinates(target);
     gf::Sprite ship(m_shipTexture);
     ship.setPosition({ 0.0f, 0.0f });

@@ -57,6 +57,7 @@ namespace ggj {
         break;
       case MenuChoice::Start:
         m_scenes.transitionToScene(m_scenes.connection, 0.3f, m_scenes.slideEffect);
+        // m_scenes.transitionToScene(m_scenes.game, 0.3f, m_scenes.slideEffect);
         break;
       case MenuChoice::Help:
         m_scenes.transitionToScene(m_scenes.help, 0.4f, m_scenes.slideEffect);
