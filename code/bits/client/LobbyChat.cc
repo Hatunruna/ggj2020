@@ -120,7 +120,7 @@ namespace ggj {
     VOICE_ELSEIF("17")
     VOICE_ELSEIF("18")
     VOICE_ELSEIF("19")
-    VOICE_ELSEIF("10")
+    VOICE_ELSEIF("20")
     VOICE_ELSEIF("21")
     VOICE_ELSEIF("22")
     VOICE_ELSEIF("23")
