@@ -340,17 +340,25 @@ namespace ggj {
                 break;
               }
               case ResolutionType::Hide: {
-                message.content = "I saw ";
-                for (auto &playerID: resolution.members) {
-                  message.content += m_players.at(playerID).name + " ";
+                if (resolution.members.size() > 0) {
+                  message.content = "I saw ";
+                  for (auto &playerID: resolution.members) {
+                    message.content += m_players.at(playerID).name + " ";
+                  }
+                  message.content += " hiding.";
+                } else {
+                  message.content = "I saw nobody.";
                 }
-                message.content += " hiding.";
                 break;
               }
               case ResolutionType::Track: {
-                message.content = "I saw ";
-                for (auto &playerID: resolution.members) {
-                  message.content += m_players.at(playerID).name + " ";
+                if (resolution.members.size() > 0) {
+                  message.content = "I detected ";
+                  for (auto &playerID: resolution.members) {
+                    message.content += m_players.at(playerID).name + " ";
+                  }
+                } else {
+                  message.content = "I detected nobody.";
                 }
                 break;
               }
