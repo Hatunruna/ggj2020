@@ -506,6 +506,10 @@ namespace ggj {
 
         for(uint i = 0 ; i < member.second.cards.size() ; ++i){
           if (member.second.cards[i] == member.second.card){
+            if(member.second.prison != 0 ){
+              continue;
+            }
+            
             if (member.second.type == CrewType::Protector){
               newCard = m_deck.pickProtectorCard();
               member.second.cards[i] = newCard;
@@ -536,7 +540,7 @@ namespace ggj {
           notWorking += 3;
         }
 
-        
+
         ++notWorking;
       }
     }
