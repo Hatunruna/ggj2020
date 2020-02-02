@@ -81,6 +81,8 @@ namespace ggj {
           res = (place.previous == PlaceState::Working);
         } else if (place.alarm > 0) {
           res = false;
+        }else if (place.bomb == 1){
+          res = false;
         }
 
         state.emplace(kv.first, res);
