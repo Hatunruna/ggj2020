@@ -27,9 +27,15 @@ namespace ggj {
         { PlaceType::LeftEngine,          createPlace(PlaceState::Working) },
         { PlaceType::Storage,             createPlace(PlaceState::Working) },
         { PlaceType::MainBridge,          createPlace(PlaceState::Working) },
+        { PlaceType::LifeSupport,          createPlace(PlaceState::Working) },
+        { PlaceType::MidEngine,          createPlace(PlaceState::Working) },
+        { PlaceType::Bathroom,          createPlace(PlaceState::Working) },
+        { PlaceType::Dormitory,          createPlace(PlaceState::Working) },
+        { PlaceType::Armory,          createPlace(PlaceState::Working) },
+        { PlaceType::GreenHouse,          createPlace(PlaceState::Working) },
       };
 
-      if (players > 4){
+      /*if (players > 4){
         ship.insert({ PlaceType::LifeSupport,   createPlace(PlaceState::Working)});
         ship.insert({ PlaceType::MidEngine,     createPlace(PlaceState::Working)});
       }
@@ -42,7 +48,7 @@ namespace ggj {
       if (players > 6){
         ship.insert({ PlaceType::Armory,        createPlace(PlaceState::Working)});
         ship.insert({ PlaceType::GreenHouse,    createPlace(PlaceState::Working)});
-      }
+      }*/
 
       return ship;
     }
