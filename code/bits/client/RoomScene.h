@@ -10,8 +10,9 @@
 #include "common/GameSettings.h"
 #include "common/ProtocolData.h"
 
-#include "LobbyChat.h"
+#include "BackgroundEntity.h"
 #include "ClientNetwork.h"
+#include "LobbyChat.h"
 
 namespace ggj {
 
@@ -20,7 +21,7 @@ namespace ggj {
   class RoomScene : public gf::Scene {
   public:
 
-    RoomScene(Scenes& scenes, ClientNetwork& network);
+    RoomScene(Scenes& scenes,  gf::ResourceManager& resources, ClientNetwork& network);
 
     void startRoom(const GameInstanceSettings& settings);
 
@@ -40,6 +41,8 @@ namespace ggj {
     std::vector<PlayerData> m_players;
 
     LobbyChat m_chat;
+
+    BackgroundEntity m_backgorund;
   };
 
 }

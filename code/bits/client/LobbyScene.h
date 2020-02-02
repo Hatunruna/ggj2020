@@ -7,8 +7,9 @@
 #include "common/GameSettings.h"
 #include "common/ProtocolData.h"
 
-#include "LobbyChat.h"
+#include "BackgroundEntity.h"
 #include "ClientNetwork.h"
+#include "LobbyChat.h"
 
 namespace ggj {
 
@@ -16,8 +17,7 @@ namespace ggj {
 
   class LobbyScene : public gf::Scene {
   public:
-
-    LobbyScene(Scenes& scenes, ClientNetwork& network);
+    LobbyScene(Scenes& scenes, gf::ResourceManager& resources, ClientNetwork& network);
 
   private:
     void doProcessEvent(gf::Event& event) override;
@@ -41,6 +41,8 @@ namespace ggj {
     RoomData m_selectedRoomData;
 
     LobbyChat m_chat;
+
+    BackgroundEntity m_backgorund;
   };
 
 }

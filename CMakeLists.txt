@@ -34,6 +34,7 @@ endif()
 
 add_executable(tmpgame
   code/client.cc
+  code/bits/client/BackgroundEntity.cc
   code/bits/client/LobbyChat.cc
   code/bits/client/GameChat.cc
   code/bits/client/ClientNetwork.cc
@@ -49,6 +50,7 @@ add_executable(tmpgame
   code/bits/client/RoomScene.cc
   code/bits/client/Scenes.cc
   code/bits/client/ShipEntity.cc
+  code/bits/client/StarsEntity.cc
   code/bits/client/Singletons.cc
   code/bits/client/ViewAdaptator.cc
 

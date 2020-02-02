@@ -114,10 +114,10 @@ namespace ggj {
 
         if (!it->second.voted && it->second.prison == 0) {
           if(in.member == gf::InvalidId){
-            m_votes[in.member]++;
           }else{
             m_votes[in.member]++;
-          }it->second.voted = true;
+          }
+          it->second.voted = true;
         }
 
         checkEndOfVote(VoteType::Prison);
@@ -157,12 +157,21 @@ namespace ggj {
     }
 
     int32_t votes = 0;
+    ++voted;
 
     for (auto& kv : m_votes) {
       votes += kv.second;
     }
 
     if (votes < electors) {
+      if(type == VoteType::Prison && electors == voted){
+        PemServerChoosePrisoner data;
+        data.member = gf::InvalidId;
+        broadcast(data);
+        m_votes.clear();
+        voted = 0;
+        return;
+      }
       return;
     }
 
@@ -184,14 +193,6 @@ namespace ggj {
     gf::Id captain = gf::InvalidId;
 
     if (captains.empty()) {
-      if(type == VoteType::Prison){
-        captain = gf::InvalidId;
-        PemServerChoosePrisoner data;
-        data.member = captain;
-        broadcast(data);
-        m_votes.clear();
-        return;
-      }
       std::vector<gf::Id> eligibles;
 
       for (auto& kv : m_members) {
@@ -206,19 +207,19 @@ namespace ggj {
       captain = captains.front();
     } else { // draw
       if(type == VoteType::Prison){
+        gf::Log::debug("(PEM) draw vote for prisoner 1 \n");
         captain = gf::InvalidId;
         PemServerChoosePrisoner data;
         data.member = captain;
         broadcast(data);
         m_votes.clear();
-        gf::Log::debug("(PEM) draw vote for prisoner\n");
+        gf::Log::debug("(PEM) draw vote for prisoner 2 \n");
+        voted = 0;
         return;
       }else{
         captain = captains[m_random.computeUniformInteger<std::size_t>(0, captains.size() - 1)];
       }
     }
-
-    m_votes.clear();
 
     for (auto& kv : m_members) {
       kv.second.voted = false;
@@ -237,6 +238,9 @@ namespace ggj {
       auto it = m_members.find(captain);
       it->second.prison = 2;
     }
+
+    m_votes.clear();
+    voted = 0;
   }
 
 
@@ -244,7 +248,7 @@ namespace ggj {
     int32_t freemen = 0;
 
     for (auto& kv : m_members) {
-      if (kv.second.released) {
+      if (kv.second.prison == 0) {
         ++freemen;
       }
     }
@@ -397,12 +401,13 @@ namespace ggj {
         assert(place.state == PlaceState::Broken);
         if (has(CardType::Repair)) {
           place.bomb = 0;
+          place.state = PlaceState::Working;
         }
         if (has(CardType::FalseRepair1)) {
-          place.alarm = 1;
+          place.repair = 1;
         }
         if (has(CardType::FalseRepair2)) {
-          place.alarm = 2;
+          place.repair = 2;
         }
 
         if (has(CardType::SetupJammer)) {

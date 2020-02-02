@@ -4,6 +4,7 @@
 #include <gf/Scene.h>
 #include <gf/StaticString.h>
 
+#include "BackgroundEntity.h"
 #include "ClientNetwork.h"
 
 namespace ggj {
@@ -12,8 +13,7 @@ namespace ggj {
 
   class ConnectionScene : public gf::Scene {
   public:
-
-    ConnectionScene(Scenes& scenes, ClientNetwork& network);
+    ConnectionScene(Scenes& scenes, gf::ResourceManager& resources, ClientNetwork& network);
 
   private:
     void doProcessEvent(gf::Event& event) override;
@@ -29,6 +29,8 @@ namespace ggj {
     gf::StaticString<255> m_hostnameBuffer;
     gf::StaticString<255> m_nameBuffer;
     bool m_connectionAsked;
+
+    BackgroundEntity m_backgorund;
   };
 
 }

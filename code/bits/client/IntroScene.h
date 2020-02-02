@@ -4,6 +4,7 @@
 #include <gf/ResourceManager.h>
 #include <gf/Scene.h>
 
+#include "BackgroundEntity.h"
 #include "MenuEntity.h"
 
 namespace ggj {
@@ -12,7 +13,6 @@ namespace ggj {
 
   class IntroScene : public gf::Scene {
   public:
-
     IntroScene(Scenes& scenes, gf::ResourceManager& resources);
 
   private:
@@ -27,6 +27,8 @@ namespace ggj {
 
     MenuChoice m_choice;
     MenuEntity m_menu;
+
+    BackgroundEntity m_backgorund;
   };
 
 }

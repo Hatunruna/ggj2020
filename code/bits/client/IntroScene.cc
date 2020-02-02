@@ -16,10 +16,12 @@ namespace ggj {
   , m_escapeAction("Escape")
   , m_choice(MenuChoice::None)
   , m_menu(resources, m_choice)
+  , m_backgorund(resources)
   {
     m_escapeAction.addKeycodeKeyControl(gf::Keycode::Escape);
     addAction(m_escapeAction);
 
+    addHudEntity(m_backgorund);
     addHudEntity(m_menu);
   }
 

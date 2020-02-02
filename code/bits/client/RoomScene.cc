@@ -17,12 +17,14 @@
 
 namespace ggj {
 
-  RoomScene::RoomScene(Scenes& scenes, ClientNetwork& network)
+  RoomScene::RoomScene(Scenes& scenes, gf::ResourceManager& resources, ClientNetwork& network)
   : gf::Scene(InitialSize)
   , m_scenes(scenes)
   , m_network(network)
   , m_chat(network)
+  , m_backgorund(resources)
   {
+    addHudEntity(m_backgorund);
   }
 
   void RoomScene::startRoom(const GameInstanceSettings& settings) {
@@ -78,7 +80,7 @@ namespace ggj {
 
         case ServerStartGame::type: {
           m_scenes.replaceScene(m_scenes.game);
-          m_scenes.setClearColor(gf::Color::Gray(0.85f));
+          m_scenes.setClearColor(gf::Color::Black);
           m_scenes.game.initialize(m_players);
           // do not poll any more message as the next messages are for the game
           return;

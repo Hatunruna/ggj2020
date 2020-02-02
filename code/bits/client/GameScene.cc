@@ -28,6 +28,7 @@ namespace ggj {
   , m_escapeAction("Escape")
   , m_adaptator(m_scenes.getRenderer(), getWorldView())
   , m_ship(resources)
+  , m_stars(gf::RectF::fromMinMax({-3000.0f, -1000.0f}, {6000.0f, 3000.0f}))
   , m_info(resources)
   , m_chat(network, m_players)
   , m_gamePhase(GamePhase::CapitainElection)
@@ -44,6 +45,7 @@ namespace ggj {
     addAction(m_escapeAction);
 
     addWorldEntity(m_ship);
+    addWorldEntity(m_stars);
 
     addHudEntity(m_info);
     getWorldView().setViewport(gf::RectF::fromPositionSize({0.0f, 0.0f}, {1.0f, 2.f / 3.f}));
