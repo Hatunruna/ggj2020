@@ -50,7 +50,7 @@ namespace ggj {
 
         if (m_network.isConnected()) {
           m_connectionAsked = false;
-          m_scenes.replaceScene(m_scenes.lobby);
+          m_scenes.transitionToScene(m_scenes.lobby, 0.4f, m_scenes.fadeEffect);
 
           ClientHello data;
           data.name = m_nameBuffer.getData();
