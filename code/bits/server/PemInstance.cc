@@ -114,6 +114,7 @@ namespace ggj {
 
         if (!it->second.voted && it->second.prison == 0) {
           if(in.member == gf::InvalidId){
+            m_votes[in.member]++;
           }else{
             m_votes[in.member]++;
           }
@@ -157,23 +158,16 @@ namespace ggj {
     }
 
     int32_t votes = 0;
-    ++voted;
 
     for (auto& kv : m_votes) {
       votes += kv.second;
     }
 
     if (votes < electors) {
-      if(type == VoteType::Prison && electors == voted){
-        PemServerChoosePrisoner data;
-        data.member = gf::InvalidId;
-        broadcast(data);
-        m_votes.clear();
-        voted = 0;
-        return;
-      }
       return;
     }
+
+    votes = 0;
 
     std::vector<gf::Id> captains;
 
@@ -190,9 +184,21 @@ namespace ggj {
       }
     }
 
+    gf::Log::debug("SIZE OF CAPTAINS : %zu \n\n\n\n", captains.size());
+
     gf::Id captain = gf::InvalidId;
 
     if (captains.empty()) {
+      if(type == VoteType::Prison){
+        gf::Log::debug("(PEM) draw vote for prisoner 1 \n");
+        captain = gf::InvalidId;
+        PemServerChoosePrisoner data;
+        data.member = captain;
+        broadcast(data);
+        m_votes.clear();
+        gf::Log::debug("(PEM) draw vote for prisoner 2 \n");
+        return;
+      }
       std::vector<gf::Id> eligibles;
 
       for (auto& kv : m_members) {
@@ -214,7 +220,6 @@ namespace ggj {
         broadcast(data);
         m_votes.clear();
         gf::Log::debug("(PEM) draw vote for prisoner 2 \n");
-        voted = 0;
         return;
       }else{
         captain = captains[m_random.computeUniformInteger<std::size_t>(0, captains.size() - 1)];
@@ -240,7 +245,6 @@ namespace ggj {
     }
 
     m_votes.clear();
-    voted = 0;
   }
 
 

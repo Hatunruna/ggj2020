@@ -54,10 +54,6 @@ namespace ggj {
   {
   }
 
-  void Ship::changeState(PlaceType type, PlaceState state) {
-    places[type].state = state;
-  }
-
   void Ship::addCrew(PlaceType type, gf::Id id){
     places[type].members.insert(id);
   }
