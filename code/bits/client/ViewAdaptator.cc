@@ -11,7 +11,7 @@ namespace ggj {
   , m_view(view)
   , m_mousePosition({ 0, 0 })
   , m_state(State::Stationary)
-  , m_zoomLevel(1.0f)
+  , m_zoomLevel(0)
   {
 
   }
@@ -28,8 +28,8 @@ namespace ggj {
   void ViewAdaptator::processEvent(const gf::Event& event) {
     static constexpr float ZoomInFactor = 0.8f;
     static constexpr float ZoomOutFactor = 1.25f;
-    static constexpr float ZoomMax = WorldSize.y / MinimalHeight;
-    static constexpr float ZoomMin = WorldSize.y / MaximalHeight;
+    static constexpr int ZoomMax = 1;
+    static constexpr int ZoomMin = -4;
 
     switch (event.type) {
       case gf::EventType::MouseMoved:
@@ -74,20 +74,16 @@ namespace ggj {
         break;
 
       case gf::EventType::MouseWheelScrolled: {
-        auto center = m_view.getCenter();
         auto fixed = m_target.mapPixelToCoords(m_mousePosition, m_view);
-        fixed.y = center.y;
 
         if (event.mouseWheel.offset.y > 0) {
-          m_zoomLevel *= ZoomInFactor;
-          m_zoomLevel = gf::clamp(m_zoomLevel, ZoomMin, ZoomMax);
           if (m_zoomLevel > ZoomMin) {
+            --m_zoomLevel;
             m_view.zoom(ZoomInFactor, fixed);
           }
         } else {
-          m_zoomLevel *= ZoomOutFactor;
-          m_zoomLevel = gf::clamp(m_zoomLevel, ZoomMin, ZoomMax);
           if (m_zoomLevel < ZoomMax) {
+            ++m_zoomLevel;
             m_view.zoom(ZoomOutFactor, fixed);
           }
         }

@@ -22,8 +22,7 @@ namespace ggj {
     };
 
     State m_state;
-
-    float m_zoomLevel;
+    int m_zoomLevel;
   };
 }
 
