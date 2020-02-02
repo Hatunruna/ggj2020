@@ -15,9 +15,7 @@ namespace ggj {
   PlayerInfo::PlayerInfo(gf::ResourceManager& resources)
   : m_font(resources.getFont("DejaVuSans.ttf"))
   , m_emptyCardTexture(resources.getTexture("image/empty_card.png"))
-  , m_atlas("atlas.xml", resources)
-  , m_role("unknown") {
-
+  , m_atlas("atlas.xml", resources) {
   }
 
   void PlayerInfo::initializeHand(const std::array<CardType, MaxCards>& cards) {
@@ -47,13 +45,22 @@ namespace ggj {
   void PlayerInfo::render(gf::RenderTarget& target, const gf::RenderStates& states) {
     gf::Coordinates coordinates(target);
 
-    gf::Text text("Role: " + m_role, m_font);
-    text.setCharacterSize(coordinates.getRelativeCharacterSize(0.05f));
-    text.setColor(gf::Color::Blue);
-    text.setPosition(coordinates.getRelativePoint({0.01f, 0.6f}));
-    target.draw(text, states);
-
-
+    constexpr float outlineThickness = 5.f;
+    gf::RectangleShape m_rectRole;
+    m_rectRole.setColor(gf::Color::Transparent);
+    m_rectRole.setPosition({outlineThickness,outlineThickness});
+    auto screenSize = coordinates.getRelativeSize({1.0f, 2.f / 3.f});
+    m_rectRole.setSize(screenSize - gf::Vector2f(outlineThickness * 2, outlineThickness));
+    if (m_role == CrewType::Protector)
+    {
+      m_rectRole.setOutlineColor(gf::Color::Blue);
+    }
+    else
+    {
+      m_rectRole.setOutlineColor(gf::Color::Blue);
+    }
+    m_rectRole.setOutlineThickness(outlineThickness);
+    target.draw(m_rectRole, states);
 
     for (unsigned i = 0; i < m_cards.size(); ++i) {
       auto bounds = getCardBounds(coordinates.getRelativeSize({ 1.0f, 1.0f }), i);
