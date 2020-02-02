@@ -34,6 +34,7 @@ namespace ggj {
   , m_votedPlayer(gf::InvalidId)
   , m_alreadyVote(false)
   , m_startMoveAndPlayButton("Continue", resources.getFont("DejaVuSans.ttf"))
+  , m_alreadyUsedMoveAndPlayButton(false)
   , m_placeTypeSelected(PlaceType::None)
   {
     setWorldViewSize(WorldSize);
@@ -92,10 +93,11 @@ namespace ggj {
     m_adaptator.processEvent(event);
 
     if (event.type == gf::EventType::MouseButtonPressed && event.mouseButton.button == gf::MouseButton::Left) {
-      if (m_startMoveAndPlayButton.contains(event.mouseButton.coords)) {
-        gf::Log::debug("(GAME) Click start\n");
+      if (m_startMoveAndPlayButton.contains(event.mouseButton.coords) && m_gamePhase == GamePhase::CapitainElection && m_players[m_scenes.myPlayerId].captain && !m_alreadyUsedMoveAndPlayButton) {
+        gf::Log::debug("(GAME) Click continue\n");
         PemClientStartMoveAndPlay message;
         m_network.send(message);
+        m_alreadyUsedMoveAndPlayButton = true;
       }
 
       gf::Vector2f coords = gf::Vector2f(event.mouseButton.coords);
@@ -254,6 +256,8 @@ namespace ggj {
 
             m_chat.appendMessage(std::move(message));
           }
+
+          m_alreadyUsedMoveAndPlayButton = false;
           break;
         }
 
@@ -288,16 +292,18 @@ namespace ggj {
           gf::Log::debug("[game] receive PemServerChoosePrisoner\n");
           auto data = bytes.as<PemServerChoosePrisoner>();
 
+          MessageData message;
+          message.origin = gf::InvalidId;
+          message.author = "server";
+
           auto it = m_players.find(data.member);
           if (it != m_players.end()) {
             it->second.jail = true;
-
-            MessageData message;
-            message.origin = gf::InvalidId;
-            message.author = "server";
             message.content = it->second.name + " is now jailed";
-            m_chat.appendMessage(std::move(message));
+          } else {
+            message.content = "No one has been in prison";
           }
+          m_chat.appendMessage(std::move(message));
 
           m_gamePhase = GamePhase::CapitainElection;
           m_alreadyVote = true;
@@ -334,17 +340,25 @@ namespace ggj {
                 break;
               }
               case ResolutionType::Hide: {
-                message.content = "I saw ";
-                for (auto &playerID: resolution.members) {
-                  message.content += m_players[playerID].name + " ";
+                if (resolution.members.size() > 0) {
+                  message.content = "I saw ";
+                  for (auto &playerID: resolution.members) {
+                    message.content += m_players.at(playerID).name + " ";
+                  }
+                  message.content += " hiding.";
+                } else {
+                  message.content = "I saw nobody.";
                 }
-                message.content += " hiding.";
                 break;
               }
               case ResolutionType::Track: {
-                message.content = "I saw ";
-                for (auto &playerID: resolution.members) {
-                  message.content += m_players[playerID].name + " ";
+                if (resolution.members.size() > 0) {
+                  message.content = "I detected ";
+                  for (auto &playerID: resolution.members) {
+                    message.content += m_players.at(playerID).name + " ";
+                  }
+                } else {
+                  message.content = "I detected nobody.";
                 }
                 break;
               }
@@ -353,13 +367,26 @@ namespace ggj {
                 break;
               }
               case ResolutionType::Release: {
-                //message.content = "It's your turn to play";
+                for (auto &playerID: resolution.members) {
+                  m_players[playerID].jail = false;
+                  message.content += m_players[playerID].name + " ";
+                }
+                message.content += "are released from prison.";
                 break;
               }
             }
 
             m_chat.appendMessage(std::move(message));
           }
+
+          break;
+        }
+
+        case PemServerUpdateHand::type: {
+          gf::Log::debug("[game] receive PemServerUpdateHand\n");
+
+          auto data = bytes.as<PemServerUpdateHand>();
+          break;
         }
       }
     }

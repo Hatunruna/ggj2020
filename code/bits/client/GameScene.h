@@ -51,6 +51,7 @@ namespace ggj {
     bool m_alreadyVote;
 
     gf::TextButtonWidget m_startMoveAndPlayButton;
+    bool m_alreadyUsedMoveAndPlayButton;
 
     PlaceType m_placeTypeSelected;
 
