@@ -176,7 +176,7 @@ namespace ggj {
         case PemServerInitRole::type: {
           gf::Log::debug("[game] receive PemServerInitRole\n");
           auto data = bytes.as<PemServerInitRole>();
-          m_info.setRole(crewTypeString(data.role));
+          m_info.setRole(data.role);
           m_info.initializeHand(data.cards);
           break;
         }
@@ -235,7 +235,7 @@ namespace ggj {
 
         case PemServerStartVoteForPrisoner::type: {
           gf::Log::debug("[game] receive PemServerStartVoteForPrisoner\n");
-          m_alreadyVote = false;
+          m_alreadyVote = (m_players[m_scenes.myPlayerId].jail);
           m_gamePhase = GamePhase::Meeting;
           break;
         }
@@ -244,6 +244,9 @@ namespace ggj {
           gf::Log::debug("[game] receive PemServerChoosePrisoner\n");
           auto data = bytes.as<PemServerChoosePrisoner>();
           m_players[data.member].jail = true;
+
+          m_gamePhase = GamePhase::CapitainElection;
+          m_alreadyVote = true;
           break;
         }
 

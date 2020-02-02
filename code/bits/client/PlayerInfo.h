@@ -17,7 +17,7 @@ namespace ggj {
 
     void initializeHand(const std::array<CardType, MaxCards>& cards);
 
-    void setRole(const std::string &role) {
+    void setRole(CrewType role) {
       m_role = role;
     }
 
@@ -28,7 +28,7 @@ namespace ggj {
     gf::Font &m_font;
     gf::Texture &m_emptyCardTexture;
     gf::TextureAtlas m_atlas;
-    std::string m_role;
+    CrewType m_role;
     std::array<CardType, MaxCards> m_cards;
   };
 
