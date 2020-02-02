@@ -11,6 +11,10 @@
 
 #include "ClientNetwork.h"
 
+#include <gf/ResourceManager.h>
+
+#include <SFML/Audio.hpp>
+
 namespace ggj {
 
   class LobbyChat {
@@ -25,12 +29,16 @@ namespace ggj {
 
     void display(int lines);
 
+  protected:
+    void parseAndPlaySound(const std::string & content);
 
   protected:
     ClientNetwork& m_network;
     gf::StaticString<255> m_lineBuffer;
     std::vector<MessageData> m_messages;
     bool m_autoscroll;
+
+    sf::Sound m_voice;
   };
 
 
