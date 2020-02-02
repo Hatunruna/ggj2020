@@ -336,7 +336,7 @@ namespace ggj {
               case ResolutionType::Hide: {
                 message.content = "I saw ";
                 for (auto &playerID: resolution.members) {
-                  message.content += m_players[playerID].name + " ";
+                  message.content += m_players.at(playerID).name + " ";
                 }
                 message.content += " hiding.";
                 break;
@@ -344,7 +344,7 @@ namespace ggj {
               case ResolutionType::Track: {
                 message.content = "I saw ";
                 for (auto &playerID: resolution.members) {
-                  message.content += m_players[playerID].name + " ";
+                  message.content += m_players.at(playerID).name + " ";
                 }
                 break;
               }
@@ -364,6 +364,15 @@ namespace ggj {
 
             m_chat.appendMessage(std::move(message));
           }
+
+          break;
+        }
+
+        case PemServerUpdateHand::type: {
+          gf::Log::debug("[game] receive PemServerUpdateHand\n");
+
+          auto data = bytes.as<PemServerUpdateHand>();
+          break;
         }
       }
     }
