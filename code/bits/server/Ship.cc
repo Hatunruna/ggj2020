@@ -11,14 +11,14 @@ namespace ggj {
   namespace {
     ShipPlace createPlace(PlaceState state){
       ShipPlace place;
-      place.state = state; 
+      place.state = state;
 
       return place;
     }
 
     std::map<PlaceType,ShipPlace> createShip(int32_t players){
       std::map<PlaceType,ShipPlace> ship = {
-        { PlaceType::Infirmery,           createPlace(PlaceState::Working) }, 
+        { PlaceType::Infirmery,           createPlace(PlaceState::Working) },
         { PlaceType::CommunicationCenter, createPlace(PlaceState::Working) },
         { PlaceType::Navigation,          createPlace(PlaceState::Working) },
         { PlaceType::Prison,              createPlace(PlaceState::Working) },
@@ -54,16 +54,12 @@ namespace ggj {
   {
   }
 
-  void Ship::changeState(PlaceType type ,PlaceState state){
-    auto it = places.find(type);
-    assert(it != places.end());
-    it->second.state = state;
+  void Ship::changeState(PlaceType type, PlaceState state) {
+    places[type].state = state;
   }
 
   void Ship::addCrew(PlaceType type, gf::Id id){
-    auto it = places.find(type);
-    assert(it != places.end());
-    it->second.members.insert(id);
+    places[type].members.insert(id);
   }
 
   void Ship::clear() {
@@ -72,17 +68,34 @@ namespace ggj {
     }
   }
 
-  std::map<PlaceType, bool> Ship::getState(){
+  std::map<PlaceType, bool> Ship::getState() {
     std::map<PlaceType, bool> state;
 
     for (auto& kv : places) {
-      if(kv.second.state == PlaceState::FalseAlarm || kv.second.state == PlaceState::Saboted) {
-        state.insert({ kv.first, false });
-      }else{
-        state.insert({ kv.first, true });
-      }
+      auto& place = kv.second;
 
-      // TODO : Jammed
+      if (place.state == PlaceState::Working) {
+        bool res = true;
+
+        if (place.jammed > 0) {
+          res = (place.previous == PlaceState::Working);
+        } else if (place.alarm > 0) {
+          res = false;
+        }
+
+        state.emplace(kv.first, res);
+      } else {
+        assert(place.state == PlaceState::Broken);
+        bool res = false;
+
+        if (place.jammed > 0) {
+          res = (place.previous == PlaceState::Working);
+        } else if (place.repair > 0) {
+          res = true;
+        }
+
+        state.emplace(kv.first, res);
+      }
     }
 
     return state;

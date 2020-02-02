@@ -101,7 +101,7 @@ namespace ggj {
         checkEndOfVote(VoteType::Captain);
         break;
       }
-      
+
       case PemClientChoosePrisoner::type: {
         gf::Log::info("(PemInstance) {%" PRIX64 "} Vote for prisoner.\n", player.id);
         auto in = bytes.as<PemClientChoosePrisoner>();
@@ -195,7 +195,7 @@ namespace ggj {
       captain = eligibles[m_random.computeUniformInteger<std::size_t>(0, eligibles.size() - 1)];
     } else if (captains.size() == 1) {
       captain = captains.front();
-    } else { // draw 
+    } else { // draw
       captain = captains[m_random.computeUniformInteger<std::size_t>(0, captains.size() - 1)];
     }
 
@@ -223,232 +223,146 @@ namespace ggj {
 
 
   void PemInstance::checkEndOfTurn(){
-    int32_t canPlay = 0; // todo
+    int32_t freemen = 0;
 
-    m_currentlyPlaying++;
+    for (auto& kv : m_members) {
+      if (kv.second.released) {
+        ++freemen;
+      }
+    }
 
-    if ( m_currentlyPlaying < canPlay ) {
+    ++m_currentlyPlaying;
+
+    if (m_currentlyPlaying < freemen) {
       return;
     }
 
-    for( auto &ship : m_ship.places ){
-      std::map<CardType,int> cardMap;
-      m_action.insert({ ship.first,cardMap });
+    // compute the resolutions
 
-      for( auto &memberId : ship.second.members ){
+    for (auto & kv : m_ship.places) {
+      ShipPlace& place = kv.second;
 
-        auto it = m_members.find(memberId);
-        if ( isPlayable( ship.second.state, it->second.card) ){
-          auto at = m_action.find( ship.first );
-          auto ut = at->second.find( it->second.card );
-          if( ut == at->second.end() ){
-            at->second.insert( { it->second.card, 1 } );
-          }else{
-            ut->second++;
-          }
-        }else{
-          PemServerCardRemoved data;
-          send( memberId, data );
-        }
-      }
-    }
-    resolution();
-  }
-
-  bool PemInstance::isPlayable( PlaceState state,CardType type ){
-    switch ( state )
-    {
-      case PlaceState::Working:{
-        if ( type == CardType::Demine || type == CardType::FalseRepair1 || type == CardType::FalseRepair2 || type == CardType::Repair ){
-          return false;
-        }
-        break;
-      }
-      case PlaceState::Blocked:{
-        return false;
-      }
-      case PlaceState::FalseAlarm:{
-        return true;
-      }
-      case PlaceState::Saboted:{
-        if ( type == CardType::Reinforce1 || type == CardType::Reinforce2 || type == CardType::PlaceBomb0 || type == CardType::PlaceBomb1 || type == CardType::PlaceBomb2 ){
-          return false;
-        }
-        break;
-      }
-      
-      case PlaceState::Jammed:{
-        return true;
+      if (place.members.empty()) {
+        continue;
       }
 
-      default:
-        break;
-    }
+      if (place.blocked > 0) {
+        PemServerResolution data;
 
-    return true;
-  }
+        Resolution res;
+        res.type = ResolutionType::Block;
 
-  void PemInstance::resolution(){
-    for(auto &place : m_action){
-      auto it = m_ship.places.find(place.first);
-      switch (it->second.state){
-        case PlaceState::Blocked:{
-          // todo resolution
-          continue;
-          break;
-        }
-        case PlaceState::Jammed: case PlaceState::Working:{
-          
-          auto ut = m_action.find(place.first);
-          auto at = ut->second.find(CardType::Hide);
-          if(at != ut->second.end()){
-            for(ssize_t i = 0; i < at->second; i++){
-              execute( place.first ,CardType::Hide );
-            }
-          }
-          at = ut->second.find(CardType::Examine);
-          if(at != ut->second.end()){
-            for(ssize_t i = 0; i < at->second; i++){
-              execute( place.first ,CardType::Examine );
-            }
-          }
-          at = ut->second.find(CardType::Reinforce2);
-          if(at != ut->second.end()){
-            for(ssize_t i = 0; i < at->second; i++){
-              execute( place.first ,CardType::Reinforce2 );
-            }
-          }
-          at = ut->second.find(CardType::Reinforce1);
-          if(at != ut->second.end()){
-            for(ssize_t i = 0; i < at->second; i++){
-              execute( place.first ,CardType::Reinforce1 );
-            }
-          }
-          at = ut->second.find(CardType::PlaceBomb0);
-          if(at != ut->second.end()){
-            for(ssize_t i = 0; i < at->second; i++){
-              execute( place.first ,CardType::PlaceBomb0 );
-            }
-          }
-          at = ut->second.find(CardType::PlaceBomb1);
-          if(at != ut->second.end()){
-            for(ssize_t i = 0; i < at->second; i++){
-              execute( place.first ,CardType::PlaceBomb1 );
-            }
-          }
-          at = ut->second.find(CardType::PlaceBomb2);
-          if(at != ut->second.end()){
-            for(ssize_t i = 0; i < at->second; i++){
-              execute( place.first ,CardType::PlaceBomb2 );
-            }
-          }
-          at = ut->second.find(CardType::Track);
-          if(at != ut->second.end()){
-            for(ssize_t i = 0; i < at->second; i++){
-              execute( place.first ,CardType::Track );
-            }
-          }
-          at = ut->second.find(CardType::SetupJammer);
-          if(at != ut->second.end()){
-            for(ssize_t i = 0; i < at->second; i++){
-              execute( place.first ,CardType::SetupJammer );
-            }
-          }
-          at = ut->second.find(CardType::Block);
-          if(at != ut->second.end()){
-            for(ssize_t i = 0; i < at->second; i++){
-              execute( place.first ,CardType::Block );
-            }
-          }
-          at = ut->second.find(CardType::FalseAlarm);
-          if(at != ut->second.end()){
-            for(ssize_t i = 0; i < at->second; i++){
-              execute( place.first ,CardType::FalseAlarm );
-            }
-          }
-          break;
+        data.conclusion.push_back(res);
+
+        for (auto id : place.members) {
+          send(id, data);
         }
 
-        case PlaceState::FalseAlarm: case PlaceState::Saboted:{
-          
-          break;
-        }
-        
-        default:
-          break;
+        continue;
       }
+
+      // get all the actions for that place
+
+      std::vector<CardType> cards;
+
+      for (auto member : place.members) {
+        cards.push_back(m_members[member].card);
+      }
+
+      auto has = [&cards](CardType ref) {
+        return std::any_of(cards.begin(), cards.end(), [ref](CardType type) { return type == ref; });
+      };
+
+      if (has(CardType::Hide) || !place.trackers.empty()) {
+        PemServerResolution data;
+
+        Resolution res;
+        res.type = ResolutionType::Hide;
+
+        // who is not hidden
+        for (auto id : place.members) {
+          if (m_members[id].card != CardType::Hide) {
+            res.members.push_back(id);
+          }
+        }
+
+        data.conclusion.push_back(res);
+
+        // send to those that are hidden
+        for (auto id : place.members) {
+          if (m_members[id].card == CardType::Hide) {
+            send(id, data);
+          }
+        }
+
+        // send to those that have a tracker
+        for (auto id : place.trackers) {
+          send(id, data);
+        }
+      }
+
+      place.trackers.clear();
+
+      if (has(CardType::Track)) {
+        for (auto id : place.members) {
+          if (m_members[id].card == CardType::Track) {
+            place.trackers.push_back(id);
+          }
+        }
+      }
+
+      if (place.state == PlaceState::Working) {
+        if (has(CardType::Demine)) {
+          place.bomb = 0;
+        }
+
+        if (has(CardType::Reinforce1)) {
+          place.reinforcement = 1;
+        }
+
+        if (has(CardType::Reinforce2)) {
+          place.reinforcement = 2;
+        }
+
+        if (has(CardType::PlaceBomb2)) {
+          place.bomb = 3;
+        }
+
+        if (has(CardType::PlaceBomb1)) {
+          place.bomb = 2;
+        }
+
+        if (has(CardType::PlaceBomb0)) {
+          place.bomb = 1;
+        }
+
+        if (has(CardType::Examine)) {
+          PemServerResolution data;
+
+          Resolution res;
+          res.type = ResolutionType::Examine;
+          res.bomb = (place.bomb > 0);
+
+          data.conclusion.push_back(res);
+
+          for (auto id : place.members) {
+            if (m_members[id].card == CardType::Examine) {
+              send(id, data);
+            }
+          }
+
+        }
+
+        // everything else has no effect
+      } else {
+        assert(place.state == PlaceState::Broken);
+
+
+
+      }
+
     }
   }
 
-  void PemInstance::execute(PlaceType place,CardType type){
-    switch (type){
-      case CardType::Demine:{
-
-        break;
-      }
-      case CardType::Examine:{
-        
-        break;
-      }
-      case CardType::Hide:{
-        
-        break;
-      }
-      case CardType::Reinforce1:{
-        
-        break;
-      }
-      case CardType::Reinforce2:{
-        
-        break;
-      }
-      case CardType::Repair:{
-        
-        break;
-      }
-      case CardType::Track:{
-        
-        break;
-      }
-      case CardType::Block:{
-        
-        break;
-      }
-      case CardType::Release:{
-        
-        break;
-      }
-      case CardType::FalseAlarm:{
-        
-        break;
-      }
-      case CardType::FalseRepair1:{
-        
-        break;
-      }
-      case CardType::FalseRepair2:{
-        
-        break;
-      }
-      case CardType::PlaceBomb0:{
-        
-        break;
-      }
-      case CardType::PlaceBomb1:{
-        
-        break;
-      }
-      case CardType::PlaceBomb2:{
-        
-        break;
-      }
-      case CardType::SetupJammer:{
-        
-        break;
-      }
-      default:
-        break;
-    }
-  }
 
 }
