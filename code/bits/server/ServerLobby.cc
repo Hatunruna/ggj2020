@@ -210,7 +210,7 @@ namespace ggj {
       data.id = room.id;
       data.name = room.name;
       data.settings = room.settings;
-      data.players = getPlayersCount();
+      data.players = room.getPlayersCount();
       list.push_back(std::move(data));
     }
 
