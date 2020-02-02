@@ -340,12 +340,13 @@ namespace ggj {
         // polygonShape.setColor(gf::Color::Transparent);
         // target.draw(polygonShape, states);
 
-        // Display
+        // Display place name
         gf::Text text(location.name, m_font);
-        text.setCharacterSize(coordinates.getRelativeCharacterSize(0.1f));
-        text.setColor(gf::Color::Violet);
-        text.setOutlineColor(gf::Color::White);
-        text.setOutlineThickness(2.0f);
+        auto characterSize = coordinates.getRelativeCharacterSize(0.1f);
+        text.setCharacterSize(characterSize);
+        text.setColor(gf::Color::White);
+        text.setOutlineColor(gf::Color::Black);
+        text.setOutlineThickness(characterSize * 0.05f);
         text.setPosition(location.titlePosition);
         text.setAnchor(gf::Anchor::BottomLeft);
         target.draw(text, states);
@@ -356,7 +357,6 @@ namespace ggj {
     }
 
     for (const auto &entry: placeLocations) {
-        // const auto& key = entry.first;
         const auto& location = entry.second;
 
         auto drawCursor = [&location, &target, &states](gf::Color4f fillColor, gf::Color4f outlineColor = gf::Color::White) {
