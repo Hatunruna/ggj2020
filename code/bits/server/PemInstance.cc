@@ -283,6 +283,7 @@ namespace ggj {
           send(id, data);
         }
 
+        place.trackers.clear();
         continue;
       }
 
@@ -350,6 +351,10 @@ namespace ggj {
         }
       }
 
+      if (has(CardType::Block)) {
+        place.blocked = 2;
+      }
+
       if (place.state == PlaceState::Working) {
         if (has(CardType::Demine)) {
           place.bomb = 0;
@@ -393,35 +398,72 @@ namespace ggj {
         }
 
         if (has(CardType::SetupJammer)) {
-          place.jammed = 1;
+          place.jammed = 2;
+        }
+
+        if (has(CardType::FalseAlarm)) {
+          place.alarm = 2;
         }
 
         // everything else has no effect
       } else {
         assert(place.state == PlaceState::Broken);
+
         if (has(CardType::Repair)) {
           place.bomb = 0;
           place.state = PlaceState::Working;
         }
+
         if (has(CardType::FalseRepair1)) {
-          place.repair = 1;
-        }
-        if (has(CardType::FalseRepair2)) {
           place.repair = 2;
         }
 
+        if (has(CardType::FalseRepair2)) {
+          place.repair = 3;
+        }
+
         if (has(CardType::SetupJammer)) {
-          place.jammed = 1;
+          place.jammed = 2;
         }
 
         // everything else has no effect
+      }
+
+      // update state
+
+      m_ship.endOfActions();
+
+      for (auto & kv : m_ship.places) {
+        auto & place = kv.second;
+
+        if (kv.first == PlaceType::Prison) {
+          // keep prisoners in prison
+          for (auto it = place.members.begin(); it != place.members.end(); ) {
+            gf::Id id = *it;
+
+            if (m_members[id].prison > 0) {
+              --m_members[id].prison;
+
+              if (m_members[id].prison == 0) {
+                m_members[id].released = true;
+                it = place.members.erase(it);
+              } else {
+                ++it;
+              }
+            } else {
+              it = place.members.erase(it);
+            }
+          }
+
+        } else {
+          place.members.clear();
+        }
       }
 
       // send update to all client
       PemServerUpdateShip update;
       update.state = m_ship.getState();
       broadcast(update);
-      m_ship.clear();
 
       // draw the next card
       for (auto member : m_members) {
