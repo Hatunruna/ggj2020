@@ -113,8 +113,11 @@ namespace ggj {
         assert(it != m_members.end());
 
         if (!it->second.voted && it->second.prison == 0) {
-          m_votes[in.member]++;
-          it->second.voted = true;
+          if(in.member == gf::InvalidId){
+            m_votes[in.member]++;
+          }else{
+            m_votes[in.member]++;
+          }it->second.voted = true;
         }
 
         checkEndOfVote(VoteType::Prison);
@@ -181,6 +184,14 @@ namespace ggj {
     gf::Id captain = gf::InvalidId;
 
     if (captains.empty()) {
+      if(type == VoteType::Prison){
+        captain = gf::InvalidId;
+        PemServerChoosePrisoner data;
+        data.member = captain;
+        broadcast(data);
+        m_votes.clear();
+        return;
+      }
       std::vector<gf::Id> eligibles;
 
       for (auto& kv : m_members) {
@@ -194,7 +205,16 @@ namespace ggj {
     } else if (captains.size() == 1) {
       captain = captains.front();
     } else { // draw
-      captain = captains[m_random.computeUniformInteger<std::size_t>(0, captains.size() - 1)];
+      if(type == VoteType::Prison){
+        captain = gf::InvalidId;
+        PemServerChoosePrisoner data;
+        data.member = captain;
+        broadcast(data);
+        m_votes.clear();
+        return;
+      }else{
+        captain = captains[m_random.computeUniformInteger<std::size_t>(0, captains.size() - 1)];
+      }
     }
 
     m_votes.clear();
@@ -221,7 +241,6 @@ namespace ggj {
 
   void PemInstance::checkEndOfTurn(){
     int32_t freemen = 0;
-    m_currentlyPlaying = 0;
 
     for (auto& kv : m_members) {
       if (kv.second.released) {
