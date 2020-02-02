@@ -353,7 +353,11 @@ namespace ggj {
                 break;
               }
               case ResolutionType::Release: {
-                //message.content = "It's your turn to play";
+                for (auto &playerID: resolution.members) {
+                  m_players[playerID].jail = false;
+                  message.content += m_players[playerID].name + " ";
+                }
+                message.content += "are released from prison.";
                 break;
               }
             }
