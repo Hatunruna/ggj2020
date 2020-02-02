@@ -15,9 +15,12 @@ namespace ggj {
   , m_scenes(scenes)
   , m_escapeAction("Escape")
   , m_font(resources.getFont("DejaVuSans.ttf"))
+  , m_backgorund(resources)
   {
     m_escapeAction.addKeycodeKeyControl(gf::Keycode::Escape);
     addAction(m_escapeAction);
+
+    addHudEntity(m_backgorund);
   }
 
   void CreditsScene::doHandleActions(gf::Window& window) {

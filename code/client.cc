@@ -24,6 +24,7 @@ int main() {
   ggj::gBackgroundMusic.play();
 
   ggj::Scenes scenes(network, TMPGAME_DATA_DIR);
+  scenes.setClearColor(gf::Color::Black);
   scenes.pushScene(scenes.intro);
   scenes.run();
   return EXIT_SUCCESS;

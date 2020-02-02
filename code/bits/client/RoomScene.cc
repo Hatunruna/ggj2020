@@ -17,12 +17,14 @@
 
 namespace ggj {
 
-  RoomScene::RoomScene(Scenes& scenes, ClientNetwork& network)
+  RoomScene::RoomScene(Scenes& scenes, gf::ResourceManager& resources, ClientNetwork& network)
   : gf::Scene(InitialSize)
   , m_scenes(scenes)
   , m_network(network)
   , m_chat(network)
+  , m_backgorund(resources)
   {
+    addHudEntity(m_backgorund);
   }
 
   void RoomScene::startRoom(const GameInstanceSettings& settings) {

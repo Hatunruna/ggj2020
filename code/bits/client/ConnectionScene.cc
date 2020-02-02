@@ -15,14 +15,17 @@
 
 namespace ggj {
 
-  ConnectionScene::ConnectionScene(Scenes& scenes, ClientNetwork& network)
+  ConnectionScene::ConnectionScene(Scenes& scenes, gf::ResourceManager& resources, ClientNetwork& network)
   : gf::Scene(InitialSize)
   , m_scenes(scenes)
   , m_network(network)
   , m_connectionAsked(false)
+  , m_backgorund(resources)
   {
     m_hostnameBuffer = "localhost";
     m_nameBuffer = "toto";
+
+    addHudEntity(m_backgorund);
   }
 
   void ConnectionScene::doProcessEvent(gf::Event& event) {

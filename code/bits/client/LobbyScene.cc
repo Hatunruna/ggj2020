@@ -17,7 +17,7 @@
 
 namespace ggj {
 
-  LobbyScene::LobbyScene(Scenes& scenes, ClientNetwork& network)
+  LobbyScene::LobbyScene(Scenes& scenes, gf::ResourceManager& resources, ClientNetwork& network)
   : gf::Scene(InitialSize)
   , m_scenes(scenes)
   , m_network(network)
@@ -25,9 +25,12 @@ namespace ggj {
   , m_instance{ 0, 0 }
   , m_selectedRoom(-1)
   , m_chat(network)
+  , m_backgorund(resources)
   {
     m_roomBuffer.clear();
     m_nameBuffer.clear();
+
+    addHudEntity(m_backgorund);
   }
 
   void LobbyScene::doProcessEvent(gf::Event& event) {

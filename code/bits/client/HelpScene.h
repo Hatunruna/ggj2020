@@ -4,6 +4,8 @@
 #include <gf/ResourceManager.h>
 #include <gf/Scene.h>
 
+#include "BackgroundEntity.h"
+
 namespace ggj {
 
   struct Scenes;
@@ -21,6 +23,8 @@ namespace ggj {
 
     gf::Action m_escapeAction;
     gf::Font &m_font;
+
+    BackgroundEntity m_backgorund;
   };
 
 }
