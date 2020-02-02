@@ -1,6 +1,7 @@
 #ifndef TMPGAME_PLAYER_INFO_H
 #define TMPGAME_PLAYER_INFO_H
 
+#include <gf/TextureAtlas.h>
 #include <gf/Entity.h>
 #include <gf/ResourceManager.h>
 
@@ -26,6 +27,7 @@ namespace ggj {
   private:
     gf::Font &m_font;
     gf::Texture &m_emptyCardTexture;
+    gf::TextureAtlas m_atlas;
     std::string m_role;
     std::array<CardType, MaxCards> m_cards;
   };

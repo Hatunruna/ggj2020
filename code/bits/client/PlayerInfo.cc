@@ -15,6 +15,7 @@ namespace ggj {
   PlayerInfo::PlayerInfo(gf::ResourceManager& resources)
   : m_font(resources.getFont("DejaVuSans.ttf"))
   , m_emptyCardTexture(resources.getTexture("image/empty_card.png"))
+  , m_atlas("atlas.xml", resources)
   , m_role("unknown") {
 
   }
@@ -52,6 +53,8 @@ namespace ggj {
     text.setPosition(coordinates.getRelativePoint({0.01f, 0.6f}));
     target.draw(text, states);
 
+
+
     for (unsigned i = 0; i < m_cards.size(); ++i) {
       auto bounds = getCardBounds(coordinates.getRelativeSize({ 1.0f, 1.0f }), i);
       auto cardSize = bounds.getSize();
@@ -65,7 +68,8 @@ namespace ggj {
       // target.draw(rect, states);
 
       // Empty card
-      gf::Sprite card(m_emptyCardTexture);
+      gf::Sprite card(m_atlas.getTexture());
+      card.setTextureRect(m_atlas.getTextureRect(cardTypeString(m_cards[i])));
       gf::Vector2f scaleFactor = cardSize / CardTextureSize;
       card.setScale(scaleFactor);
       card.setPosition(bounds.getBottomLeft());
