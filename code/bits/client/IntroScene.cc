@@ -54,7 +54,7 @@ namespace ggj {
       case MenuChoice::None:
         break;
       case MenuChoice::Start:
-        m_scenes.transitionToScene(m_scenes.connection, 0.4f, m_scenes.slideEffect);
+        m_scenes.transitionToScene(m_scenes.connection, 0.5f, m_scenes.glitchEffect);
         // m_scenes.replaceScene(m_scenes.game);
         // m_scenes.setClearColor(gf::Color::Gray(0.85f));
         break;

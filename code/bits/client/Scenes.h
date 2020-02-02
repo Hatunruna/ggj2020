@@ -36,6 +36,7 @@ namespace ggj {
 
     gf::SlideTransitionEffect slideEffect;
     gf::FadeTransitionEffect fadeEffect;
+    gf::GlitchTransitionEffect glitchEffect;
 
     gf::Id myPlayerId;
   };
