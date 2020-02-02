@@ -34,6 +34,7 @@ namespace ggj {
   , m_votedPlayer(gf::InvalidId)
   , m_alreadyVote(false)
   , m_startMoveAndPlayButton("Continue", resources.getFont("DejaVuSans.ttf"))
+  , m_alreadyUsedMoveAndPlayButton(false)
   , m_placeTypeSelected(PlaceType::None)
   {
     setWorldViewSize(WorldSize);
@@ -92,10 +93,11 @@ namespace ggj {
     m_adaptator.processEvent(event);
 
     if (event.type == gf::EventType::MouseButtonPressed && event.mouseButton.button == gf::MouseButton::Left) {
-      if (m_startMoveAndPlayButton.contains(event.mouseButton.coords)) {
-        gf::Log::debug("(GAME) Click start\n");
+      if (m_startMoveAndPlayButton.contains(event.mouseButton.coords) && m_gamePhase == GamePhase::CapitainElection && m_players[m_scenes.myPlayerId].captain && !m_alreadyUsedMoveAndPlayButton) {
+        gf::Log::debug("(GAME) Click continue\n");
         PemClientStartMoveAndPlay message;
         m_network.send(message);
+        m_alreadyUsedMoveAndPlayButton = true;
       }
 
       gf::Vector2f coords = gf::Vector2f(event.mouseButton.coords);
@@ -254,6 +256,8 @@ namespace ggj {
 
             m_chat.appendMessage(std::move(message));
           }
+
+          m_alreadyUsedMoveAndPlayButton = false;
           break;
         }
 
