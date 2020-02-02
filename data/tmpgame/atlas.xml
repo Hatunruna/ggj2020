@@ -1,13 +1,13 @@
 <TextureAtlas imagePath="image/cards.png">
-  <SubTexture name="Demine" x="0" y="0" width="400" height="500"/>
+  <SubTexture name="Demine" x="800" y="1000" width="400" height="500"/>
   <SubTexture name="Examine" x="0" y="0" width="400" height="500"/>
-  <SubTexture name="Hide" x="0" y="0" width="400" height="500"/>
-  <SubTexture name="Reinforce for 1 turn" x="0" y="0" width="400" height="500"/>
-  <SubTexture name="Reinforce for 2 turn" x="0" y="0" width="400" height="500"/>
+  <SubTexture name="Hide" x="1200" y="1000" width="400" height="500"/>
+  <SubTexture name="Reinforce for 1 turn" x="800" y="1500" width="400" height="500"/>
+  <SubTexture name="Reinforce for 2 turn" x="0" y="1500" width="400" height="500"/>
   <SubTexture name="Repair" x="0" y="1000" width="400" height="500"/>
-  <SubTexture name="Track" x="0" y="0" width="400" height="500"/>
-  <SubTexture name="Block" x="0" y="0" width="400" height="500"/>
-  <SubTexture name="Release" x="0" y="0" width="400" height="500"/>
+  <SubTexture name="Track" x="1200" y="1500" width="400" height="500"/>
+  <SubTexture name="Block" x="400" y="1000" width="400" height="500"/>
+  <SubTexture name="Release" x="400" y="1500" width="400" height="500"/>
   <SubTexture name="False alarm" x="400" y="0" width="400" height="500"/>
   <SubTexture name="False Repair for 1 turn" x="800" y="0" width="400" height="500"/>
   <SubTexture name="False Repair for 2 turn" x="1200" y="0" width="400" height="500"/>

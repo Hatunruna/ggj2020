@@ -9,4 +9,11 @@ montage empty_card.png \
         place_bomb_3.png \
         set_up_jammer.png \
         repair.png \
-        -background none -tile 4x3 -geometry 400x500+0  png32:cards.png
+        block.png \
+        demine.png \
+        hide.png \
+        reinforce_2.png \
+        release.png \
+        reinforce_1.png \
+        track.png \
+        -background none -tile 4x4 -geometry 400x500+0  png32:cards.png
