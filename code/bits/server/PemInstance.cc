@@ -26,6 +26,7 @@ namespace ggj {
 
     for (auto& player : players) {
       PemServerInitRole data;
+      Member member;
       data.role = crew.back();
       crew.pop_back();
 
@@ -34,16 +35,17 @@ namespace ggj {
           for (auto& card : data.cards) {
             card = m_deck.pickProtectorCard();
           }
+          member.type = CrewType::Protector;
           break;
 
         case CrewType::Rebel:
           for (auto& card : data.cards) {
             card = m_deck.pickRebelCard();
           }
+          member.type = CrewType::Rebel;
           break;
       }
 
-      Member member;
       member.cards = data.cards;
       m_members.emplace(player.id, std::move(member));
 
@@ -111,12 +113,7 @@ namespace ggj {
         assert(it != m_members.end());
 
         if (!it->second.voted && it->second.prison == 0) {
-          auto ut = m_members.find(player.id);
-          if(ut->second.captain){
-            m_votes[in.member]+= 2;
-          }else{
-            m_votes[in.member]++;
-          }
+          m_votes[in.member]++;
           it->second.voted = true;
         }
 
@@ -377,14 +374,42 @@ namespace ggj {
         // everything else has no effect
       }
 
+      // send update to all client
       PemServerUpdateShip update;
       update.state = m_ship.getState();
       broadcast(update);
       m_ship.clear();
 
+      // draw the next card
+      for (auto member : m_members) {
+        CardType newCard;
+        uint index;
+        
+        for(uint i = 0 ; i < member.second.cards.size() ; ++i){
+          if (member.second.cards[i] == member.second.card){
+            if (member.second.type == CrewType::Protector){
+              newCard = m_deck.pickProtectorCard();
+              member.second.cards[i] = newCard;
+              index = i;
+            }else{
+              assert(member.second.type == CrewType::Rebel);
+              newCard = m_deck.pickRebelCard();
+              member.second.cards[i] =newCard;
+              index = i;
+            } 
+            break;
+          }
+        }
+        PemServerUpdateHand updateHand;
+        updateHand.card = newCard;
+        updateHand.index = index;
+        send(member.first,updateHand);
+      }
+
+      // start vote for prisoner
       PemServerStartVoteForPrisoner prisoner;
       broadcast(prisoner);
-    }
+ }
   }
 
 }

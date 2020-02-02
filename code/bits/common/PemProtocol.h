@@ -78,13 +78,15 @@ namespace ggj {
     return ar;
   }
 
-  struct PemServerCardRemoved {
-    static constexpr gf::Id type = "PemServerCardRemoved"_id;
+  struct PemServerUpdateHand {
+    static constexpr gf::Id type = "PemServerUpdateHand"_id;
+    CardType card;
+    uint index;
   };
 
   template<typename Archive>
-  Archive operator|(Archive& ar, PemServerCardRemoved&) {
-    return ar;
+  Archive operator|(Archive& ar, PemServerUpdateHand& data) {
+    return ar | data.card | data.index;
   }
 
   struct PemServerUpdateShip {
