@@ -14,7 +14,9 @@ namespace ggj {
     bool released = true;
     PlaceType place;
     CardType card;
+    CrewType type;
   };
+
 
 }
 

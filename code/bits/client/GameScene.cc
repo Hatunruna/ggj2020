@@ -34,7 +34,8 @@ namespace ggj {
   , m_gamePhase(GamePhase::CapitainElection)
   , m_votedPlayer(gf::InvalidId)
   , m_alreadyVote(false)
-  , m_startMoveAndPlayButton("Start", resources.getFont("DejaVuSans.ttf"))
+  , m_startMoveAndPlayButton("Continue", resources.getFont("DejaVuSans.ttf"))
+  , m_alreadyUsedMoveAndPlayButton(false)
   , m_placeTypeSelected(PlaceType::None)
   {
     setWorldViewSize(WorldSize);
@@ -49,8 +50,10 @@ namespace ggj {
     addHudEntity(m_info);
     getWorldView().setViewport(gf::RectF::fromPositionSize({0.0f, 0.0f}, {1.0f, 2.f / 3.f}));
 
-    m_startMoveAndPlayButton.setDefaultBackgroundColor(gf::Color::Gray(0.75f));
+    m_startMoveAndPlayButton.setAnchor(gf::Anchor::Center);
+    m_startMoveAndPlayButton.setDefaultBackgroundColor(gf::Color4f(0.5f,0.5f,0.5f,0.65f));
     m_startMoveAndPlayButton.setDefault();
+
     m_ambiantBackground.setBuffer(gResourceManager().getSound("audio/ambiant.ogg"));
     m_ambiantBackground.setVolume(BackgroundAmbiantVolume);
     m_ambiantBackground.setLoop(true);
@@ -68,6 +71,7 @@ namespace ggj {
     m_votedPlayer = gf::InvalidId;
     m_gamePhase = GamePhase::CapitainElection;
     m_alreadyVote = false;
+    gBackgroundMusic.stop();
     m_ambiantBackground.play();
     m_cardShuffle.play();
   }
@@ -91,10 +95,11 @@ namespace ggj {
     m_adaptator.processEvent(event);
 
     if (event.type == gf::EventType::MouseButtonPressed && event.mouseButton.button == gf::MouseButton::Left) {
-      if (m_startMoveAndPlayButton.contains(event.mouseButton.coords)) {
-        gf::Log::debug("(GAME) Click start\n");
+      if (m_startMoveAndPlayButton.contains(event.mouseButton.coords) && m_gamePhase == GamePhase::CapitainElection && m_players[m_scenes.myPlayerId].captain && !m_alreadyUsedMoveAndPlayButton) {
+        gf::Log::debug("(GAME) Click continue\n");
         PemClientStartMoveAndPlay message;
         m_network.send(message);
+        m_alreadyUsedMoveAndPlayButton = true;
       }
 
       gf::Vector2f coords = gf::Vector2f(event.mouseButton.coords);
@@ -112,34 +117,72 @@ namespace ggj {
         }
 
         // TODO handle clickedCardType
-        gf::Log::debug("Clicked card: %s\n", cardTypeString(clickedCardType).c_str());
+        gf::Log::debug("(GAME) Clicked card: %s\n", cardTypeString(clickedCardType).c_str());
         PemClientMoveAndPlay moveAndPlay;
         moveAndPlay.place = m_placeTypeSelected;
         moveAndPlay.card = clickedCardType;
+
+        gf::Log::debug("(GAME) Action is: %s %s\n", placeTypeString(m_placeTypeSelected).c_str(), cardTypeString(clickedCardType).c_str());
         m_network.send(moveAndPlay);
 
         m_gamePhase = GamePhase::Resolution;
         m_placeTypeSelected = PlaceType::None;
 
+        bool playFx = true;
         switch (clickedCardType)
         {
+        case CardType::Block:
+        {
+          m_fx.setBuffer(gResourceManager().getSound("audio/block.ogg"));
+        }
+          break;
+        case CardType::Demine:
+        {
+          m_fx.setBuffer(gResourceManager().getSound("audio/demine.ogg"));
+        }
+          break;
+        case CardType::FalseAlarm:
+        {
+          m_fx.setBuffer(gResourceManager().getSound("audio/alarm.ogg"));
+        }
+          break;
+        case CardType::PlaceBomb0:
+        case CardType::PlaceBomb1:
+        case CardType::PlaceBomb2:
+        {
+          m_fx.setBuffer(gResourceManager().getSound("audio/bomb_armed.ogg"));
+        }
+          break;
+        case CardType::Reinforce1:
+        case CardType::Reinforce2:
+        {
+          m_fx.setBuffer(gResourceManager().getSound("audio/reinforce.ogg"));
+        }
+          break;
+        case CardType::Release:
+        {
+          m_fx.setBuffer(gResourceManager().getSound("audio/gate.ogg"));
+        }
+          break;
         case CardType::Repair:
         case CardType::FalseRepair1:
         case CardType::FalseRepair2:
         {
           m_fx.setBuffer(gResourceManager().getSound("audio/repair.ogg"));
-          m_fx.setVolume(FxsVolume);
-          m_fx.play();
         }
           break;
         case CardType::SetupJammer:
         {
           m_fx.setBuffer(gResourceManager().getSound("audio/jammer.ogg"));
-          m_fx.setVolume(FxsVolume);
-          m_fx.play();
         }
-        default:
           break;
+        default:
+          playFx = false;
+          break;
+        }
+        if (playFx)
+        {
+          m_fx.play();
         }
       }
 
@@ -148,8 +191,9 @@ namespace ggj {
       PlaceType clickedPlaceType;
       if (m_gamePhase == GamePhase::Action && !(m_players[m_scenes.myPlayerId].jail) && m_ship.getPlaceType(worldCoords, clickedPlaceType)) {
         // TODO handle clickedPlaceType
-        gf::Log::debug("Clicked place: %s\n", placeTypeString(clickedPlaceType).c_str());
+        gf::Log::debug("(GAME) Clicked place: %s\n", placeTypeString(clickedPlaceType).c_str());
         m_placeTypeSelected = clickedPlaceType;
+        m_ship.selectPlace(clickedPlaceType);
 
         m_fx.setBuffer(gResourceManager().getSound("audio/foot_steps.ogg"));
         m_fx.setVolume(FxsVolume);
@@ -171,14 +215,12 @@ namespace ggj {
 
     ProtocolBytes bytes;
 
-    ggj::gBackgroundMusic.stop();
-
     while (m_network.queue.poll(bytes)) {
       switch (bytes.getType()) {
         case PemServerInitRole::type: {
           gf::Log::debug("[game] receive PemServerInitRole\n");
           auto data = bytes.as<PemServerInitRole>();
-          m_info.setRole(crewTypeString(data.role));
+          m_info.setRole(data.role);
           m_info.initializeHand(data.cards);
           break;
         }
@@ -226,8 +268,10 @@ namespace ggj {
           message.author = "server";
           message.content = "It's your turn to play";
           m_chat.appendMessage(std::move(message));
+          m_ship.stopDrawWarnings();
 
           m_gamePhase = GamePhase::Action;
+          m_alreadyUsedMoveAndPlayButton = false;
 
           if (m_players[m_scenes.myPlayerId].jail) {
             m_placeTypeSelected = PlaceType::Prison;
@@ -235,33 +279,60 @@ namespace ggj {
           break;
         }
 
-        case PemServerChoosePrisoner::type: {
-          gf::Log::debug("[game] receive PemServerChoosePrisoner\n");
-          auto data = bytes.as<PemServerChoosePrisoner>();
-          m_alreadyVote = false;
-          m_players[data.member].jail = true;
+        case PemServerStartVoteForPrisoner::type: {
+          gf::Log::debug("[game] receive PemServerStartVoteForPrisoner\n");
+
+          m_alreadyVote = (m_players[m_scenes.myPlayerId].jail);
+          m_ship.selectPlace(PlaceType::None);
+          m_info.resetCardSelection();
           m_gamePhase = GamePhase::Meeting;
           break;
         }
 
+        case PemServerChoosePrisoner::type: {
+          gf::Log::debug("[game] receive PemServerChoosePrisoner\n");
+          auto data = bytes.as<PemServerChoosePrisoner>();
+
+          MessageData message;
+          message.origin = gf::InvalidId;
+          message.author = "server";
+
+          auto it = m_players.find(data.member);
+          if (it != m_players.end()) {
+            it->second.jail = true;
+            message.content = it->second.name + " is now jailed";
+          } else {
+            message.content = "No one has been in prison";
+          }
+          m_chat.appendMessage(std::move(message));
+
+          m_gamePhase = GamePhase::CapitainElection;
+          m_alreadyVote = true;
+          break;
+        }
+
         case PemServerUpdateShip::type: {
-          //TODO: do the implementation
+          gf::Log::debug("[game] receive PemServerUpdateShip\n");
+
+          auto data = bytes.as<PemServerUpdateShip>();
+          for (auto &entry: data.state) {
+            m_ship.setPlaceState(entry.first, entry.second);
+          }
+
           break;
         }
 
         case PemServerResolution::type: {
+          gf::Log::debug("[game] receive PemServerResolution\n");
           auto data = bytes.as<PemServerResolution>();
-          //TODO: do this when server guys done it correctly
-          /*for(auto &resolution: data.conclusion)
-          {
+
+          for(auto &resolution: data.conclusion) {
             MessageData message;
             message.origin = gf::InvalidId;
             message.author = "server";
 
-            switch (resolution.type)
-            {
-              case ResolutionType::Examine:
-              {
+            switch (resolution.type) {
+              case ResolutionType::Examine: {
                 if (resolution.bomb) {
                   message.content = "There is a bomb.";
                 } else {
@@ -269,30 +340,56 @@ namespace ggj {
                 }
                 break;
               }
-              case ResolutionType::Hide:
-              {
-                message.content = "I saw " + m_players[resolution.member].name + " hiding.";
+              case ResolutionType::Hide: {
+                if (resolution.members.size() > 0) {
+                  message.content = "I saw ";
+                  for (auto &playerID: resolution.members) {
+                    message.content += m_players.at(playerID).name + " ";
+                  }
+                  message.content += " hiding.";
+                } else {
+                  message.content = "I saw nobody.";
+                }
                 break;
               }
-              case ResolutionType::Track:
-              {
-                message.content = "It's your turn to play";
+              case ResolutionType::Track: {
+                if (resolution.members.size() > 0) {
+                  message.content = "I detected ";
+                  for (auto &playerID: resolution.members) {
+                    message.content += m_players.at(playerID).name + " ";
+                  }
+                } else {
+                  message.content = "I detected nobody.";
+                }
                 break;
               }
-              case ResolutionType::Block:
-              {
-                message.content = "It's your turn to play";
+              case ResolutionType::Block: {
+                message.content = "The room was blocked.";
                 break;
               }
-              case ResolutionType::Release:
-              {
-                message.content = "It's your turn to play";
+              case ResolutionType::Release: {
+                for (auto &playerID: resolution.members) {
+                  m_players[playerID].jail = false;
+                  message.content += m_players[playerID].name + " ";
+                }
+                message.content += "are released from prison.";
                 break;
               }
             }
 
             m_chat.appendMessage(std::move(message));
-          }*/
+          }
+
+          break;
+        }
+
+        case PemServerUpdateHand::type: {
+          gf::Log::debug("[game] receive PemServerUpdateHand\n");
+
+          auto data = bytes.as<PemServerUpdateHand>();
+          m_info.replaceCard(data.card);
+
+          break;
         }
       }
     }
@@ -346,11 +443,13 @@ namespace ggj {
         // List players
         unsigned i = 0;
         for (auto &player: m_players) {
-          std::string name = std::to_string(i) + ". " + player.second.name;
-          if (ImGui::Selectable(name.c_str(), m_votedPlayer == player.second.id)) {
-            m_votedPlayer = player.second.id;
+          if (!(player.second.jail)) {
+            std::string name = std::to_string(i) + ". " + player.second.name;
+            if (ImGui::Selectable(name.c_str(), m_votedPlayer == player.second.id)) {
+              m_votedPlayer = player.second.id;
+            }
+            ++i;
           }
-          ++i;
         }
         if (ImGui::Selectable("None Of The Above", m_votedPlayer == gf::InvalidId)) {
           m_votedPlayer = gf::InvalidId;
@@ -379,7 +478,7 @@ namespace ggj {
     //Start move and play button
     if (m_gamePhase == GamePhase::CapitainElection && m_players[m_scenes.myPlayerId].captain) {
       m_startMoveAndPlayButton.setCharacterSize(coordinates.getRelativeCharacterSize(0.05f));
-      m_startMoveAndPlayButton.setPosition(coordinates.getRelativePoint({0.05f, 0.6f}));
+      m_startMoveAndPlayButton.setPosition(coordinates.getRelativePoint({0.5f, 0.05f}));
 
       target.draw(m_startMoveAndPlayButton, states);
     }

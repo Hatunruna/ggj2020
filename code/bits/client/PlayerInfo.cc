@@ -15,19 +15,27 @@ namespace ggj {
   PlayerInfo::PlayerInfo(gf::ResourceManager& resources)
   : m_font(resources.getFont("DejaVuSans.ttf"))
   , m_emptyCardTexture(resources.getTexture("image/empty_card.png"))
-  , m_role("unknown") {
+  , m_atlas("atlas.xml", resources)
+  , m_selectedCard(-1) {
 
+  }
+
+  void PlayerInfo::replaceCard(CardType type) {
+    assert(m_selectedCard >= 0 && m_selectedCard <= 2);
+
+    m_cards[m_selectedCard] = type;
   }
 
   void PlayerInfo::initializeHand(const std::array<CardType, MaxCards>& cards) {
     m_cards = cards;
   }
 
-  bool PlayerInfo::getCardType(const gf::Vector2f& screenPosition, const gf::Vector2f& screenSize, CardType& res) const {
+  bool PlayerInfo::getCardType(const gf::Vector2f& screenPosition, const gf::Vector2f& screenSize, CardType& res) {
     for (unsigned i = 0; i < m_cards.size(); ++i) {
       gf::RectF cardBounds = getCardBounds(screenSize, i);
       if (cardBounds.contains(screenPosition)) {
         res = m_cards[i];
+        m_selectedCard = i;
         return true;
       }
     }
@@ -46,15 +54,31 @@ namespace ggj {
   void PlayerInfo::render(gf::RenderTarget& target, const gf::RenderStates& states) {
     gf::Coordinates coordinates(target);
 
-    gf::Text text("Role: " + m_role, m_font);
-    text.setCharacterSize(coordinates.getRelativeCharacterSize(0.05f));
-    text.setColor(gf::Color::Blue);
-    text.setPosition(coordinates.getRelativePoint({0.01f, 0.6f}));
-    target.draw(text, states);
+    constexpr float outlineThickness = 5.f;
+    gf::RectangleShape m_rectRole;
+    m_rectRole.setColor(gf::Color::Transparent);
+    m_rectRole.setPosition({outlineThickness,outlineThickness});
+    auto screenSize = coordinates.getRelativeSize({1.0f, 2.f / 3.f});
+    m_rectRole.setSize(screenSize - gf::Vector2f(outlineThickness * 2, outlineThickness));
+    if (m_role == CrewType::Protector)
+    {
+      m_rectRole.setOutlineColor(gf::Color::Blue);
+    }
+    else
+    {
+      m_rectRole.setOutlineColor(gf::Color::Red);
+    }
+    m_rectRole.setOutlineThickness(outlineThickness);
+    target.draw(m_rectRole, states);
 
     for (unsigned i = 0; i < m_cards.size(); ++i) {
       auto bounds = getCardBounds(coordinates.getRelativeSize({ 1.0f, 1.0f }), i);
       auto cardSize = bounds.getSize();
+
+      float offsetSelected = 0.0f;
+      if (m_selectedCard == static_cast<int>(i)) {
+        offsetSelected = coordinates.getRelativeSize({ 0.0f, 0.05f }).height;
+      }
 
       // // Hitbox debug
       // gf::RectangleShape rect;
@@ -65,10 +89,13 @@ namespace ggj {
       // target.draw(rect, states);
 
       // Empty card
-      gf::Sprite card(m_emptyCardTexture);
+      gf::Sprite card(m_atlas.getTexture());
+      card.setTextureRect(m_atlas.getTextureRect(cardTypeString(m_cards[i])));
       gf::Vector2f scaleFactor = cardSize / CardTextureSize;
       card.setScale(scaleFactor);
-      card.setPosition(bounds.getBottomLeft());
+      auto posCard = bounds.getBottomLeft();
+      posCard.y -= offsetSelected;
+      card.setPosition(posCard);
       card.setAnchor(gf::Anchor::BottomLeft);
       target.draw(card, states);
 
@@ -77,7 +104,7 @@ namespace ggj {
       gf::Vector2f textBoxSize = gf::Vector2f(360.0f, 100.0f) * scaleFactor;
       gf::Vector2f textBoxPosition = bounds.getBottomLeft();
       textBoxPosition.x += titleMargin;
-      textBoxPosition.y -= titleMargin;
+      textBoxPosition.y -= titleMargin + offsetSelected;
 
       // // Text box debug
       // gf::RectangleShape rect;

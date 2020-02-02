@@ -1,6 +1,7 @@
 #ifndef TMPGAME_PLAYER_INFO_H
 #define TMPGAME_PLAYER_INFO_H
 
+#include <gf/TextureAtlas.h>
 #include <gf/Entity.h>
 #include <gf/ResourceManager.h>
 
@@ -12,11 +13,17 @@ namespace ggj {
     PlayerInfo(gf::ResourceManager& resources);
 
     void render(gf::RenderTarget& target, const gf::RenderStates& states) override;
-	  bool getCardType(const gf::Vector2f& screenPosition, const gf::Vector2f& screenSize, CardType& res) const;
+	  bool getCardType(const gf::Vector2f& screenPosition, const gf::Vector2f& screenSize, CardType& res);
+
+    void resetCardSelection() {
+      m_selectedCard = -1;
+    }
+
+    void replaceCard(CardType type);
 
     void initializeHand(const std::array<CardType, MaxCards>& cards);
 
-    void setRole(const std::string &role) {
+    void setRole(CrewType role) {
       m_role = role;
     }
 
@@ -26,8 +33,10 @@ namespace ggj {
   private:
     gf::Font &m_font;
     gf::Texture &m_emptyCardTexture;
-    std::string m_role;
+    gf::TextureAtlas m_atlas;
+    CrewType m_role;
     std::array<CardType, MaxCards> m_cards;
+    int m_selectedCard;
   };
 
 }

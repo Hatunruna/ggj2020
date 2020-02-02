@@ -26,6 +26,7 @@ namespace ggj {
 
     for (auto& player : players) {
       PemServerInitRole data;
+      Member member;
       data.role = crew.back();
       crew.pop_back();
 
@@ -34,16 +35,17 @@ namespace ggj {
           for (auto& card : data.cards) {
             card = m_deck.pickProtectorCard();
           }
+          member.type = CrewType::Protector;
           break;
 
         case CrewType::Rebel:
           for (auto& card : data.cards) {
             card = m_deck.pickRebelCard();
           }
+          member.type = CrewType::Rebel;
           break;
       }
 
-      Member member;
       member.cards = data.cards;
       m_members.emplace(player.id, std::move(member));
 
@@ -55,8 +57,8 @@ namespace ggj {
     PemServerStartVoteForCaptain data; // start vote phase
     broadcast(data);
 
-    PemServerStartMoveAndPlay moveAndPlay; // start move and play phase
-    broadcast(moveAndPlay);
+  //  PemServerStartMoveAndPlay moveAndPlay; // start move and play phase
+  //  broadcast(moveAndPlay);
   }
 
   bool PemInstance::isFinished() {
@@ -78,6 +80,7 @@ namespace ggj {
         if (in.recipient != gf::InvalidId) {
           out.message.recipient = in.recipient;
           send(in.recipient, out);
+          send(player.id, out);
         } else {
           broadcast(out);
         }
@@ -110,13 +113,11 @@ namespace ggj {
         assert(it != m_members.end());
 
         if (!it->second.voted && it->second.prison == 0) {
-          auto ut = m_members.find(player.id);
-          if(ut->second.captain){
-            m_votes[in.member]+= 2;
+          if(in.member == gf::InvalidId){
+            m_votes[in.member]++;
           }else{
             m_votes[in.member]++;
-          }
-          it->second.voted = true;
+          }it->second.voted = true;
         }
 
         checkEndOfVote(VoteType::Prison);
@@ -183,6 +184,14 @@ namespace ggj {
     gf::Id captain = gf::InvalidId;
 
     if (captains.empty()) {
+      if(type == VoteType::Prison){
+        captain = gf::InvalidId;
+        PemServerChoosePrisoner data;
+        data.member = captain;
+        broadcast(data);
+        m_votes.clear();
+        return;
+      }
       std::vector<gf::Id> eligibles;
 
       for (auto& kv : m_members) {
@@ -196,7 +205,17 @@ namespace ggj {
     } else if (captains.size() == 1) {
       captain = captains.front();
     } else { // draw
-      captain = captains[m_random.computeUniformInteger<std::size_t>(0, captains.size() - 1)];
+      if(type == VoteType::Prison){
+        captain = gf::InvalidId;
+        PemServerChoosePrisoner data;
+        data.member = captain;
+        broadcast(data);
+        m_votes.clear();
+        gf::Log::debug("(PEM) draw vote for prisoner\n");
+        return;
+      }else{
+        captain = captains[m_random.computeUniformInteger<std::size_t>(0, captains.size() - 1)];
+      }
     }
 
     m_votes.clear();
@@ -218,7 +237,6 @@ namespace ggj {
       auto it = m_members.find(captain);
       it->second.prison = 2;
     }
-
   }
 
 
@@ -231,11 +249,14 @@ namespace ggj {
       }
     }
 
+    gf::Log::debug("(PemInstance) m_currentlyPlaying %d, freemen %d\n", m_currentlyPlaying, freemen);
     ++m_currentlyPlaying;
+    gf::Log::debug("(PemInstance) m_currentlyPlaying %d, freemen %d\n", m_currentlyPlaying, freemen);
 
     if (m_currentlyPlaying < freemen) {
       return;
     }
+    gf::Log::debug("(PemInstance) m_currentlyPlaying < freemen => true\n");
 
     // compute the resolutions
 
@@ -301,6 +322,20 @@ namespace ggj {
         }
       }
 
+      if (has(CardType::Release) && kv.first == PlaceType::Prison){
+        PemServerResolution data;
+        Resolution res;
+        res.type = ResolutionType::Release;
+        data.conclusion.push_back(res);
+
+        for (auto id : place.members) {
+          if(m_members[id].place == PlaceType::Prison){
+            send(id, data);
+            m_members[id].prison = 0;
+          }
+        }
+      }
+
       place.trackers.clear();
 
       if (has(CardType::Track)) {
@@ -353,16 +388,63 @@ namespace ggj {
 
         }
 
+        if (has(CardType::SetupJammer)) {
+          place.jammed = 1;
+        }
+
         // everything else has no effect
       } else {
         assert(place.state == PlaceState::Broken);
+        if (has(CardType::Repair)) {
+          place.bomb = 0;
+        }
+        if (has(CardType::FalseRepair1)) {
+          place.alarm = 1;
+        }
+        if (has(CardType::FalseRepair2)) {
+          place.alarm = 2;
+        }
 
+        if (has(CardType::SetupJammer)) {
+          place.jammed = 1;
+        }
 
-
+        // everything else has no effect
       }
 
+      // send update to all client
+      PemServerUpdateShip update;
+      update.state = m_ship.getState();
+      broadcast(update);
+      m_ship.clear();
+
+      // draw the next card
+      for (auto member : m_members) {
+        CardType newCard;
+
+        for(uint i = 0 ; i < member.second.cards.size() ; ++i){
+          if (member.second.cards[i] == member.second.card){
+            if (member.second.type == CrewType::Protector){
+              newCard = m_deck.pickProtectorCard();
+              member.second.cards[i] = newCard;
+            }else{
+              assert(member.second.type == CrewType::Rebel);
+              newCard = m_deck.pickRebelCard();
+              member.second.cards[i] =newCard;
+            }
+            break;
+          }
+        }
+        PemServerUpdateHand updateHand;
+        updateHand.card = newCard;
+        send(member.first,updateHand);
+      }
+
+      // start vote for prisoner
+      PemServerStartVoteForPrisoner prisoner;
+      broadcast(prisoner);
+      m_currentlyPlaying = 0;
     }
   }
-
 
 }

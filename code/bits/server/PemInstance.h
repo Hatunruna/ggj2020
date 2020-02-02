@@ -27,7 +27,7 @@ namespace ggj {
   private:
     gf::Random m_random;
     int32_t m_players;
-    int32_t m_currentlyPlaying;
+    int32_t m_currentlyPlaying = 0;
     Deck m_deck;
     std::map<gf::Id, Member> m_members;
     std::map<gf::Id, int32_t> m_votes;

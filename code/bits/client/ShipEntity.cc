@@ -15,6 +15,7 @@ namespace {
     gf::Polygon placeBounds;
     gf::Vector2f titlePosition;
     std::string name;
+    bool state = true;
   };
 
   std::map<ggj::PlaceType, PlaceLocation> placeLocations;
@@ -280,12 +281,27 @@ namespace {
 namespace ggj {
   ShipEntity::ShipEntity(gf::ResourceManager& resources)
   : m_font(resources.getFont("DejaVuSans.ttf"))
-  , m_shipTexture(resources.getTexture("image/ship.png")) {
+  , m_shipTexture(resources.getTexture("image/ship.png"))
+  , m_selectedPlace(PlaceType::None)
+  , m_drawWarning(false) {
     initializeBounds();
   }
 
   void ShipEntity::updateMouseCoords(const gf::Vector2i& coords) {
     m_mouseCoords = coords;
+  }
+
+  void ShipEntity::selectPlace(PlaceType place) {
+    m_selectedPlace = place;
+  }
+
+  void ShipEntity::setPlaceState(PlaceType place, bool state) {
+    placeLocations.at(place).state = state;
+    m_drawWarning = true;
+  }
+
+  void ShipEntity::stopDrawWarnings() {
+    m_drawWarning = false;
   }
 
   void ShipEntity::render(gf::RenderTarget& target, const gf::RenderStates& states) {
@@ -294,31 +310,72 @@ namespace ggj {
     ship.setPosition({ 0.0f, 0.0f });
     target.draw(ship, states);
 
-    // Display cards
-    for (const auto &entry: placeLocations) {
-      const auto& location = entry.second;
+    if (!m_drawWarning) {
+      // Display cards
+      for (const auto &entry: placeLocations) {
+        const auto& key = entry.first;
+        const auto& location = entry.second;
 
-      if (!location.placeBounds.contains(m_mouseCoords)) {
-        continue;
+        auto drawCursor = [&location, &target, &states](gf::Color4f fillColor, gf::Color4f outlineColor = gf::Color::White) {
+          gf::CircleShape center(10.0f);
+          center.setPosition({ location.placeBounds.getCenter() });
+          center.setColor(fillColor);
+          center.setOutlineColor(outlineColor);
+          center.setOutlineThickness(10.0f);
+          target.draw(center, states);
+        };
+
+        if (m_selectedPlace == key) {
+          drawCursor(gf::Color::Black);
+        }
+
+        if (!location.placeBounds.contains(m_mouseCoords)) {
+          continue;
+        }
+
+        // // Display Hitbox - debug
+        // gf::ConvexShape polygonShape(location.placeBounds);
+        // polygonShape.setOutlineColor(gf::Color::Violet);
+        // polygonShape.setOutlineThickness(5.0f);
+        // polygonShape.setColor(gf::Color::Transparent);
+        // target.draw(polygonShape, states);
+
+        // Display
+        gf::Text text(location.name, m_font);
+        text.setCharacterSize(coordinates.getRelativeCharacterSize(0.1f));
+        text.setColor(gf::Color::Violet);
+        text.setOutlineColor(gf::Color::White);
+        text.setOutlineThickness(2.0f);
+        text.setPosition(location.titlePosition);
+        text.setAnchor(gf::Anchor::BottomLeft);
+        target.draw(text, states);
+
+        drawCursor(gf::Color::Black);
+      }
+      return;
+    }
+
+    for (const auto &entry: placeLocations) {
+        // const auto& key = entry.first;
+        const auto& location = entry.second;
+
+        auto drawCursor = [&location, &target, &states](gf::Color4f fillColor, gf::Color4f outlineColor = gf::Color::White) {
+          gf::CircleShape center(10.0f);
+          center.setPosition({ location.placeBounds.getCenter() });
+          center.setColor(fillColor);
+          center.setOutlineColor(outlineColor);
+          center.setOutlineThickness(10.0f);
+          target.draw(center, states);
+        };
+
+        if (location.state) {
+          drawCursor(gf::Color::Green);
+        }
+        else {
+          drawCursor(gf::Color::Red);
+        }
       }
 
-      // // Display Hitbox - debug
-      // gf::ConvexShape polygonShape(location.placeBounds);
-      // polygonShape.setOutlineColor(gf::Color::Violet);
-      // polygonShape.setOutlineThickness(5.0f);
-      // polygonShape.setColor(gf::Color::Transparent);
-      // target.draw(polygonShape, states);
-
-      // Display
-      gf::Text text(location.name, m_font);
-      text.setCharacterSize(coordinates.getRelativeCharacterSize(0.1f));
-      text.setColor(gf::Color::Violet);
-      text.setOutlineColor(gf::Color::White);
-      text.setOutlineThickness(2.0f);
-      text.setPosition(location.titlePosition);
-      text.setAnchor(gf::Anchor::BottomLeft);
-      target.draw(text, states);
-    }
   }
 
   bool ShipEntity::getPlaceType(const gf::Vector2f& position, PlaceType& res) const {
