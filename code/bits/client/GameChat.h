@@ -25,6 +25,8 @@ namespace ggj {
     gf::Id m_selectedUserId;
 
     std::map<gf::Id, ClientPlayerData>& m_players;
+
+    bool m_spawnedChat;
   };
 
 }

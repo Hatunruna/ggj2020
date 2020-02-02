@@ -15,26 +15,32 @@ namespace ggj {
   , m_selectedUserName("")
   , m_selectedUserId(gf::InvalidId)
   , m_players(players)
+  , m_spawnedChat(false)
   {
   }
 
   void GameChat::display(gf::Coordinates& coordinates) {
 
     // Chat window
-    gf::Vector2f chatWindowSize = coordinates.getRelativeSize({ 0.35f, 0.46f });
-    gf::Vector2f chatWindowPos = coordinates.getRelativePoint({ 0.82f, 0.76f });
+    if (!m_spawnedChat)
+    {
+      gf::Vector2f chatWindowSize = coordinates.getRelativeSize({ 0.35f, 0.46f });
+      gf::Vector2f chatWindowPos = coordinates.getRelativePoint({ 0.82f, 0.76f });
 
-    ImGui::SetNextWindowSize(ImVec2(chatWindowSize[0], chatWindowSize[1]));
-    ImGui::SetNextWindowPos(ImVec2(chatWindowPos[0], chatWindowPos[1]), 0, ImVec2(0.5f, 0.5f));
+      ImGui::SetNextWindowSize(ImVec2(chatWindowSize[0], chatWindowSize[1]));
+      ImGui::SetNextWindowPos(ImVec2(chatWindowPos[0], chatWindowPos[1]), 0, ImVec2(0.5f, 0.5f));
+      m_spawnedChat = true;
+    }
+    
 
-    if (ImGui::Begin("Chat", nullptr, DefaultWindowFlags))
+    if (ImGui::Begin("Chat", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoSavedSettings))
     {
       ImGui::Columns(2);
 
       ImGui::BeginGroup();
       ImGui::Text("Messages");
       ImGui::Spacing();
-      ImVec2 size(0.0f, chatWindowSize[1] - 4.5f * ImGui::GetTextLineHeightWithSpacing());
+      ImVec2 size(0.0f, ImGui::GetWindowHeight() - 4.5f * ImGui::GetTextLineHeightWithSpacing());
 
       if (ImGui::BeginChild("Messages", size, false)) {
         for (auto& message : m_messages) {
@@ -119,7 +125,7 @@ namespace ggj {
       ImGui::Text("Players");
       ImGui::Spacing();
 
-      size = ImVec2(0.0f, chatWindowSize[1] - 4.5f * ImGui::GetTextLineHeightWithSpacing());
+      size = ImVec2(0.0f, ImGui::GetWindowHeight() - 4.5f * ImGui::GetTextLineHeightWithSpacing());
 
       if (ImGui::BeginChild("Players", size, false)) {
         // List players

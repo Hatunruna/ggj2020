@@ -52,8 +52,6 @@ namespace ggj {
     public:
       Ship(int32_t players);
 
-      void changeState(PlaceType place ,PlaceState type);
-
       std::map<PlaceType, bool> getState();
 
       void addCrew(PlaceType type, gf::Id id);

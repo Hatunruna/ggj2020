@@ -49,7 +49,7 @@ namespace ggj {
       member.cards = data.cards;
       m_members.emplace(player.id, std::move(member));
 
-      gf::Log::debug("(PemInstance) Init Role to @%" PRIX64 "\n", player.id);
+      gf::Log::debug("(PemInstance) {%" PRIX64 "} Init Role (%s)\n", player.id, data.role == CrewType::Protector ? "protector" : "rebel");
       send(player.id, data);
     }
 
@@ -114,6 +114,7 @@ namespace ggj {
 
         if (!it->second.voted && it->second.prison == 0) {
           if(in.member == gf::InvalidId){
+            m_votes[in.member]++;
           }else{
             m_votes[in.member]++;
           }
@@ -125,18 +126,20 @@ namespace ggj {
       }
 
       case PemClientStartMoveAndPlay::type: {
-        gf::Log::info("(PemInstance) {%" PRIX64 "} Captain started the round.\n", player.id);
+        gf::Log::info("(PemInstance) {%" PRIX64 "} Start move and play.\n", player.id);
         PemServerStartMoveAndPlay data;
         broadcast(data);
         break;
       }
 
       case PemClientMoveAndPlay::type: {
-        gf::Log::info("(PemInstance) {%" PRIX64 "} Sended his action.\n", player.id);
+        gf::Log::info("(PemInstance) {%" PRIX64 "} Move and play.\n", player.id);
         auto in = bytes.as<PemClientMoveAndPlay>();
         m_ship.addCrew(in.place, player.id);
         auto it = m_members.find(player.id);
         assert(it != m_members.end());
+
+        gf::Log::info("(PemInstance) \tCard: %s | Place: %s\n", cardTypeString(in.card).c_str(), placeTypeString(in.place).c_str());
 
         it->second.card = in.card;
         it->second.place = in.place;
@@ -157,23 +160,16 @@ namespace ggj {
     }
 
     int32_t votes = 0;
-    ++voted;
 
     for (auto& kv : m_votes) {
       votes += kv.second;
     }
 
     if (votes < electors) {
-      if(type == VoteType::Prison && electors == voted){
-        PemServerChoosePrisoner data;
-        data.member = gf::InvalidId;
-        broadcast(data);
-        m_votes.clear();
-        voted = 0;
-        return;
-      }
       return;
     }
+
+    votes = 0;
 
     std::vector<gf::Id> captains;
 
@@ -190,9 +186,21 @@ namespace ggj {
       }
     }
 
+    gf::Log::debug("SIZE OF CAPTAINS : %zu \n\n\n\n", captains.size());
+
     gf::Id captain = gf::InvalidId;
 
     if (captains.empty()) {
+      if(type == VoteType::Prison){
+        gf::Log::debug("(PEM) draw vote for prisoner 1 \n");
+        captain = gf::InvalidId;
+        PemServerChoosePrisoner data;
+        data.member = captain;
+        broadcast(data);
+        m_votes.clear();
+        gf::Log::debug("(PEM) draw vote for prisoner 2 \n");
+        return;
+      }
       std::vector<gf::Id> eligibles;
 
       for (auto& kv : m_members) {
@@ -214,7 +222,6 @@ namespace ggj {
         broadcast(data);
         m_votes.clear();
         gf::Log::debug("(PEM) draw vote for prisoner 2 \n");
-        voted = 0;
         return;
       }else{
         captain = captains[m_random.computeUniformInteger<std::size_t>(0, captains.size() - 1)];
@@ -240,7 +247,6 @@ namespace ggj {
     }
 
     m_votes.clear();
-    voted = 0;
   }
 
 
@@ -253,25 +259,29 @@ namespace ggj {
       }
     }
 
-    gf::Log::debug("(PemInstance) m_currentlyPlaying %d, freemen %d\n", m_currentlyPlaying, freemen);
     ++m_currentlyPlaying;
-    gf::Log::debug("(PemInstance) m_currentlyPlaying %d, freemen %d\n", m_currentlyPlaying, freemen);
 
     if (m_currentlyPlaying < freemen) {
       return;
     }
-    gf::Log::debug("(PemInstance) m_currentlyPlaying < freemen => true\n");
+
+    gf::Log::debug("(PemInstance) End of turn, computing the resolution\n");
 
     // compute the resolutions
 
     for (auto & kv : m_ship.places) {
       ShipPlace& place = kv.second;
 
+      gf::Log::debug("(PemInstance) ##### Place %s\n", placeTypeString(kv.first).c_str());
+
       if (place.members.empty()) {
+        gf::Log::debug("(PemInstance) Nobody here.\n");
         continue;
       }
 
       if (place.blocked > 0) {
+        gf::Log::debug("(PemInstance) Place is blocked.\n");
+
         PemServerResolution data;
 
         Resolution res;
@@ -300,6 +310,8 @@ namespace ggj {
       };
 
       if (has(CardType::Hide) || !place.trackers.empty()) {
+        gf::Log::debug("(PemInstance) At least one person is hiding, or a tracker is here.\n");
+
         PemServerResolution data;
 
         Resolution res;
@@ -328,6 +340,8 @@ namespace ggj {
       }
 
       if (has(CardType::Release) && kv.first == PlaceType::Prison){
+        gf::Log::debug("(PemInstance) At least one person is releasing prisoners.\n");
+
         PemServerResolution data;
         Resolution res;
         res.type = ResolutionType::Release;
@@ -344,6 +358,8 @@ namespace ggj {
       place.trackers.clear();
 
       if (has(CardType::Track)) {
+        gf::Log::debug("(PemInstance) At least one person has set a tracker up.\n");
+
         for (auto id : place.members) {
           if (m_members[id].card == CardType::Track) {
             place.trackers.push_back(id);
@@ -352,35 +368,46 @@ namespace ggj {
       }
 
       if (has(CardType::Block)) {
+        gf::Log::debug("(PemInstance) At least one person blocked the place.\n");
         place.blocked = 2;
       }
 
       if (place.state == PlaceState::Working) {
+        gf::Log::debug("(PemInstance) -- Place is currently working.\n");
+
         if (has(CardType::Demine)) {
+          gf::Log::debug("(PemInstance) At least one person demined the place.\n");
           place.bomb = 0;
         }
 
         if (has(CardType::Reinforce1)) {
+          gf::Log::debug("(PemInstance) At least one person reinforced the place (+1).\n");
           place.reinforcement = 1;
         }
 
         if (has(CardType::Reinforce2)) {
+          gf::Log::debug("(PemInstance) At least one person reinforced the place (+2).\n");
           place.reinforcement = 2;
         }
 
         if (has(CardType::PlaceBomb2)) {
+          gf::Log::debug("(PemInstance) At least one person placed a bomb (+2).\n");
           place.bomb = 3;
         }
 
         if (has(CardType::PlaceBomb1)) {
+          gf::Log::debug("(PemInstance) At least one person placed a bomb (+1).\n");
           place.bomb = 2;
         }
 
         if (has(CardType::PlaceBomb0)) {
+          gf::Log::debug("(PemInstance) At least one person placed a bomb (+0).\n");
           place.bomb = 1;
         }
 
         if (has(CardType::Examine)) {
+          gf::Log::debug("(PemInstance) At least one person examined the place.\n");
+
           PemServerResolution data;
 
           Resolution res;
@@ -398,31 +425,38 @@ namespace ggj {
         }
 
         if (has(CardType::SetupJammer)) {
+          gf::Log::debug("(PemInstance) At least one person set a jammer up.\n");
           place.jammed = 2;
         }
 
         if (has(CardType::FalseAlarm)) {
+          gf::Log::debug("(PemInstance) At least one person set a false alarm up.\n");
           place.alarm = 2;
         }
 
         // everything else has no effect
       } else {
         assert(place.state == PlaceState::Broken);
+        gf::Log::debug("(PemInstance) -- Place is currently broken.\n");
 
         if (has(CardType::Repair)) {
+          gf::Log::debug("(PemInstance) At least one person repaired the place.\n");
           place.bomb = 0;
           place.state = PlaceState::Working;
         }
 
         if (has(CardType::FalseRepair1)) {
+          gf::Log::debug("(PemInstance) At least one person made a false repair (+1).\n");
           place.repair = 2;
         }
 
         if (has(CardType::FalseRepair2)) {
+          gf::Log::debug("(PemInstance) At least one person made a false repair (+2).\n");
           place.repair = 3;
         }
 
         if (has(CardType::SetupJammer)) {
+          gf::Log::debug("(PemInstance) At least one person set a jammer up.\n");
           place.jammed = 2;
         }
 

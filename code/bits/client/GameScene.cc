@@ -51,7 +51,12 @@ namespace ggj {
     getWorldView().setViewport(gf::RectF::fromPositionSize({0.0f, 0.0f}, {1.0f, 2.f / 3.f}));
 
     m_startMoveAndPlayButton.setAnchor(gf::Anchor::Center);
-    m_startMoveAndPlayButton.setDefaultBackgroundColor(gf::Color4f(0.5f,0.5f,0.5f,0.65f));
+    m_startMoveAndPlayButton.setDefaultBackgroundColor(gf::Color::Transparent);
+    m_startMoveAndPlayButton.setDefaultTextColor(gf::Color::White);
+    m_startMoveAndPlayButton.setDefaultTextOutlineColor(gf::Color::Black);
+    m_startMoveAndPlayButton.setSelectedBackgroundColor(gf::Color::Transparent);
+    m_startMoveAndPlayButton.setSelectedTextColor(gf::Color::Gray());
+    m_startMoveAndPlayButton.setSelectedTextOutlineColor(gf::Color::Black);
     m_startMoveAndPlayButton.setDefault();
 
     m_ambiantBackground.setBuffer(gResourceManager().getSound("audio/ambiant.ogg"));
@@ -80,7 +85,6 @@ namespace ggj {
     gf::unused(window);
 
     if (m_escapeAction.isActive()) {
-      m_scenes.setClearColor(gf::Color::White);
       m_ambiantBackground.stop();
       gBackgroundMusic.play();
       m_scenes.transitionToScene(m_scenes.intro, 0.4f, m_scenes.fadeEffect);
@@ -205,6 +209,12 @@ namespace ggj {
       if (m_gamePhase == GamePhase::Action && !(m_players[m_scenes.myPlayerId].jail)) {
         gf::Vector2f worldCoords = m_scenes.getRenderer().mapPixelToCoords(event.mouseCursor.coords, getWorldView());
         m_ship.updateMouseCoords(worldCoords);
+      }
+
+      if(m_startMoveAndPlayButton.contains(event.mouseCursor.coords)) {
+        m_startMoveAndPlayButton.setSelected();
+      } else {
+        m_startMoveAndPlayButton.setDefault();
       }
     }
 
@@ -477,8 +487,10 @@ namespace ggj {
 
     //Start move and play button
     if (m_gamePhase == GamePhase::CapitainElection && m_players[m_scenes.myPlayerId].captain) {
-      m_startMoveAndPlayButton.setCharacterSize(coordinates.getRelativeCharacterSize(0.05f));
+      float characterSize = coordinates.getRelativeCharacterSize(0.05f);
+      m_startMoveAndPlayButton.setCharacterSize(characterSize);
       m_startMoveAndPlayButton.setPosition(coordinates.getRelativePoint({0.5f, 0.05f}));
+      m_startMoveAndPlayButton.setTextOutlineThickness(characterSize * 0.05f);
 
       target.draw(m_startMoveAndPlayButton, states);
     }

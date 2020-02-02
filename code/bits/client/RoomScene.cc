@@ -80,7 +80,6 @@ namespace ggj {
 
         case ServerStartGame::type: {
           m_scenes.transitionToScene(m_scenes.game, 0.4f, m_scenes.glitchEffect);
-          m_scenes.setClearColor(gf::Color::Black);
           m_scenes.game.initialize(m_players);
           // do not poll any more message as the next messages are for the game
           return;

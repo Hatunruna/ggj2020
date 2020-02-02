@@ -316,17 +316,20 @@ namespace ggj {
         const auto& key = entry.first;
         const auto& location = entry.second;
 
-        auto drawCursor = [&location, &target, &states](gf::Color4f fillColor, gf::Color4f outlineColor = gf::Color::White) {
-          gf::CircleShape center(10.0f);
+        auto drawCursor = [&location, &target, &states, &coordinates](gf::Color4f fillColor, gf::Color4f outlineColor = gf::Color::Black) {
+          auto characterSize = coordinates.getRelativeCharacterSize(0.1f);
+
+          gf::CircleShape center(30.0f);
           center.setPosition({ location.placeBounds.getCenter() });
           center.setColor(fillColor);
           center.setOutlineColor(outlineColor);
-          center.setOutlineThickness(10.0f);
+          center.setOutlineThickness(characterSize * 0.05f);
+          center.setAnchor(gf::Anchor::Center);
           target.draw(center, states);
         };
 
         if (m_selectedPlace == key) {
-          drawCursor(gf::Color::Black);
+          drawCursor(gf::Color::White);
         }
 
         if (!location.placeBounds.contains(m_mouseCoords)) {
@@ -340,41 +343,44 @@ namespace ggj {
         // polygonShape.setColor(gf::Color::Transparent);
         // target.draw(polygonShape, states);
 
-        // Display
+        // Display place name
         gf::Text text(location.name, m_font);
-        text.setCharacterSize(coordinates.getRelativeCharacterSize(0.1f));
-        text.setColor(gf::Color::Violet);
-        text.setOutlineColor(gf::Color::White);
-        text.setOutlineThickness(2.0f);
+        auto characterSize = coordinates.getRelativeCharacterSize(0.1f);
+        text.setCharacterSize(characterSize);
+        text.setColor(gf::Color::White);
+        text.setOutlineColor(gf::Color::Black);
+        text.setOutlineThickness(characterSize * 0.05f);
         text.setPosition(location.titlePosition);
         text.setAnchor(gf::Anchor::BottomLeft);
         target.draw(text, states);
 
-        drawCursor(gf::Color::Black);
+        drawCursor(gf::Color::White);
       }
       return;
     }
 
     for (const auto &entry: placeLocations) {
-        // const auto& key = entry.first;
-        const auto& location = entry.second;
+      const auto& location = entry.second;
 
-        auto drawCursor = [&location, &target, &states](gf::Color4f fillColor, gf::Color4f outlineColor = gf::Color::White) {
-          gf::CircleShape center(10.0f);
-          center.setPosition({ location.placeBounds.getCenter() });
-          center.setColor(fillColor);
-          center.setOutlineColor(outlineColor);
-          center.setOutlineThickness(10.0f);
-          target.draw(center, states);
-        };
+      auto drawCursor = [&location, &target, &states, &coordinates](gf::Color4f fillColor, gf::Color4f outlineColor = gf::Color::Black) {
+        auto characterSize = coordinates.getRelativeCharacterSize(0.1f);
 
-        if (location.state) {
-          drawCursor(gf::Color::Green);
-        }
-        else {
-          drawCursor(gf::Color::Red);
-        }
+        gf::CircleShape center(30.0f);
+        center.setPosition({ location.placeBounds.getCenter() });
+        center.setColor(fillColor);
+        center.setOutlineColor(outlineColor);
+        center.setOutlineThickness(characterSize * 0.05f);
+        center.setAnchor(gf::Anchor::Center);
+        target.draw(center, states);
+      };
+
+      if (location.state) {
+        drawCursor(gf::Color::Green);
       }
+      else {
+        drawCursor(gf::Color::Red);
+      }
+    }
 
   }
 
