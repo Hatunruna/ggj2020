@@ -221,6 +221,10 @@ namespace ggj {
   }
 
   void GameScene::doUpdate(gf::Time time) {
+    if (!isActive()) {
+      return;
+    }
+
     ImGui_ImplGF_Update(time);
 
     ProtocolBytes bytes;
