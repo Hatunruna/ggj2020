@@ -321,7 +321,7 @@ namespace ggj {
 
       gf::CircleShape center(10.0f);
       center.setPosition({ location.placeBounds.getCenter() });
-      center.setColor(gf::Color::White);
+      center.setColor(gf::Color::Black);
       center.setOutlineThickness(10.0f);
 
       target.draw(center, states);
