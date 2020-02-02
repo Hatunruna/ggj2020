@@ -385,6 +385,8 @@ namespace ggj {
           gf::Log::debug("[game] receive PemServerUpdateHand\n");
 
           auto data = bytes.as<PemServerUpdateHand>();
+          m_info.replaceCard(data.card);
+
           break;
         }
       }

@@ -19,6 +19,8 @@ namespace ggj {
       m_selectedCard = -1;
     }
 
+    void replaceCard(CardType type);
+
     void initializeHand(const std::array<CardType, MaxCards>& cards);
 
     void setRole(CrewType role) {

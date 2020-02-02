@@ -20,6 +20,12 @@ namespace ggj {
 
   }
 
+  void PlayerInfo::replaceCard(CardType type) {
+    assert(m_selectedCard >= 0 && m_selectedCard <= 2);
+
+    m_cards[m_selectedCard] = type;
+  }
+
   void PlayerInfo::initializeHand(const std::array<CardType, MaxCards>& cards) {
     m_cards = cards;
   }
