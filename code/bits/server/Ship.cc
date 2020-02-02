@@ -62,9 +62,46 @@ namespace ggj {
     places[type].members.insert(id);
   }
 
-  void Ship::clear() {
+  void Ship::endOfActions() {
     for (auto& kv : places) {
-      kv.second.members.clear();
+      auto & place = kv.second;
+
+      if (place.jammed == 2) {
+        place.previous = place.state;
+      }
+
+      if (place.jammed > 0) {
+        --place.jammed;
+      }
+
+      if (place.bomb == 1) {
+        if (place.reinforcement == 0) {
+          // bomb explodes
+          place.state = PlaceState::Broken;
+        } else {
+          place.reinforcement = 0;
+        }
+      }
+
+      if (place.bomb > 0) {
+        --place.bomb;
+      }
+
+      if (place.reinforcement > 0) {
+        --place.reinforcement;
+      }
+
+      if (place.blocked > 0) {
+        --place.blocked;
+      }
+
+      if (place.alarm > 0) {
+        --place.alarm;
+      }
+
+      if (place.repair > 0) {
+        --place.repair;
+      }
     }
   }
 
@@ -80,8 +117,6 @@ namespace ggj {
         if (place.jammed > 0) {
           res = (place.previous == PlaceState::Working);
         } else if (place.alarm > 0) {
-          res = false;
-        }else if (place.bomb == 1){
           res = false;
         }
 

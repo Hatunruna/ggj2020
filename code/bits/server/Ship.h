@@ -28,7 +28,7 @@ namespace ggj {
     int jammed = 0;
 
     // Block
-    bool blocked;
+    int blocked = 0;
 
     // FalseAlarm
     int alarm = 0;
@@ -58,7 +58,7 @@ namespace ggj {
 
       void addCrew(PlaceType type, gf::Id id);
 
-      void clear();
+      void endOfActions();
 
       std::map<PlaceType, ShipPlace> places;
   };
