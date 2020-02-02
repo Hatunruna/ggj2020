@@ -83,7 +83,7 @@ namespace ggj {
       m_scenes.setClearColor(gf::Color::White);
       m_ambiantBackground.stop();
       gBackgroundMusic.play();
-      m_scenes.replaceScene(m_scenes.intro);
+      m_scenes.transitionToScene(m_scenes.intro, 0.4f, m_scenes.fadeEffect);
     }
   }
 
