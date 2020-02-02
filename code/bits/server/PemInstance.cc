@@ -55,8 +55,8 @@ namespace ggj {
     PemServerStartVoteForCaptain data; // start vote phase
     broadcast(data);
 
-    PemServerStartMoveAndPlay moveAndPlay; // start move and play phase
-    broadcast(moveAndPlay);
+  //  PemServerStartMoveAndPlay moveAndPlay; // start move and play phase
+  //  broadcast(moveAndPlay);
   }
 
   bool PemInstance::isFinished() {
@@ -78,6 +78,7 @@ namespace ggj {
         if (in.recipient != gf::InvalidId) {
           out.message.recipient = in.recipient;
           send(in.recipient, out);
+          send(player.id, out);
         } else {
           broadcast(out);
         }
@@ -218,7 +219,6 @@ namespace ggj {
       auto it = m_members.find(captain);
       it->second.prison = 2;
     }
-
   }
 
 
@@ -353,16 +353,38 @@ namespace ggj {
 
         }
 
+        if (has(CardType::SetupJammer)) {
+          place.jammed = 1;
+        }
+
         // everything else has no effect
       } else {
         assert(place.state == PlaceState::Broken);
+        if (has(CardType::Repair)) {
+          place.bomb = 0;
+        }
+        if (has(CardType::FalseRepair1)) {
+          place.alarm = 1; 
+        }
+        if (has(CardType::FalseRepair2)) {
+          place.alarm = 2; 
+        }
 
+        if (has(CardType::SetupJammer)) {
+          place.jammed = 1; 
+        }
 
-
+        // everything else has no effect
       }
 
+      PemServerUpdateShip update;
+      update.state = m_ship.getState();
+      broadcast(update);
+      m_ship.clear();
+
+      PemServerStartVoteForPrisoner prisoner;
+      broadcast(prisoner);
     }
   }
-
 
 }

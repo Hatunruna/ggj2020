@@ -38,6 +38,15 @@ namespace ggj {
   Archive operator|(Archive& ar, PemServerStartVoteForCaptain&) {
     return ar;
   }
+  
+  struct PemServerStartVoteForPrisoner {
+    static constexpr gf::Id type = "PemServerStartVoteForPrisoner"_id;
+  };
+
+  template<typename Archive>
+  Archive operator|(Archive& ar, PemServerStartVoteForPrisoner&) {
+    return ar;
+  }
 
   struct PemServerChooseCaptain {
     static constexpr gf::Id type = "PemServerChooseCaptain"_id;
