@@ -49,7 +49,7 @@ namespace ggj {
       member.cards = data.cards;
       m_members.emplace(player.id, std::move(member));
 
-      gf::Log::debug("(PemInstance) Init Role to @%" PRIX64 "\n", player.id);
+      gf::Log::debug("(PemInstance) {%" PRIX64 "} Init Role (%s)\n", player.id, data.role == CrewType::Protector ? "protector" : "rebel");
       send(player.id, data);
     }
 
@@ -126,18 +126,20 @@ namespace ggj {
       }
 
       case PemClientStartMoveAndPlay::type: {
-        gf::Log::info("(PemInstance) {%" PRIX64 "} Captain started the round.\n", player.id);
+        gf::Log::info("(PemInstance) {%" PRIX64 "} Start move and play.\n", player.id);
         PemServerStartMoveAndPlay data;
         broadcast(data);
         break;
       }
 
       case PemClientMoveAndPlay::type: {
-        gf::Log::info("(PemInstance) {%" PRIX64 "} Sended his action.\n", player.id);
+        gf::Log::info("(PemInstance) {%" PRIX64 "} Move and play.\n", player.id);
         auto in = bytes.as<PemClientMoveAndPlay>();
         m_ship.addCrew(in.place, player.id);
         auto it = m_members.find(player.id);
         assert(it != m_members.end());
+
+        gf::Log::info("(PemInstance) \tCard: %s | Place: %s\n", cardTypeString(in.card).c_str(), placeTypeString(in.place).c_str());
 
         it->second.card = in.card;
         it->second.place = in.place;
