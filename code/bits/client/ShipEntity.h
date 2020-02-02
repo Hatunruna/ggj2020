@@ -12,6 +12,8 @@ namespace ggj {
   public:
     ShipEntity(gf::ResourceManager& resources);
 
+    void updateMouseCoords(const gf::Vector2i& coords);
+
     void render(gf::RenderTarget& target, const gf::RenderStates& states) override;
     bool getPlaceType(const gf::Vector2f& position, PlaceType& res) const;
 
@@ -19,6 +21,7 @@ namespace ggj {
     gf::Font &m_font;
     gf::Texture &m_shipTexture;
     gf::RectangleShape m_rect;
+    gf::Vector2i m_mouseCoords;
   };
 }
 
