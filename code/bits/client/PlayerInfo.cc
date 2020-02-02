@@ -15,18 +15,21 @@ namespace ggj {
   PlayerInfo::PlayerInfo(gf::ResourceManager& resources)
   : m_font(resources.getFont("DejaVuSans.ttf"))
   , m_emptyCardTexture(resources.getTexture("image/empty_card.png"))
-  , m_atlas("atlas.xml", resources) {
+  , m_atlas("atlas.xml", resources)
+  , m_selectedCard(-1) {
+
   }
 
   void PlayerInfo::initializeHand(const std::array<CardType, MaxCards>& cards) {
     m_cards = cards;
   }
 
-  bool PlayerInfo::getCardType(const gf::Vector2f& screenPosition, const gf::Vector2f& screenSize, CardType& res) const {
+  bool PlayerInfo::getCardType(const gf::Vector2f& screenPosition, const gf::Vector2f& screenSize, CardType& res) {
     for (unsigned i = 0; i < m_cards.size(); ++i) {
       gf::RectF cardBounds = getCardBounds(screenSize, i);
       if (cardBounds.contains(screenPosition)) {
         res = m_cards[i];
+        m_selectedCard = i;
         return true;
       }
     }
@@ -66,6 +69,11 @@ namespace ggj {
       auto bounds = getCardBounds(coordinates.getRelativeSize({ 1.0f, 1.0f }), i);
       auto cardSize = bounds.getSize();
 
+      float offsetSelected = 0.0f;
+      if (m_selectedCard == static_cast<int>(i)) {
+        offsetSelected = coordinates.getRelativeSize({ 0.0f, 0.05f }).height;
+      }
+
       // // Hitbox debug
       // gf::RectangleShape rect;
       // rect.setColor(gf::Color::Yellow);
@@ -79,7 +87,9 @@ namespace ggj {
       card.setTextureRect(m_atlas.getTextureRect(cardTypeString(m_cards[i])));
       gf::Vector2f scaleFactor = cardSize / CardTextureSize;
       card.setScale(scaleFactor);
-      card.setPosition(bounds.getBottomLeft());
+      auto posCard = bounds.getBottomLeft();
+      posCard.y -= offsetSelected;
+      card.setPosition(posCard);
       card.setAnchor(gf::Anchor::BottomLeft);
       target.draw(card, states);
 
@@ -88,7 +98,7 @@ namespace ggj {
       gf::Vector2f textBoxSize = gf::Vector2f(360.0f, 100.0f) * scaleFactor;
       gf::Vector2f textBoxPosition = bounds.getBottomLeft();
       textBoxPosition.x += titleMargin;
-      textBoxPosition.y -= titleMargin;
+      textBoxPosition.y -= titleMargin + offsetSelected;
 
       // // Text box debug
       // gf::RectangleShape rect;

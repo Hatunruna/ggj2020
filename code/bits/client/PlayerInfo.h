@@ -13,7 +13,11 @@ namespace ggj {
     PlayerInfo(gf::ResourceManager& resources);
 
     void render(gf::RenderTarget& target, const gf::RenderStates& states) override;
-	  bool getCardType(const gf::Vector2f& screenPosition, const gf::Vector2f& screenSize, CardType& res) const;
+	  bool getCardType(const gf::Vector2f& screenPosition, const gf::Vector2f& screenSize, CardType& res);
+
+    void resetCardSelection() {
+      m_selectedCard = -1;
+    }
 
     void initializeHand(const std::array<CardType, MaxCards>& cards);
 
@@ -30,6 +34,7 @@ namespace ggj {
     gf::TextureAtlas m_atlas;
     CrewType m_role;
     std::array<CardType, MaxCards> m_cards;
+    int m_selectedCard;
   };
 
 }

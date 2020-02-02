@@ -248,11 +248,14 @@ namespace ggj {
       }
     }
 
+    gf::Log::debug("(PemInstance) m_currentlyPlaying %d, freemen %d\n", m_currentlyPlaying, freemen);
     ++m_currentlyPlaying;
+    gf::Log::debug("(PemInstance) m_currentlyPlaying %d, freemen %d\n", m_currentlyPlaying, freemen);
 
     if (m_currentlyPlaying < freemen) {
       return;
     }
+    gf::Log::debug("(PemInstance) m_currentlyPlaying < freemen => true\n");
 
     // compute the resolutions
 
@@ -395,14 +398,14 @@ namespace ggj {
           place.bomb = 0;
         }
         if (has(CardType::FalseRepair1)) {
-          place.alarm = 1; 
+          place.alarm = 1;
         }
         if (has(CardType::FalseRepair2)) {
-          place.alarm = 2; 
+          place.alarm = 2;
         }
 
         if (has(CardType::SetupJammer)) {
-          place.jammed = 1; 
+          place.jammed = 1;
         }
 
         // everything else has no effect

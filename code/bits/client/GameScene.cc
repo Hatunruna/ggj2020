@@ -276,6 +276,7 @@ namespace ggj {
 
           m_alreadyVote = (m_players[m_scenes.myPlayerId].jail);
           m_ship.selectPlace(PlaceType::None);
+          m_info.resetCardSelection();
           m_gamePhase = GamePhase::Meeting;
           break;
         }
