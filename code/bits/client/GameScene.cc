@@ -256,8 +256,6 @@ namespace ggj {
 
             m_chat.appendMessage(std::move(message));
           }
-
-          m_alreadyUsedMoveAndPlayButton = false;
           break;
         }
 
@@ -271,6 +269,7 @@ namespace ggj {
           m_ship.stopDrawWarnings();
 
           m_gamePhase = GamePhase::Action;
+          m_alreadyUsedMoveAndPlayButton = false;
 
           if (m_players[m_scenes.myPlayerId].jail) {
             m_placeTypeSelected = PlaceType::Prison;
