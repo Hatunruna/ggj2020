@@ -66,6 +66,7 @@ namespace ggj {
     m_votedPlayer = gf::InvalidId;
     m_gamePhase = GamePhase::CapitainElection;
     m_alreadyVote = false;
+    gBackgroundMusic.stop();
     m_ambiantBackground.play();
     m_cardShuffle.play();
   }
@@ -119,25 +120,61 @@ namespace ggj {
         m_gamePhase = GamePhase::Resolution;
         m_placeTypeSelected = PlaceType::None;
 
+        bool playFx = true;
         switch (clickedCardType)
         {
+        case CardType::Block:
+        {
+          m_fx.setBuffer(gResourceManager().getSound("audio/block.ogg"));
+        }
+          break;
+        case CardType::Demine:
+        {
+          m_fx.setBuffer(gResourceManager().getSound("audio/demine.ogg"));
+        }
+          break;
+        case CardType::FalseAlarm:
+        {
+          m_fx.setBuffer(gResourceManager().getSound("audio/alarm.ogg"));
+        }
+          break;
+        case CardType::PlaceBomb0:
+        case CardType::PlaceBomb1:
+        case CardType::PlaceBomb2:
+        {
+          m_fx.setBuffer(gResourceManager().getSound("audio/bomb_armed.ogg"));
+        }
+          break;
+        case CardType::Reinforce1:
+        case CardType::Reinforce2:
+        {
+          m_fx.setBuffer(gResourceManager().getSound("audio/reinforce.ogg"));
+        }
+          break;
+        case CardType::Release:
+        {
+          m_fx.setBuffer(gResourceManager().getSound("audio/gate.ogg"));
+        }
+          break;
         case CardType::Repair:
         case CardType::FalseRepair1:
         case CardType::FalseRepair2:
         {
           m_fx.setBuffer(gResourceManager().getSound("audio/repair.ogg"));
-          m_fx.setVolume(FxsVolume);
-          m_fx.play();
         }
           break;
         case CardType::SetupJammer:
         {
           m_fx.setBuffer(gResourceManager().getSound("audio/jammer.ogg"));
-          m_fx.setVolume(FxsVolume);
-          m_fx.play();
         }
-        default:
           break;
+        default:
+          playFx = false;
+          break;
+        }
+        if (playFx)
+        {
+          m_fx.play();
         }
       }
 
@@ -168,8 +205,6 @@ namespace ggj {
     ImGui_ImplGF_Update(time);
 
     ProtocolBytes bytes;
-
-    ggj::gBackgroundMusic.stop();
 
     while (m_network.queue.poll(bytes)) {
       switch (bytes.getType()) {
