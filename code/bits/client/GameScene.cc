@@ -288,16 +288,18 @@ namespace ggj {
           gf::Log::debug("[game] receive PemServerChoosePrisoner\n");
           auto data = bytes.as<PemServerChoosePrisoner>();
 
+          MessageData message;
+          message.origin = gf::InvalidId;
+          message.author = "server";
+
           auto it = m_players.find(data.member);
           if (it != m_players.end()) {
             it->second.jail = true;
-
-            MessageData message;
-            message.origin = gf::InvalidId;
-            message.author = "server";
             message.content = it->second.name + " is now jailed";
-            m_chat.appendMessage(std::move(message));
+          } else {
+            message.content = "No one has been in prison";
           }
+          m_chat.appendMessage(std::move(message));
 
           m_gamePhase = GamePhase::CapitainElection;
           m_alreadyVote = true;
