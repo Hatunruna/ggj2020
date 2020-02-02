@@ -38,10 +38,19 @@ namespace ggj {
 
       if (ImGui::BeginChild("Messages", size, false)) {
         for (auto& message : m_messages) {
-          std::string str = "[" + message.author + "] ";
+          std::string str;
+          if (message.recipient != gf::InvalidId)
+          {
+            str = "<" + message.author + "> ";
+          }
+          else
+          {
+            str = "[" + message.author + "] ";
+          }
+
           ImGui::TextColored(toColor(message.origin), str.c_str());
 
-          if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left) && message.origin != gf::InvalidId) {
+          if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && message.origin != gf::InvalidId) {
             m_selectedUserName = "@" + message.author;
             m_selectedUserId = message.origin;
             m_lineBuffer.clear();
@@ -50,10 +59,6 @@ namespace ggj {
           ImGui::SameLine();
 
           if (message.origin == gf::InvalidId) {
-            ImGui::PushStyleColor(ImGuiCol_Text, toColor(message.origin));
-            ImGui::TextWrapped(message.content.c_str());
-            ImGui::PopStyleColor();
-          } else if (message.recipient != gf::InvalidId) {
             ImGui::PushStyleColor(ImGuiCol_Text, toColor(message.origin));
             ImGui::TextWrapped(message.content.c_str());
             ImGui::PopStyleColor();
@@ -121,7 +126,7 @@ namespace ggj {
         for (auto &player: m_players) {
           ImGui::TextColored(toColor(player.second.id), player.second.name.c_str());
 
-          if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+          if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
             m_selectedUserName = "@" + player.second.name;
             m_selectedUserId = player.second.id;
             m_lineBuffer.clear();
