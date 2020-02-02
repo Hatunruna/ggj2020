@@ -233,33 +233,37 @@ namespace ggj {
           break;
         }
 
-        case PemServerChoosePrisoner::type: {
-          gf::Log::debug("[game] receive PemServerChoosePrisoner\n");
-          auto data = bytes.as<PemServerChoosePrisoner>();
+        case PemServerStartVoteForPrisoner::type: {
+          gf::Log::debug("[game] receive PemServerStartVoteForPrisoner\n");
           m_alreadyVote = false;
-          m_players[data.member].jail = true;
           m_gamePhase = GamePhase::Meeting;
           break;
         }
 
+        case PemServerChoosePrisoner::type: {
+          gf::Log::debug("[game] receive PemServerChoosePrisoner\n");
+          auto data = bytes.as<PemServerChoosePrisoner>();
+          m_players[data.member].jail = true;
+          break;
+        }
+
         case PemServerUpdateShip::type: {
+          gf::Log::debug("[game] receive PemServerUpdateShip\n");
           //TODO: do the implementation
           break;
         }
 
         case PemServerResolution::type: {
+          gf::Log::debug("[game] receive PemServerResolution\n");
           auto data = bytes.as<PemServerResolution>();
-          //TODO: do this when server guys done it correctly
-          /*for(auto &resolution: data.conclusion)
-          {
+          
+          for(auto &resolution: data.conclusion) {
             MessageData message;
             message.origin = gf::InvalidId;
             message.author = "server";
 
-            switch (resolution.type)
-            {
-              case ResolutionType::Examine:
-              {
+            switch (resolution.type) {
+              case ResolutionType::Examine: {
                 if (resolution.bomb) {
                   message.content = "There is a bomb.";
                 } else {
@@ -267,30 +271,33 @@ namespace ggj {
                 }
                 break;
               }
-              case ResolutionType::Hide:
-              {
-                message.content = "I saw " + m_players[resolution.member].name + " hiding.";
+              case ResolutionType::Hide: {
+                message.content = "I saw ";
+                for (auto &playerID: resolution.members) {
+                  message.content += m_players[playerID].name + " ";
+                }
+                message.content += " hiding.";
                 break;
               }
-              case ResolutionType::Track:
-              {
-                message.content = "It's your turn to play";
+              case ResolutionType::Track: {
+                message.content = "I saw ";
+                for (auto &playerID: resolution.members) {
+                  message.content += m_players[playerID].name + " ";
+                }
                 break;
               }
-              case ResolutionType::Block:
-              {
-                message.content = "It's your turn to play";
+              case ResolutionType::Block: {
+                message.content = "The room was blocked.";
                 break;
               }
-              case ResolutionType::Release:
-              {
-                message.content = "It's your turn to play";
+              case ResolutionType::Release: {
+                //message.content = "It's your turn to play";
                 break;
               }
             }
 
             m_chat.appendMessage(std::move(message));
-          }*/
+          }
         }
       }
     }
