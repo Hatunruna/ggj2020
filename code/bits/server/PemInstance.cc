@@ -221,6 +221,7 @@ namespace ggj {
 
   void PemInstance::checkEndOfTurn(){
     int32_t freemen = 0;
+    m_currentlyPlaying = 0;
 
     for (auto& kv : m_members) {
       if (kv.second.released) {
@@ -295,6 +296,20 @@ namespace ggj {
         // send to those that have a tracker
         for (auto id : place.trackers) {
           send(id, data);
+        }
+      }
+      
+      if (has(CardType::Release) && kv.first == PlaceType::Prison){
+        PemServerResolution data;
+        Resolution res;
+        res.type = ResolutionType::Release;
+        data.conclusion.push_back(res);
+
+        for (auto id : place.members) {
+          if(m_members[id].place == PlaceType::Prison){
+            send(id, data);
+            m_members[id].prison = 0;
+          }
         }
       }
 
@@ -405,7 +420,8 @@ namespace ggj {
       // start vote for prisoner
       PemServerStartVoteForPrisoner prisoner;
       broadcast(prisoner);
- }
+      m_currentlyPlaying = 0;
+    }
   }
 
 }
