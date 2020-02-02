@@ -21,6 +21,11 @@ namespace ggj {
   }
 
   void PlayerInfo::replaceCard(CardType type) {
+    if (m_selectedCard == -1)
+    {
+      return; // jail
+    }
+    
     assert(m_selectedCard >= 0 && m_selectedCard <= 2);
 
     m_cards[m_selectedCard] = type;
