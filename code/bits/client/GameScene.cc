@@ -44,7 +44,7 @@ namespace ggj {
 
     addWorldEntity(m_ship);
 
-    // addHudEntity(m_info);
+    addHudEntity(m_info);
     getWorldView().setViewport(gf::RectF::fromPositionSize({0.0f, 0.0f}, {1.0f, 2.f / 3.f}));
 
     m_startMoveAndPlayButton.setDefaultBackgroundColor(gf::Color::Gray(0.75f));
@@ -90,6 +90,7 @@ namespace ggj {
 
     if (event.type == gf::EventType::MouseButtonPressed && event.mouseButton.button == gf::MouseButton::Left) {
       if (m_startMoveAndPlayButton.contains(event.mouseButton.coords)) {
+        gf::Log::debug("(GAME) Click start\n");
         PemClientStartMoveAndPlay message;
         m_network.send(message);
       }
@@ -143,7 +144,7 @@ namespace ggj {
       gf::Vector2f worldCoords = m_scenes.getRenderer().mapPixelToCoords(event.mouseButton.coords, getWorldView());
       // std::printf("      polygon.addPoint({ %gf, %gf });\n", worldCoords.x, worldCoords.y);
       PlaceType clickedPlaceType;
-      if (/* m_gamePhase == GamePhase::Action && !(m_players[m_scenes.myPlayerId].jail) && */ m_ship.getPlaceType(worldCoords, clickedPlaceType)) {
+      if (m_gamePhase == GamePhase::Action && !(m_players[m_scenes.myPlayerId].jail) && m_ship.getPlaceType(worldCoords, clickedPlaceType)) {
         // TODO handle clickedPlaceType
         gf::Log::debug("Clicked place: %s\n", placeTypeString(clickedPlaceType).c_str());
         m_placeTypeSelected = clickedPlaceType;
@@ -155,10 +156,9 @@ namespace ggj {
 	  }
     else if (event.type == gf::EventType::MouseMoved) {
       // If we are playing
-      if (true /* m_gamePhase == GamePhase::Action && !(m_players[m_scenes.myPlayerId].jail)*/) {
+      if (m_gamePhase == GamePhase::Action && !(m_players[m_scenes.myPlayerId].jail)) {
         gf::Vector2f worldCoords = m_scenes.getRenderer().mapPixelToCoords(event.mouseCursor.coords, getWorldView());
         m_ship.updateMouseCoords(worldCoords);
-        gf::Log::debug("Mouse movement: %f %f\n", worldCoords.x, worldCoords.y);
       }
     }
 
@@ -304,7 +304,7 @@ namespace ggj {
     gf::Vector2f electionWindowPos = coordinates.getCenter();
 
     ImGui::NewFrame();
-    if (false && m_gamePhase == GamePhase::CapitainElection && !m_alreadyVote) {
+    if (m_gamePhase == GamePhase::CapitainElection && !m_alreadyVote) {
       ImGui::SetNextWindowSize(ImVec2(electionWindowSize.width, electionWindowSize.height));
       ImGui::SetNextWindowPos(ImVec2(electionWindowPos.x, electionWindowPos.y), 0, ImVec2(0.5f, 0.5f));
 
