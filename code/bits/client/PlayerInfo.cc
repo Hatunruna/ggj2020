@@ -57,7 +57,7 @@ namespace ggj {
     }
     else
     {
-      m_rectRole.setOutlineColor(gf::Color::Blue);
+      m_rectRole.setOutlineColor(gf::Color::Red);
     }
     m_rectRole.setOutlineThickness(outlineThickness);
     target.draw(m_rectRole, states);
