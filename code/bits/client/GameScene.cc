@@ -354,11 +354,13 @@ namespace ggj {
         // List players
         unsigned i = 0;
         for (auto &player: m_players) {
-          std::string name = std::to_string(i) + ". " + player.second.name;
-          if (ImGui::Selectable(name.c_str(), m_votedPlayer == player.second.id)) {
-            m_votedPlayer = player.second.id;
+          if (!(player.second.jail)) {
+            std::string name = std::to_string(i) + ". " + player.second.name;
+            if (ImGui::Selectable(name.c_str(), m_votedPlayer == player.second.id)) {
+              m_votedPlayer = player.second.id;
+            }
+            ++i;
           }
-          ++i;
         }
         if (ImGui::Selectable("None Of The Above", m_votedPlayer == gf::InvalidId)) {
           m_votedPlayer = gf::InvalidId;
