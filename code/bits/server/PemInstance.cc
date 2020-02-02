@@ -211,6 +211,7 @@ namespace ggj {
         data.member = captain;
         broadcast(data);
         m_votes.clear();
+        gf::Log::debug("(PEM) draw vote for prisoner\n");
         return;
       }else{
         captain = captains[m_random.computeUniformInteger<std::size_t>(0, captains.size() - 1)];
@@ -320,7 +321,7 @@ namespace ggj {
           send(id, data);
         }
       }
-      
+
       if (has(CardType::Release) && kv.first == PlaceType::Prison){
         PemServerResolution data;
         Resolution res;
@@ -420,7 +421,7 @@ namespace ggj {
       // draw the next card
       for (auto member : m_members) {
         CardType newCard;
-        
+
         for(uint i = 0 ; i < member.second.cards.size() ; ++i){
           if (member.second.cards[i] == member.second.card){
             if (member.second.type == CrewType::Protector){
@@ -430,7 +431,7 @@ namespace ggj {
               assert(member.second.type == CrewType::Rebel);
               newCard = m_deck.pickRebelCard();
               member.second.cards[i] =newCard;
-            } 
+            }
             break;
           }
         }
