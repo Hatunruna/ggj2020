@@ -49,6 +49,7 @@ namespace ggj {
     while (m_network.queue.poll(bytes)) {
       switch (bytes.getType()) {
         case ServerHello::type: {
+          gf::Log::debug("(LOBBY) Receive ServerHello\n");
           auto data = bytes.as<ServerHello>();
           m_settings = data.settings;
           m_instance.teams = m_settings.teamsMin;
@@ -58,18 +59,21 @@ namespace ggj {
         }
 
         case ServerDisconnect::type:
+          gf::Log::debug("(LOBBY) Receive ServerDisconnect\n");
           m_network.disconnect();
           m_scenes.transitionToScene(m_scenes.connection, 0.4f, m_scenes.fadeEffect);
 //           m_scenes.replaceScene(m_scenes.connection);
           break;
 
         case ServerChangeName::type: {
+          gf::Log::debug("(LOBBY) Receive ServerChangeName\n");
           auto data = bytes.as<ServerChangeName>();
           m_nameBuffer = data.name;
           break;
         }
 
         case ServerListPlayers::type: {
+          gf::Log::debug("(LOBBY) Receive ServerListPlayers\n");
           auto data = bytes.as<ServerListPlayers>();
           m_players = std::move(data.players);
 
@@ -81,6 +85,7 @@ namespace ggj {
         }
 
         case ServerListRooms::type: {
+          gf::Log::debug("(LOBBY) Receive ServerListRooms\n");
           auto data = bytes.as<ServerListRooms>();
           m_rooms = std::move(data.rooms);
 
@@ -99,6 +104,7 @@ namespace ggj {
         }
 
         case ServerJoinRoom::type: {
+          gf::Log::debug("(LOBBY) Receive ServerJoinRoom\n");
           auto data = bytes.as<ServerJoinRoom>();
           m_scenes.room.startRoom(data.settings);
           m_scenes.transitionToScene(m_scenes.room, 0.4f, m_scenes.fadeEffect);
@@ -108,12 +114,14 @@ namespace ggj {
         }
 
         case ServerChatMessage::type: {
+          gf::Log::debug("(LOBBY) Receive ServerChatMessage\n");
           auto data = bytes.as<ServerChatMessage>();
           m_chat.appendMessage(std::move(data.message));
           break;
         }
 
         case ServerError::type: {
+          gf::Log::debug("(LOBBY) Receive ServerError\n");
           auto data = bytes.as<ServerError>();
           MessageData message;
           message.origin = gf::InvalidId;

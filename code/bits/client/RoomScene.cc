@@ -53,6 +53,7 @@ namespace ggj {
     while (m_network.queue.poll(bytes)) {
       switch (bytes.getType()) {
         case ServerLeaveRoom::type:
+          gf::Log::debug("(ROOM) Receive ServerLeaveRoom\n");
           m_currentTeam = -1;
           m_scenes.transitionToScene(m_scenes.lobby, 0.4f, m_scenes.fadeEffect);
 //           m_scenes.replaceScene(m_scenes.lobby);
@@ -60,30 +61,35 @@ namespace ggj {
           return;
 
         case ServerChangeTeam::type: {
+          gf::Log::debug("(ROOM) Receive ServerChangeTeam\n");
           auto data = bytes.as<ServerChangeTeam>();
           m_currentTeam = data.team;
           break;
         }
 
         case ServerReady::type: {
+          gf::Log::debug("(ROOM) Receive ServerReady\n");
           auto data = bytes.as<ServerReady>();
           m_ready = data.ready;
           break;
         }
 
         case ServerListRoomPlayers::type: {
+          gf::Log::debug("(ROOM) Receive ServerListRoomPlayers\n");
           auto data = bytes.as<ServerListRoomPlayers>();
           m_players = std::move(data.players);
           break;
         }
 
         case ServerChatMessage::type: {
+          gf::Log::debug("(ROOM) Receive ServerChatMessage\n");
           auto data = bytes.as<ServerChatMessage>();
           m_chat.appendMessage(std::move(data.message));
           break;
         }
 
         case ServerStartGame::type: {
+          gf::Log::debug("(ROOM) Receive ServerStartGame\n");
           m_scenes.transitionToScene(m_scenes.game, 0.4f, m_scenes.glitchEffect);
 //           m_scenes.replaceScene(m_scenes.game);
           m_scenes.game.initialize(m_players);
@@ -92,6 +98,7 @@ namespace ggj {
         }
 
         case ServerError::type: {
+          gf::Log::debug("(ROOM) Receive ServerError\n");
           auto data = bytes.as<ServerError>();
           MessageData message;
           message.origin = gf::InvalidId;
