@@ -9,6 +9,7 @@
 
 #include "ClientNetwork.h"
 #include "ShipEntity.h"
+#include "StarsEntity.h"
 #include "PlayerInfo.h"
 #include "ViewAdaptator.h"
 #include "GameChat.h"
@@ -41,6 +42,7 @@ namespace ggj {
     ViewAdaptator m_adaptator;
 
     ShipEntity m_ship;
+    StarsEntity m_stars;
     PlayerInfo m_info;
 
     GameChat m_chat;
