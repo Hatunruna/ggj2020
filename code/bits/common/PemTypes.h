@@ -149,7 +149,7 @@ namespace ggj {
     ResolutionType type;
 
     bool bomb; // Examine
-    std::vector<gf::Id> members; // Hide, Track
+    std::vector<gf::Id> members; // Hide, Track , Release (if there are more than 1 prisoneer)
   };
 
   template<typename Archive>
