@@ -280,12 +280,17 @@ namespace {
 namespace ggj {
   ShipEntity::ShipEntity(gf::ResourceManager& resources)
   : m_font(resources.getFont("DejaVuSans.ttf"))
-  , m_shipTexture(resources.getTexture("image/ship.png")) {
+  , m_shipTexture(resources.getTexture("image/ship.png"))
+  , m_selectedPlace(PlaceType::None) {
     initializeBounds();
   }
 
   void ShipEntity::updateMouseCoords(const gf::Vector2i& coords) {
     m_mouseCoords = coords;
+  }
+
+  void ShipEntity::selectPlace(PlaceType place) {
+    m_selectedPlace = place;
   }
 
   void ShipEntity::render(gf::RenderTarget& target, const gf::RenderStates& states) {
@@ -296,7 +301,21 @@ namespace ggj {
 
     // Display cards
     for (const auto &entry: placeLocations) {
+      const auto& key = entry.first;
       const auto& location = entry.second;
+
+      auto drawCursor = [&location, &target, &states](gf::Color4f fillColor, gf::Color4f outlineColor = gf::Color::White) {
+        gf::CircleShape center(10.0f);
+        center.setPosition({ location.placeBounds.getCenter() });
+        center.setColor(fillColor);
+        center.setOutlineColor(outlineColor);
+        center.setOutlineThickness(10.0f);
+        target.draw(center, states);
+      };
+
+      if (m_selectedPlace == key) {
+        drawCursor(gf::Color::Black);
+      }
 
       if (!location.placeBounds.contains(m_mouseCoords)) {
         continue;
@@ -319,12 +338,7 @@ namespace ggj {
       text.setAnchor(gf::Anchor::BottomLeft);
       target.draw(text, states);
 
-      gf::CircleShape center(10.0f);
-      center.setPosition({ location.placeBounds.getCenter() });
-      center.setColor(gf::Color::Black);
-      center.setOutlineThickness(10.0f);
-
-      target.draw(center, states);
+      drawCursor(gf::Color::Black);
     }
   }
 

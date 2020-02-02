@@ -113,7 +113,7 @@ namespace ggj {
         }
 
         // TODO handle clickedCardType
-        gf::Log::debug("Clicked card: %s\n", cardTypeString(clickedCardType).c_str());
+        gf::Log::debug("(GAME) Clicked card: %s\n", cardTypeString(clickedCardType).c_str());
         PemClientMoveAndPlay moveAndPlay;
         moveAndPlay.place = m_placeTypeSelected;
         moveAndPlay.card = clickedCardType;
@@ -185,8 +185,9 @@ namespace ggj {
       PlaceType clickedPlaceType;
       if (m_gamePhase == GamePhase::Action && !(m_players[m_scenes.myPlayerId].jail) && m_ship.getPlaceType(worldCoords, clickedPlaceType)) {
         // TODO handle clickedPlaceType
-        gf::Log::debug("Clicked place: %s\n", placeTypeString(clickedPlaceType).c_str());
+        gf::Log::debug("(GAME) Clicked place: %s\n", placeTypeString(clickedPlaceType).c_str());
         m_placeTypeSelected = clickedPlaceType;
+        m_ship.selectPlace(clickedPlaceType);
 
         m_fx.setBuffer(gResourceManager().getSound("audio/foot_steps.ogg"));
         m_fx.setVolume(FxsVolume);
@@ -272,7 +273,9 @@ namespace ggj {
 
         case PemServerStartVoteForPrisoner::type: {
           gf::Log::debug("[game] receive PemServerStartVoteForPrisoner\n");
+
           m_alreadyVote = (m_players[m_scenes.myPlayerId].jail);
+          m_ship.selectPlace(PlaceType::None);
           m_gamePhase = GamePhase::Meeting;
           break;
         }
@@ -306,7 +309,7 @@ namespace ggj {
         case PemServerResolution::type: {
           gf::Log::debug("[game] receive PemServerResolution\n");
           auto data = bytes.as<PemServerResolution>();
-          
+
           for(auto &resolution: data.conclusion) {
             MessageData message;
             message.origin = gf::InvalidId;
