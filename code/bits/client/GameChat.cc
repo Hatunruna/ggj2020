@@ -21,9 +21,11 @@ namespace ggj {
 
   void GameChat::display(gf::Coordinates& coordinates) {
 
+    ImGui::NewFrame();
     // Chat window
     if (!m_spawnedChat)
     {
+
       gf::Vector2f chatWindowSize = coordinates.getRelativeSize({ 0.35f, 0.46f });
       gf::Vector2f chatWindowPos = coordinates.getRelativePoint({ 0.82f, 0.76f });
 
@@ -31,7 +33,7 @@ namespace ggj {
       ImGui::SetNextWindowPos(ImVec2(chatWindowPos[0], chatWindowPos[1]), 0, ImVec2(0.5f, 0.5f));
       m_spawnedChat = true;
     }
-    
+
 
     if (ImGui::Begin("Chat", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoSavedSettings))
     {

@@ -5,7 +5,7 @@
 namespace ggj {
 
   int Crew::computeRebels(int32_t players) {
-    assert(4 <= players && players <= 8);
+    assert(4 >= players && players <= 8);
 
     if (players <= 6) {
       return 1;
@@ -32,6 +32,8 @@ namespace ggj {
     for (int32_t i = 0; i < rebels; ++i) {
       crew.push_back(CrewType::Rebel);
     }
+
+    assert(crew.size() == static_cast<unsigned>(players));
 
     return crew;
   }

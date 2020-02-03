@@ -25,7 +25,7 @@ namespace ggj {
     {
       return; // jail
     }
-    
+
     assert(m_selectedCard >= 0 && m_selectedCard <= 2);
 
     m_cards[m_selectedCard] = type;
@@ -35,16 +35,15 @@ namespace ggj {
     m_cards = cards;
   }
 
-  bool PlayerInfo::getCardType(const gf::Vector2f& screenPosition, const gf::Vector2f& screenSize, CardType& res) {
+  CardType PlayerInfo::getCardType(const gf::Vector2f& screenPosition, const gf::Vector2f& screenSize) {
     for (unsigned i = 0; i < m_cards.size(); ++i) {
       gf::RectF cardBounds = getCardBounds(screenSize, i);
       if (cardBounds.contains(screenPosition)) {
-        res = m_cards[i];
         m_selectedCard = i;
-        return true;
+        return m_cards[i];
       }
     }
-    return false;
+    return CardType::None;
   }
 
   gf::RectF PlayerInfo::getCardBounds(gf::Vector2f screeSize, std::size_t i) const {

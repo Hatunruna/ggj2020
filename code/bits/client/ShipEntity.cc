@@ -298,6 +298,18 @@ namespace ggj {
     }
   }
 
+  PlaceType ShipEntity::getPlaceType(const gf::Vector2f& position) const {
+    for (const auto &entry: placeLocations) {
+      const auto& location = entry.second;
+
+      auto bounds = location.placeBounds;
+      if (bounds.contains(position)) {
+        return entry.first;
+      }
+    }
+    return PlaceType::None;
+  }
+
   void ShipEntity::updateMouseCoords(const gf::Vector2i& coords) {
     m_mouseCoords = coords;
   }
@@ -403,18 +415,5 @@ namespace ggj {
       }
     }
 
-  }
-
-  bool ShipEntity::getPlaceType(const gf::Vector2f& position, PlaceType& res) const {
-    for (const auto &entry: placeLocations) {
-      const auto& location = entry.second;
-
-      auto bounds = location.placeBounds;
-      if (bounds.contains(position)) {
-        res = entry.first;
-        return true;
-      }
-    }
-    return false;
   }
 }

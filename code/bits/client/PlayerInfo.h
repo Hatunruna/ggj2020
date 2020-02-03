@@ -13,7 +13,7 @@ namespace ggj {
     PlayerInfo(gf::ResourceManager& resources);
 
     void render(gf::RenderTarget& target, const gf::RenderStates& states) override;
-	  bool getCardType(const gf::Vector2f& screenPosition, const gf::Vector2f& screenSize, CardType& res);
+	  CardType getCardType(const gf::Vector2f& screenPosition, const gf::Vector2f& screenSize);
 
     void resetCardSelection() {
       m_selectedCard = -1;

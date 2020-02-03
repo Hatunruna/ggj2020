@@ -33,29 +33,23 @@ namespace ggj {
     void doUpdate(gf::Time time) override;
     void doRender(gf::RenderTarget &target, const gf::RenderStates &states) override;
 
+    void resetTurn();
+
   private:
     Scenes& m_scenes;
     ClientNetwork& m_network;
 
     gf::Action m_escapeAction;
 
-    ViewAdaptator m_adaptator;
-
-    ShipEntity m_ship;
-    StarsEntity m_stars;
-    PlayerInfo m_info;
-
-    GameChat m_chat;
-
     std::map<gf::Id, ClientPlayerData> m_players;
     GamePhase m_gamePhase;
-    gf::Id m_votedPlayer;
-    bool m_alreadyVote;
-
-    gf::TextButtonWidget m_startMoveAndPlayButton;
-    bool m_alreadyUsedMoveAndPlayButton;
-
     PlaceType m_placeTypeSelected;
+
+    StarsEntity m_stars;
+    ShipEntity m_ship;
+    ViewAdaptator m_adaptator;
+    PlayerInfo m_info;
+    GameChat m_chat;
 
     sf::Sound m_fx;
     sf::Sound m_ambiantBackground;

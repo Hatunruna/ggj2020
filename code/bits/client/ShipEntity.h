@@ -13,6 +13,7 @@ namespace ggj {
   public:
     ShipEntity(gf::ResourceManager& resources);
 
+    PlaceType getPlaceType(const gf::Vector2f& position) const;
     void updateMouseCoords(const gf::Vector2i& coords);
     void selectPlace(PlaceType place);
     void setPlaceState(PlaceType place, bool state);
@@ -20,7 +21,6 @@ namespace ggj {
 
     void update(gf::Time time) override;
     void render(gf::RenderTarget& target, const gf::RenderStates& states) override;
-    bool getPlaceType(const gf::Vector2f& position, PlaceType& res) const;
 
   private:
     gf::Font &m_font;

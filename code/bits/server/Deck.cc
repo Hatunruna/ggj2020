@@ -17,27 +17,31 @@ namespace ggj {
     };
 
     constexpr DeckData ProtectorDeckConfig[] = {
-      { CardType::Demine,      2 },
-      { CardType::Examine,     5 },
-      { CardType::Hide,        2 },
-      { CardType::Reinforce1,  5 },
-      { CardType::Reinforce2,  2 },
-      { CardType::Repair,     10 },
-      { CardType::Track,       2 },
-      { CardType::Block,       2 },
-      { CardType::Release,     1 },
+      // { CardType::Demine,      2 },
+      // { CardType::Examine,     5 },
+      // { CardType::Hide,        2 },
+      // { CardType::Reinforce1,  5 },
+      // { CardType::Reinforce2,  2 },
+      // { CardType::Repair,     10 },
+      // { CardType::Track,       2 },
+      // { CardType::Block,       2 },
+      // { CardType::Release,     1 },
+      { CardType::Repair,     31 },
     };
 
     constexpr DeckData RebelDeckConfig[] = {
-      { CardType::FalseAlarm,    3 },
-      { CardType::FalseRepair1,  2 },
-      { CardType::FalseRepair2,  2 },
-      { CardType::PlaceBomb0,   10 },
-      { CardType::PlaceBomb1,    5 },
-      { CardType::PlaceBomb2,    3 },
-      { CardType::SetupJammer,   2 },
-      { CardType::Block,         2 },
-      { CardType::Release,       1 },
+      // { CardType::FalseAlarm,    3 },
+      // { CardType::FalseRepair1,  2 },
+      // { CardType::FalseRepair2,  2 },
+      // { CardType::PlaceBomb0,   10 },
+      // { CardType::PlaceBomb1,    5 },
+      // { CardType::PlaceBomb2,    3 },
+      // { CardType::SetupJammer,   2 },
+      // { CardType::Block,         2 },
+      // { CardType::Release,       1 },
+      { CardType::PlaceBomb0,   15 },
+      { CardType::PlaceBomb1,   10 },
+      { CardType::PlaceBomb2,   5  },
     };
 
 

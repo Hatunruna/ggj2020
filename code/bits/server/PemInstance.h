@@ -21,21 +21,16 @@ namespace ggj {
     void update(ServerPlayer& player, ProtocolBytes& bytes) override;
 
   private:
-    void checkEndOfVote(VoteType type);
+    void resetTurn();
+    // void checkEndOfVote(VoteType type);
     void checkEndOfTurn();
 
   private:
     gf::Random m_random;
     int32_t m_players;
-    int32_t m_currentlyPlaying = 0;
     Deck m_deck;
     std::map<gf::Id, Member> m_members;
-    std::map<gf::Id, int32_t> m_votes;
     Ship m_ship;
-    int turn = 0;
-    float distance = 0;
-    float ligthyear = 10000;
-    int notWorking = 0;
   };
 
 }

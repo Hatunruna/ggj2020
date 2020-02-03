@@ -91,13 +91,24 @@ namespace ggj {
 
 
   enum class CardType : uint16_t {
+    // Declaration order indicate the action priority
+    // The first one is more priority
+    // NOTE: If we ordonate the task by time? @ahugeat
+
+    PlaceBomb0,
+    PlaceBomb1,
+    PlaceBomb2,
+
+    Repair,
+
+    // Old card - Currently not in game
+
     // protector
     Demine, // first to be used if the room is not working
     Examine, // define if we can know the cooldown reamining on the bomb if there is one
     Hide, // must be used first
     Reinforce1, // must be used first if the room is working
     Reinforce2, // must be used first if the room is working
-    Repair, // must be used first if the room is not working
     Track, // no priority ?
     // common
     Block, // block for the enxt room -> no priority
@@ -106,10 +117,8 @@ namespace ggj {
     FalseAlarm, // false alarm of a bomb no matter what
     FalseRepair1, // first to be used if the room is not working
     FalseRepair2, // first to be used if the room is not working
-    PlaceBomb0, // last if the room is working
-    PlaceBomb1, // last if the room is working
-    PlaceBomb2, // last if the room is working
     SetupJammer, // next turn ?
+    None,
   };
 
   // WORKING :
@@ -193,6 +202,10 @@ namespace ggj {
 
     case CardType::SetupJammer:
       return "Setup Jammer";
+
+    case CardType::None:
+      assert(false);
+      return "";
     }
 
     assert(false);

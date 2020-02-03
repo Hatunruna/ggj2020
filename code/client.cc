@@ -27,10 +27,11 @@ int main(int argc, char *argv[]) {
   ggj::gBackgroundMusic.setVolume(ggj::BackgroundAmbiantVolume);
   ggj::gBackgroundMusic.play();
 
+  // Start graphics
   ggj::Scenes scenes(network, TMPGAME_DATA_DIR);
   scenes.setClearColor(gf::Color::Black);
 
-  if (argc == 2 && std::string(argv[1]) == "--debug") {
+  if (argc == 3 && std::string(argv[1]) == "--debug") {
     gf::Log::debug("(CLIENT) run in debug mode\n");
 
     // Wait connection
@@ -41,7 +42,9 @@ int main(int argc, char *argv[]) {
     // Send hello package
     {
       ggj::ClientHello data;
-      data.name = "DebugClient";
+      std::string name(argv[2]);
+      assert(!name.empty());
+      data.name = name;
       network.send(data);
     }
 
