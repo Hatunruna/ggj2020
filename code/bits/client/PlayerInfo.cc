@@ -5,6 +5,7 @@
 #include <gf/RenderTarget.h>
 #include <gf/Shapes.h>
 #include <gf/Sprite.h>
+#include <gf/StringUtils.h>
 #include <gf/Text.h>
 
 namespace ggj {
@@ -17,7 +18,9 @@ namespace ggj {
   , m_emptyCardTexture(resources.getTexture("image/empty_card.png"))
   , m_atlas("atlas.xml", resources)
   , m_selectedCard(-1)
-  , m_showCards(true) {
+  , m_showCards(true)
+  , m_distance(0.0f)
+  , m_turn(0) {
 
   }
 
@@ -58,6 +61,49 @@ namespace ggj {
 
   void PlayerInfo::render(gf::RenderTarget& target, const gf::RenderStates& states) {
     gf::Coordinates coordinates(target);
+
+    if (m_turn <= 0) {
+      unsigned characterSize = coordinates.getRelativeCharacterSize(0.075f);
+      gf::Text text("The rebels won", m_font, characterSize);
+      text.setAnchor(gf::Anchor::Center);
+      text.setPosition(coordinates.getCenter());
+      text.setColor(gf::Color::White);
+      text.setOutlineColor(gf::Color::Black);
+      text.setOutlineThickness(characterSize * 0.05f);
+      target.draw(text, states);
+      return;
+    }
+
+    if (m_distance <= 0.0f) {
+      unsigned characterSize = coordinates.getRelativeCharacterSize(0.075f);
+      gf::Text text("The protectors won", m_font, characterSize);
+      text.setAnchor(gf::Anchor::Center);
+      text.setPosition(coordinates.getCenter());
+      text.setColor(gf::Color::White);
+      text.setOutlineColor(gf::Color::Black);
+      text.setOutlineThickness(characterSize * 0.05f);
+      target.draw(text, states);
+      return;
+    }
+
+    unsigned characterSize = coordinates.getRelativeCharacterSize(0.05f);
+    std::string info = "Turn left: " + std::to_string(m_turn);
+    gf::Text text(info, m_font, characterSize);
+    text.setAnchor(gf::Anchor::TopLeft);
+    text.setPosition(coordinates.getRelativeSize({0.025f, 0.025f}));
+    text.setColor(gf::Color::White);
+    text.setOutlineColor(gf::Color::Black);
+    text.setOutlineThickness(characterSize * 0.05f);
+    target.draw(text, states);
+
+    info = "Distance: " + gf::niceNum(m_distance, 0.1f);
+    text.setString(info);
+    text.setAnchor(gf::Anchor::TopRight);
+    text.setPosition(coordinates.getRelativeSize({0.975f, 0.025f}));
+    text.setColor(gf::Color::White);
+    text.setOutlineColor(gf::Color::Black);
+    text.setOutlineThickness(characterSize * 0.05f);
+    target.draw(text, states);
 
     constexpr float outlineThickness = 5.f;
     gf::RectangleShape m_rectRole;
@@ -135,6 +181,11 @@ namespace ggj {
       text.setAnchor(gf::Anchor::CenterLeft);
       target.draw(text, states);
     }
+  }
+
+  void PlayerInfo::updateMission(int turn, float distance) {
+    m_turn = turn;
+    m_distance = distance;
   }
 
 }

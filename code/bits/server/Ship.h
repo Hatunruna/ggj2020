@@ -74,6 +74,7 @@ namespace ggj {
       void updateActions();
 
       std::map<PlaceType, bool> getPublicStates() const;
+      float computeDistance() const;
 
       // std::map<PlaceType, bool> getState();
 

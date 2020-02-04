@@ -159,6 +159,14 @@ namespace ggj {
     return states;
   }
 
+  float Ship::computeDistance() const {
+    int workingRoom = std::count_if(places.begin(), places.end(), [](const auto &entry) {
+      return entry.second.realState;
+    });
+
+    return static_cast<float>(workingRoom) * 2.0f / static_cast<float>(places.size());
+  }
+
   // void Ship::addCrew(PlaceType type, gf::Id id){
   //   places.at(type).members.insert(id);
   // }

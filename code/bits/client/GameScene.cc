@@ -469,6 +469,19 @@ namespace ggj {
 
         //   break;
         // }
+
+        case PemServerMissionStatus::type: {
+          gf::Log::debug("(GAME) receive PemServerMissionStatus\n");
+          auto data = bytes.as<PemServerMissionStatus>();
+
+          m_info.updateMission(data.turn, data.distance);
+
+          if (data.distance <= 0.0f || data.turn <= 0) {
+            m_gamePhase = GamePhase::CapitainElection;
+            m_info.showCards(false);
+          }
+          break;
+        }
       }
     }
   }
@@ -587,7 +600,7 @@ namespace ggj {
     MessageData message;
     message.origin = gf::InvalidId;
     message.author = "server";
-    message.content = "A new day of duty has begin!";
+    message.content = "A new day of duty has begun!";
     m_chat.appendMessage(std::move(message));
   }
 

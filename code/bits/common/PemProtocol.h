@@ -90,6 +90,17 @@ namespace ggj {
     return ar | data.prisoner | data.deliverer;
   }
 
+  struct PemServerMissionStatus {
+    static constexpr gf::Id type = "PemServerMissionStatus"_id;
+    float distance;
+    int turn;
+  };
+
+  template<typename Archive>
+  Archive operator|(Archive& ar, PemServerMissionStatus& data) {
+    return ar | data.distance | data.turn;
+  }
+
   // struct PemServerUpdateHand {
   //   static constexpr gf::Id type = "PemServerUpdateHand"_id;
   //   CardType card;
@@ -105,16 +116,6 @@ namespace ggj {
    * client -> server
    */
 
-  // struct PemClientVoteForCaptain {
-  //   static constexpr gf::Id type = "PemClientVoteForCaptain"_id;
-  //   gf::Id member;
-  // };
-
-  // template<typename Archive>
-  // Archive operator|(Archive& ar, PemClientVoteForCaptain& data) {
-  //   return ar | data.member;
-  // }
-
   struct PemClientChoosePrisoner {
     static constexpr gf::Id type = "PemClientChoosePrisoner"_id;
     gf::Id member;
@@ -124,15 +125,6 @@ namespace ggj {
   Archive operator|(Archive& ar, PemClientChoosePrisoner& data) {
     return ar | data.member;
   }
-
-  // struct PemClientStartMoveAndPlay {
-  //   static constexpr gf::Id type = "PemClientStartMoveAndPlay"_id;
-  // };
-
-  // template<typename Archive>
-  // Archive operator|(Archive& ar, PemClientStartMoveAndPlay&) {
-  //   return ar;
-  // }
 
   struct PemClientMoveAndPlay {
     static constexpr gf::Id type = "PemClientMoveAndPlay"_id;

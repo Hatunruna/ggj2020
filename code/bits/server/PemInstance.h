@@ -25,6 +25,7 @@ namespace ggj {
     void resetVote();
     void checkEndOfVote();
     void checkEndOfTurn();
+    void updateMission();
 
   private:
     gf::Random m_random;
@@ -33,6 +34,8 @@ namespace ggj {
     std::map<gf::Id, Member> m_members;
     Ship m_ship;
     std::map<gf::Id, gf::Id> m_votes;
+    float m_distance;
+    int m_turn;
   };
 
 }

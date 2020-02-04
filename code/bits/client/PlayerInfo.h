@@ -31,6 +31,8 @@ namespace ggj {
       m_role = role;
     }
 
+    void updateMission(int turn, float distance);
+
   private:
     gf::RectF getCardBounds(gf::Vector2f screeSize, std::size_t i) const;
 
@@ -42,6 +44,8 @@ namespace ggj {
     std::array<CardType, MaxCards> m_cards;
     int m_selectedCard;
     bool m_showCards;
+    float m_distance;
+    int m_turn;
   };
 
 }

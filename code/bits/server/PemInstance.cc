@@ -9,11 +9,31 @@
 #include "common/Protocol.h"
 #include "Crew.h"
 
+namespace {
+  float computeDistance(int32_t players) {
+    if (players < 6) {
+      return 0.80f;
+    }
+
+    return 15.0f;
+  }
+
+  int computeTurn(int32_t players) {
+    if (players < 6) {
+      return 15;
+    }
+
+    return 20;
+  }
+}
+
 namespace ggj {
   PemInstance::PemInstance(int32_t players)
   : m_players(players)
   , m_deck(players, m_random)
-  , m_ship(Ship(m_players)) {
+  , m_ship(Ship(m_players))
+  , m_distance(computeDistance(players))
+  , m_turn(computeTurn(players)) {
   }
 
   void PemInstance::start() {
@@ -164,6 +184,8 @@ namespace ggj {
       member.second.place = PlaceType::None;
       member.second.card = CardType::None;
     }
+
+    updateMission();
   }
 
   void PemInstance::resetVote() {
@@ -285,9 +307,36 @@ namespace ggj {
       m_members.at(vote.member).prison = MaxSentence;
     }
 
+    // Increase the turn counter
+    --m_turn;
+
+    // Get the new distance
+    m_distance -= m_ship.computeDistance();
+
     resetTurn();
-    PemServerStartMoveAndPlay moveAndPlay; // start move and play phase
-    broadcast(moveAndPlay);
+
+    // If the game is not finsished
+    if (m_distance > 0.0f && m_turn > 0) {
+      PemServerStartMoveAndPlay moveAndPlay; // start move and play phase
+      broadcast(moveAndPlay);
+    }
+  }
+
+  void PemInstance::updateMission() {
+    gf::Log::debug("(PemInstance) remaining distance %f\n", m_distance);
+
+    PemServerMissionStatus mission;
+    mission.distance = m_distance;
+    mission.turn = m_turn;
+    broadcast(mission);
+
+    if (m_distance <= 0.0f) {
+      gf::Log::info("(PemInstance) Protector win\n");
+    }
+
+    if (m_turn <= 0) {
+      gf::Log::info("(PemInstance) Rebel win\n");
+    }
   }
 
   // void PemInstance::checkEndOfVote(VoteType type = VoteType::Captain) {
