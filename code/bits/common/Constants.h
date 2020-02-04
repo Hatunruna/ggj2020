@@ -10,7 +10,7 @@ namespace ggj {
     constexpr float UILineSize = UICharacterSize * 2.0f;
 
     constexpr std::size_t PlayersCount = 2;
-    constexpr const char *Service = "2020";
+    constexpr const char *Service = "8000";
 
     constexpr std::size_t MaxPlayerNameLength = 15;
     constexpr std::size_t MaxRoomNameLength = 15;
