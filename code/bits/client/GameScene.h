@@ -14,6 +14,7 @@
 #include "ViewAdaptator.h"
 #include "GameChat.h"
 #include "ClientPlayerData.h"
+#include "VoteEntity.h"
 
 namespace ggj {
 
@@ -50,6 +51,7 @@ namespace ggj {
     ViewAdaptator m_adaptator;
     PlayerInfo m_info;
     GameChat m_chat;
+    VoteEntity m_vote;
 
     sf::Sound m_fx;
     sf::Sound m_ambiantBackground;

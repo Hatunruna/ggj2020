@@ -8,7 +8,7 @@ namespace ggj {
 
   struct Member {
     // std::array<CardType, MaxCards> cards;
-    // int32_t prison = 0;
+    int32_t prison = 0;
     // bool voted = false;
     // bool captain = false;
     // bool released = true;

@@ -130,25 +130,24 @@ namespace ggj {
       //   break;
       // }
 
-      // case PemClientChoosePrisoner::type: {
-      //   gf::Log::info("(PemInstance) {%" PRIX64 "} Vote for prisoner.\n", player.id);
-      //   auto in = bytes.as<PemClientChoosePrisoner>();
+      case PemClientChoosePrisoner::type: {
+        gf::Log::info("(PemInstance) {%" PRIX64 "} Vote for prisoner.\n", player.id);
+        auto in = bytes.as<PemClientChoosePrisoner>();
 
-      //   auto it = m_members.find(player.id);
-      //   assert(it != m_members.end());
+        assert(m_members.count(player.id) == 1);
 
-      //   if (!it->second.voted && it->second.prison == 0) {
-      //     if(in.member == gf::InvalidId){
-      //       m_votes[in.member]++;
-      //     }else{
-      //       m_votes[in.member]++;
-      //     }
-      //     it->second.voted = true;
-      //   }
+        if (m_votes.count(player.id) == 1) {
+          // TODO: Handle error
+          break;
+        }
 
-      //   checkEndOfVote(VoteType::Prison);
-      //   break;
-      // }
+        // TODO: check if the vote is valid
+
+        m_votes.emplace(player.id, in.member);
+
+        checkEndOfVote();
+        break;
+      }
 
       // case PemClientStartMoveAndPlay::type: {
       //   gf::Log::info("(PemInstance) {%" PRIX64 "} Start move and play.\n", player.id);
@@ -167,10 +166,18 @@ namespace ggj {
     }
   }
 
+  void PemInstance::resetVote() {
+    m_votes.clear();
+  }
+
   void PemInstance::checkEndOfTurn() {
     int nbActions = std::count_if(m_members.begin(), m_members.end(), [](const auto &entry) {
       const auto member = entry.second;
-      return member.card != CardType::None && member.place != PlaceType::None;
+
+      bool hasPlayed = member.card != CardType::None && member.place != PlaceType::None;
+      bool inJail = member.prison > 0;
+
+      return hasPlayed || inJail;
     });
     int excpectedActions = m_members.size();
 
@@ -188,6 +195,11 @@ namespace ggj {
     for (const auto &entry: m_members) {
       const auto &member = entry.second;
 
+      // Skip the turn of prisoner, except for an release card
+      if (member.prison > 0 && member.card != CardType::Release) {
+        continue;
+      }
+
       m_ship.addAction(member.place, member.card);
     }
 
@@ -202,8 +214,77 @@ namespace ggj {
     update.states = std::move(m_ship.getPublicStates());
     broadcast(update);
 
-    // Dirty tempo to simulate the prisonner election
-    gf::sleep(gf::seconds(10));
+    resetVote();
+    PemServerStartVoteForPrisoner vote;
+    for (const auto &member: m_members) {
+      if (member.second.prison == 0) {
+        vote.voters.emplace(member.first);
+      }
+    }
+    broadcast(vote);
+  }
+
+  void PemInstance::checkEndOfVote() {
+    unsigned expectedVotes = std::count_if(m_members.begin(), m_members.end(), [](const auto &entry) {
+      const auto member = entry.second;
+
+      bool inJail = member.prison > 0;
+
+      return !inJail;
+    });
+
+    gf::Log::debug("(PemInstance) Expected vote: %d\n", expectedVotes);
+    // If all players have voted
+    if (m_votes.size() != expectedVotes) {
+      return;
+    }
+
+    // Initialise count
+    std::map<gf::Id, int> voteCount;
+    for (const auto &entry: m_members) {
+      voteCount.emplace(entry.first, 0);
+    }
+    voteCount.emplace(gf::InvalidId, 0);
+
+    for (const auto &vote: m_votes) {
+      ++voteCount.at(vote.second);
+    }
+
+    auto choosenPrisoner = std::max_element(voteCount.begin(), voteCount.end(), [](const auto &entry1, const auto &entry2) {
+      return entry1.second < entry2.second;
+    });
+
+    // Send result
+    PemServerChoosePrisoner vote;
+    vote.member = choosenPrisoner->first;
+    broadcast(vote);
+    gf::Log::debug("(PemInstance) choosen prisonner %lX\n", vote.member);
+
+    // Update prisoner state
+    for (auto &member: m_members) {
+      if (member.second.prison == 1) {
+        member.second.prison = 0;
+
+        PemServerReleasePrisoner release;
+        release.prisoner = member.first;
+        release.deliverer = gf::InvalidId;
+
+        gf::Log::debug("(PemInstance) Release the player %lX by %lX\n", release.prisoner, release.deliverer);
+
+        // When it's end of sentence, everbody kown it
+        broadcast(release);
+      }
+      else if (member.second.prison > 1) {
+        --member.second.prison;
+      }
+      assert(member.second.prison >= 0 && member.second.prison <= MaxSentence);
+    }
+
+    // Add new prisoner
+    if (vote.member != gf::InvalidId) {
+      m_members.at(vote.member).prison = MaxSentence;
+    }
+
     resetTurn();
     PemServerStartMoveAndPlay moveAndPlay; // start move and play phase
     broadcast(moveAndPlay);

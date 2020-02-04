@@ -325,6 +325,7 @@ namespace ggj {
 
   void ShipEntity::stopDrawWarnings() {
     m_drawWarning = false;
+    m_selectedPlace = PlaceType::None;
   }
 
   void ShipEntity::update(gf::Time time) {

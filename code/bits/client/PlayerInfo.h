@@ -15,6 +15,10 @@ namespace ggj {
     void render(gf::RenderTarget& target, const gf::RenderStates& states) override;
 	  CardType getCardType(const gf::Vector2f& screenPosition, const gf::Vector2f& screenSize);
 
+    void showCards(bool show = true) {
+      m_showCards = show;
+    }
+
     void resetCardSelection() {
       m_selectedCard = -1;
     }
@@ -37,6 +41,7 @@ namespace ggj {
     CrewType m_role;
     std::array<CardType, MaxCards> m_cards;
     int m_selectedCard;
+    bool m_showCards;
   };
 
 }

@@ -22,7 +22,7 @@ while true
 do
   fuser 2020/tcp
   echo "Compiling ..."
-  make
+  make -j 8
   echo "Running Server..."
   ./tmpgame-server > server.log 2>&1 &
   server=$!

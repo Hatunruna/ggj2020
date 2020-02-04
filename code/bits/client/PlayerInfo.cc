@@ -16,7 +16,8 @@ namespace ggj {
   : m_font(resources.getFont("DejaVuSans.ttf"))
   , m_emptyCardTexture(resources.getTexture("image/empty_card.png"))
   , m_atlas("atlas.xml", resources)
-  , m_selectedCard(-1) {
+  , m_selectedCard(-1)
+  , m_showCards(true) {
 
   }
 
@@ -74,6 +75,10 @@ namespace ggj {
     }
     m_rectRole.setOutlineThickness(outlineThickness);
     target.draw(m_rectRole, states);
+
+    if (!m_showCards) {
+      return;
+    }
 
     for (unsigned i = 0; i < m_cards.size(); ++i) {
       auto bounds = getCardBounds(coordinates.getRelativeSize({ 1.0f, 1.0f }), i);

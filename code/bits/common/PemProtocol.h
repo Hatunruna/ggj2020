@@ -30,45 +30,6 @@ namespace ggj {
     return ar | data.role | data.cards;
   }
 
-  // struct PemServerStartVoteForCaptain {
-  //   static constexpr gf::Id type = "PemServerStartVoteForCaptain"_id;
-  // };
-
-  // template<typename Archive>
-  // Archive operator|(Archive& ar, PemServerStartVoteForCaptain&) {
-  //   return ar;
-  // }
-
-  // struct PemServerStartVoteForPrisoner {
-  //   static constexpr gf::Id type = "PemServerStartVoteForPrisoner"_id;
-  // };
-
-  // template<typename Archive>
-  // Archive operator|(Archive& ar, PemServerStartVoteForPrisoner&) {
-  //   return ar;
-  // }
-
-  // struct PemServerChooseCaptain {
-  //   static constexpr gf::Id type = "PemServerChooseCaptain"_id;
-  //   gf::Id member;
-  // };
-
-  // template<typename Archive>
-  // Archive operator|(Archive& ar, PemServerChooseCaptain& data) {
-  //   return ar | data.member;
-  // }
-
-  // struct PemServerChoosePrisoner {
-  //   static constexpr gf::Id type = "PemServerChoosePrisoner"_id;
-  //   gf::Id member;
-  // };
-
-  // template<typename Archive>
-  // Archive operator|(Archive& ar, PemServerChoosePrisoner& data) {
-  //   return ar | data.member;
-  // }
-
-
   struct PemServerStartMoveAndPlay {
     static constexpr gf::Id type = "PemServerStartMoveAndPlay"_id;
   };
@@ -77,16 +38,6 @@ namespace ggj {
   Archive operator|(Archive& ar, PemServerStartMoveAndPlay&) {
     return ar;
   }
-
-  // struct PemServerUpdateHand {
-  //   static constexpr gf::Id type = "PemServerUpdateHand"_id;
-  //   CardType card;
-  // };
-
-  // template<typename Archive>
-  // Archive operator|(Archive& ar, PemServerUpdateHand& data) {
-  //   return ar | data.card;
-  // }
 
   struct PemServerUpdateShip {
     static constexpr gf::Id type = "PemServerUpdateShip"_id;
@@ -108,6 +59,47 @@ namespace ggj {
   //   return ar | data.conclusion;
   // }
 
+  struct PemServerStartVoteForPrisoner {
+    static constexpr gf::Id type = "PemServerStartVoteForPrisoner"_id;
+    std::set<gf::Id> voters;
+  };
+
+  template<typename Archive>
+  Archive operator|(Archive& ar, PemServerStartVoteForPrisoner& data) {
+    return ar | data.voters;
+  }
+
+  struct PemServerChoosePrisoner {
+    static constexpr gf::Id type = "PemServerChoosePrisoner"_id;
+    gf::Id member;
+  };
+
+  template<typename Archive>
+  Archive operator|(Archive& ar, PemServerChoosePrisoner& data) {
+    return ar | data.member;
+  }
+
+  struct PemServerReleasePrisoner {
+    static constexpr gf::Id type = "PemServerReleasePrisoner"_id;
+    gf::Id prisoner;
+    gf::Id deliverer; // != InvalidId when a release card has been played
+  };
+
+  template<typename Archive>
+  Archive operator|(Archive& ar, PemServerReleasePrisoner& data) {
+    return ar | data.prisoner | data.deliverer;
+  }
+
+  // struct PemServerUpdateHand {
+  //   static constexpr gf::Id type = "PemServerUpdateHand"_id;
+  //   CardType card;
+  // };
+
+  // template<typename Archive>
+  // Archive operator|(Archive& ar, PemServerUpdateHand& data) {
+  //   return ar | data.card;
+  // }
+
 
   /*
    * client -> server
@@ -123,15 +115,15 @@ namespace ggj {
   //   return ar | data.member;
   // }
 
-  // struct PemClientChoosePrisoner {
-  //   static constexpr gf::Id type = "PemClientChoosePrisoner"_id;
-  //   gf::Id member;
-  // };
+  struct PemClientChoosePrisoner {
+    static constexpr gf::Id type = "PemClientChoosePrisoner"_id;
+    gf::Id member;
+  };
 
-  // template<typename Archive>
-  // Archive operator|(Archive& ar, PemClientChoosePrisoner& data) {
-  //   return ar | data.member;
-  // }
+  template<typename Archive>
+  Archive operator|(Archive& ar, PemClientChoosePrisoner& data) {
+    return ar | data.member;
+  }
 
   // struct PemClientStartMoveAndPlay {
   //   static constexpr gf::Id type = "PemClientStartMoveAndPlay"_id;

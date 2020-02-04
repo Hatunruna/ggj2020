@@ -33,6 +33,7 @@ namespace ggj {
   , m_adaptator(m_scenes.getRenderer(), getWorldView())
   , m_info(resources)
   , m_chat(network, m_players)
+  , m_vote(resources)
   // , m_votedPlayer(gf::InvalidId)
   // , m_alreadyVote(false)
   // , m_startMoveAndPlayButton("Continue", resources.getFont("DejaVuSans.ttf"))
@@ -53,6 +54,7 @@ namespace ggj {
 
     // Add HUD entities
     addHudEntity(m_info);
+    addHudEntity(m_vote);
 
     // Define song parameters
     m_ambiantBackground.setBuffer(gResourceManager().getSound("audio/ambiant.ogg"));
@@ -238,6 +240,28 @@ namespace ggj {
         break;
       }
 
+      case GamePhase::Meeting:
+        switch (event.type) {
+        case gf::EventType::MouseMoved:
+          m_vote.pointTo(m_scenes.getRenderer().mapPixelToCoords(event.mouseCursor.coords));
+          break;
+
+        case gf::EventType::MouseButtonPressed:
+          m_vote.pointTo(m_scenes.getRenderer().mapPixelToCoords(event.mouseButton.coords));
+          if (m_vote.triggerAction()) {
+            auto id = m_vote.getSelectedPlayer();
+            gf::Log::debug("(GAME) voted for %lX\n", id);
+            PemClientChoosePrisoner vote;
+            vote.member = id;
+            m_network.send(vote);
+          }
+          break;
+
+        default:
+          break;
+        }
+        break;
+
       default:
         break;
     }
@@ -253,21 +277,6 @@ namespace ggj {
     ProtocolBytes bytes;
     while (m_network.queue.poll(bytes)) {
       switch (bytes.getType()) {
-        case PemServerInitRole::type: {
-          gf::Log::debug("(GAME) receive PemServerInitRole\n");
-
-          auto data = bytes.as<PemServerInitRole>();
-          if(data.role == CrewType::Rebel){
-            gf::Log::debug("(GAME) Role is Rebel\n");
-          }
-          else{
-            gf::Log::debug("(GAME) Role is Protector\n");
-          }
-          m_info.setRole(data.role);
-          m_info.initializeHand(data.cards);
-          break;
-        }
-
         case ServerChatMessage::type: {
           gf::Log::debug("(GAME) receive ServerChatMessage\n");
           auto data = bytes.as<ServerChatMessage>();
@@ -286,70 +295,27 @@ namespace ggj {
           break;
         }
 
-        // case PemServerChooseCaptain::type: {
-        //   gf::Log::debug("(GAME) receive PemServerChooseCaptain\n");
-        //   auto data = bytes.as<PemServerChooseCaptain>();
+        case PemServerInitRole::type: {
+          gf::Log::debug("(GAME) receive PemServerInitRole\n");
 
-        //   auto it = m_players.find(data.member);
-        //   if (it != m_players.end()) {
-        //     it->second.captain = true;
-
-        //     MessageData message;
-        //     message.origin = gf::InvalidId;
-        //     message.author = "server";
-        //     message.content = it->second.name + " is the new captain";
-
-        //     m_chat.appendMessage(std::move(message));
-        //   }
-        //   break;
-        // }
+          auto data = bytes.as<PemServerInitRole>();
+          if(data.role == CrewType::Rebel){
+            gf::Log::debug("(GAME) Role is Rebel\n");
+          }
+          else{
+            gf::Log::debug("(GAME) Role is Protector\n");
+          }
+          m_info.setRole(data.role);
+          m_info.initializeHand(data.cards);
+          break;
+        }
 
         case PemServerStartMoveAndPlay::type: {
           gf::Log::debug("(GAME) receive PemServerStartMoveAndPlay\n");
 
-          // Tell to the player
-          MessageData message;
-          message.origin = gf::InvalidId;
-          message.author = "server";
-          message.content = "A new day of duty has begin!";
-          m_chat.appendMessage(std::move(message));
-          m_ship.stopDrawWarnings();
-
           resetTurn();
           break;
         }
-
-        // case PemServerStartVoteForPrisoner::type: {
-        //   gf::Log::debug("(GAME) receive PemServerStartVoteForPrisoner\n");
-
-        //   m_alreadyVote = (m_players[m_scenes.myPlayerId].jail);
-        //   m_ship.selectPlace(PlaceType::None);
-        //   m_info.resetCardSelection();
-        //   m_gamePhase = GamePhase::Meeting;
-        //   break;
-        // }
-
-        // case PemServerChoosePrisoner::type: {
-        //   gf::Log::debug("(GAME) receive PemServerChoosePrisoner\n");
-        //   auto data = bytes.as<PemServerChoosePrisoner>();
-
-        //   MessageData message;
-        //   message.origin = gf::InvalidId;
-        //   message.author = "server";
-
-        //   auto it = m_players.find(data.member);
-        //   if (it != m_players.end()) {
-        //     it->second.jail = true;
-        //     message.content = it->second.name + " is now jailed";
-        //   } else {
-        //     message.content = "No one has been in prison";
-        //   }
-        //   m_chat.appendMessage(std::move(message));
-
-        //   m_gamePhase = GamePhase::CapitainElection;
-        //   m_alreadyVote = true;
-        //   break;
-        // }
 
         case PemServerUpdateShip::type: {
           gf::Log::debug("(GAME) receive PemServerUpdateShip\n");
@@ -361,6 +327,78 @@ namespace ggj {
 
           break;
         }
+
+        case PemServerStartVoteForPrisoner::type: {
+          gf::Log::debug("(GAME) receive PemServerStartVoteForPrisoner\n");
+          auto data = bytes.as<PemServerStartVoteForPrisoner>();
+
+          m_gamePhase = GamePhase::Meeting;
+          m_info.showCards(false);
+
+          std::map<gf::Id, ClientPlayerData> voters;
+          for (const auto &id: data.voters) {
+            gf::Log::debug("Voter %lX\n", id);
+            voters.emplace(id, m_players.at(id));
+          }
+
+          m_vote.changeVoterList(voters);
+          break;
+        }
+
+        case PemServerChoosePrisoner::type: {
+          gf::Log::debug("(GAME) receive PemServerChoosePrisoner\n");
+          auto data = bytes.as<PemServerChoosePrisoner>();
+
+          MessageData message;
+          message.origin = gf::InvalidId;
+          message.author = "server";
+
+          auto it = m_players.find(data.member);
+          if (it != m_players.end()) {
+            it->second.jail = true;
+            message.content = it->second.name + " is now jailed";
+          } else {
+            message.content = "No one has been in prison";
+          }
+          m_chat.appendMessage(std::move(message));
+          break;
+        }
+
+        case PemServerReleasePrisoner::type: {
+          gf::Log::debug("(GAME) receive PemServerReleasePrisoner\n");
+          auto data = bytes.as<PemServerReleasePrisoner>();
+
+          // NOTE: leak of information
+          // When a player relased another player, the server send a packet
+          // to tell that this player is free. But this message was broacasted
+          // so all players know this information even if it isn't displayed.
+          // But we are obliged to broacast this information to update the jail
+          // status of all player.
+          // So the question is: Do we need to know the status of all players or just our own?
+
+          m_players.at(data.prisoner).jail = false;
+
+          MessageData message;
+          message.origin = gf::InvalidId;
+          message.author = "server";
+          if (data.prisoner == m_scenes.myPlayerId) {
+            if (data.deliverer == gf::InvalidId) {
+              message.content = "You were released from prison";
+            }
+            else {
+              auto member = m_players.at(data.deliverer);
+              message.content = member.name + " released you from prison";
+            }
+          }
+          else {
+            auto member = m_players.at(data.prisoner);
+            message.content = member.name + " was released from prison";
+          }
+
+          m_chat.appendMessage(std::move(message));
+          break;
+        }
+
 
         // case PemServerResolution::type: {
         //   gf::Log::debug("(GAME) receive PemServerResolution\n");
@@ -533,6 +571,8 @@ namespace ggj {
     // Change the game phase
     m_gamePhase = GamePhase::Action;
     m_info.resetCardSelection();
+    m_info.showCards();
+    m_ship.stopDrawWarnings();
 
     // A player in jail stay in jail
     if (m_players[m_scenes.myPlayerId].jail) {
@@ -541,6 +581,14 @@ namespace ggj {
     else {
       m_placeTypeSelected = PlaceType::None;
     }
+    m_ship.selectPlace(m_placeTypeSelected);
+
+    // Tell to the player
+    MessageData message;
+    message.origin = gf::InvalidId;
+    message.author = "server";
+    message.content = "A new day of duty has begin!";
+    m_chat.appendMessage(std::move(message));
   }
 
 }

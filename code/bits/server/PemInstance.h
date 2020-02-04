@@ -22,7 +22,8 @@ namespace ggj {
 
   private:
     void resetTurn();
-    // void checkEndOfVote(VoteType type);
+    void resetVote();
+    void checkEndOfVote();
     void checkEndOfTurn();
 
   private:
@@ -31,6 +32,7 @@ namespace ggj {
     Deck m_deck;
     std::map<gf::Id, Member> m_members;
     Ship m_ship;
+    std::map<gf::Id, gf::Id> m_votes;
   };
 
 }

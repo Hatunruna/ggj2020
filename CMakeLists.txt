@@ -53,6 +53,7 @@ add_executable(tmpgame
   code/bits/client/StarsEntity.cc
   code/bits/client/Singletons.cc
   code/bits/client/ViewAdaptator.cc
+  code/bits/client/VoteEntity.cc
 
   vendor/imgui/imgui.cpp
   vendor/imgui/imgui_demo.cpp
