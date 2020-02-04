@@ -12,7 +12,7 @@
 namespace {
   float computeDistance(int32_t players) {
     if (players < 6) {
-      return 0.80f;
+      return 10.0f;
     }
 
     return 15.0f;
