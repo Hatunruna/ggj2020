@@ -24,6 +24,8 @@ namespace pem {
   , m_chat(network)
   , m_backgorund(resources)
   {
+    setClearColor(gf::Color::Black);
+
     addHudEntity(m_backgorund);
   }
 
