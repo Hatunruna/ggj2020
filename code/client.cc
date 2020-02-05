@@ -29,7 +29,6 @@ int main(int argc, char *argv[]) {
 
   // Start graphics
   ggj::Scenes scenes(network, TMPGAME_DATA_DIR);
-  scenes.setClearColor(gf::Color::Black);
 
   if (argc == 3 && std::string(argv[1]) == "--debug") {
     gf::Log::debug("(CLIENT) run in debug mode\n");

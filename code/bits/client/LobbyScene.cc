@@ -61,7 +61,7 @@ namespace ggj {
         case ServerDisconnect::type:
           gf::Log::debug("(LOBBY) Receive ServerDisconnect\n");
           m_network.disconnect();
-          m_scenes.transitionToScene(m_scenes.connection, 0.4f, m_scenes.fadeEffect);
+          m_scenes.replaceScene(m_scenes.connection, m_scenes.fadeEffect, gf::seconds(0.4f));
 //           m_scenes.replaceScene(m_scenes.connection);
           break;
 
@@ -107,7 +107,7 @@ namespace ggj {
           gf::Log::debug("(LOBBY) Receive ServerJoinRoom\n");
           auto data = bytes.as<ServerJoinRoom>();
           m_scenes.room.startRoom(data.settings);
-          m_scenes.transitionToScene(m_scenes.room, 0.4f, m_scenes.fadeEffect);
+          m_scenes.replaceScene(m_scenes.room, m_scenes.fadeEffect, gf::seconds(0.4f));
 //           m_scenes.replaceScene(m_scenes.room);
           // do not poll any more message as the next messages are for the room
           return;
@@ -251,7 +251,7 @@ namespace ggj {
       ImGui::Indent();
 
       if (ImGui::Button("Back", DefaultButtonSize)) {
-        m_scenes.transitionToScene(m_scenes.connection, 0.4f, m_scenes.fadeEffect);
+        m_scenes.replaceScene(m_scenes.connection, m_scenes.fadeEffect, gf::seconds(0.4f));
 //         m_scenes.replaceScene(m_scenes.connection);
         m_network.disconnect();
       }

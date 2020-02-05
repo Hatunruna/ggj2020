@@ -3,7 +3,7 @@
 
 #include <gf/SceneManager.h>
 #include <gf/ResourceManager.h>
-#include <gf/Effects.h>
+#include <gf/SegueEffects.h>
 
 #include "ConnectionScene.h"
 #include "CreditsScene.h"
@@ -34,9 +34,9 @@ namespace ggj {
     CreditsScene credits;
     HelpScene help;
 
-    gf::SlideTransitionEffect slideEffect;
-    gf::FadeTransitionEffect fadeEffect;
-    gf::GlitchTransitionEffect glitchEffect;
+    gf::SlideSegueEffect slideEffect;
+    gf::FadeSegueEffect fadeEffect;
+    gf::GlitchSegueEffect glitchEffect;
 
     gf::Id myPlayerId;
   };

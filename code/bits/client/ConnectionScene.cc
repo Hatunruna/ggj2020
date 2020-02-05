@@ -50,7 +50,7 @@ namespace ggj {
 
         if (m_network.isConnected()) {
           m_connectionAsked = false;
-          m_scenes.transitionToScene(m_scenes.lobby, 0.4f, m_scenes.fadeEffect);
+          m_scenes.replaceScene(m_scenes.lobby, m_scenes.fadeEffect, gf::seconds(0.4f));
 
           ClientHello data;
           data.name = m_nameBuffer.getData();
@@ -72,7 +72,7 @@ namespace ggj {
 
         if (ImGui::Button("Back", DefaultButtonSize)) {
           m_connectionAsked = false;
-          m_scenes.transitionToScene(m_scenes.intro, 0.4f, m_scenes.fadeEffect);
+          m_scenes.replaceScene(m_scenes.intro, m_scenes.fadeEffect, gf::seconds(0.4f));
         }
 
         ImGui::SameLine();

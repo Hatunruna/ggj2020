@@ -27,7 +27,7 @@ namespace ggj {
     gf::unused(window);
 
     if (m_escapeAction.isActive()) {
-      m_scenes.transitionToScene(m_scenes.intro, 0.4f, m_scenes.fadeEffect);
+      m_scenes.replaceScene(m_scenes.intro, m_scenes.fadeEffect, gf::seconds(0.4f));
     }
   }
 
