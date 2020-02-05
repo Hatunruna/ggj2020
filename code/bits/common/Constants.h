@@ -1,9 +1,9 @@
-#ifndef TMPGAME_CONSTANTS_H
-#define TMPGAME_CONSTANTS_H
+#ifndef PEM_CONSTANTS_H
+#define PEM_CONSTANTS_H
 
 #include <gf/Vector.h>
 
-namespace ggj {
+namespace pem {
 
     constexpr gf::Vector2i InitialSize = { 1024, 768 };
     constexpr unsigned UICharacterSize = 14;
@@ -26,4 +26,4 @@ namespace ggj {
     constexpr int MaxSentence = 2;
 }
 
-#endif // TMPGAME_CONSTANTS_H
+#endif // PEM_CONSTANTS_H

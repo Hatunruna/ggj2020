@@ -19,7 +19,7 @@
 #include "Scenes.h"
 #include "Singletons.h"
 
-namespace ggj {
+namespace pem {
 
   GameScene::GameScene(Scenes& scenes, ClientNetwork& network, gf::ResourceManager& resources)
   : gf::Scene(InitialSize)
@@ -39,6 +39,8 @@ namespace ggj {
   // , m_startMoveAndPlayButton("Continue", resources.getFont("DejaVuSans.ttf"))
   // , m_alreadyUsedMoveAndPlayButton(false)
   {
+    setClearColor(gf::Color::Black);
+
     // Set the view size
     setWorldViewSize(WorldSize);
     setWorldViewCenter(WorldSize * 0.5f);

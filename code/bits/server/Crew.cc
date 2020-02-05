@@ -2,7 +2,7 @@
 
 #include <cassert>
 
-namespace ggj {
+namespace pem {
 
   int Crew::computeRebels(int32_t players) {
     assert(4 >= players && players <= 8);

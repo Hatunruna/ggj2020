@@ -1,5 +1,5 @@
-#ifndef TMPGAME_SERVER_NETWORK_H
-#define TMPGAME_SERVER_NETWORK_H
+#ifndef PEM_SERVER_NETWORK_H
+#define PEM_SERVER_NETWORK_H
 
 #include <atomic>
 #include <map>
@@ -14,7 +14,7 @@
 #include "ServerPlayer.h"
 #include "GameFactory.h"
 
-namespace ggj {
+namespace pem {
 
   class ServerNetwork {
   public:
@@ -38,4 +38,4 @@ namespace ggj {
 
 }
 
-#endif // TMPGAME_SERVER_NETWORK_H
+#endif // PEM_SERVER_NETWORK_H

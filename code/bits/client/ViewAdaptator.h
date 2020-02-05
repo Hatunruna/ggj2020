@@ -1,10 +1,10 @@
-#ifndef TMPGAME_VIEW_ADAPTATOR_H
-#define TMPGAME_VIEW_ADAPTATOR_H
+#ifndef PEM_VIEW_ADAPTATOR_H
+#define PEM_VIEW_ADAPTATOR_H
 
 #include <gf/RenderTarget.h>
 #include <gf/View.h>
 
-namespace ggj {
+namespace pem {
   class ViewAdaptator {
   public:
     ViewAdaptator(const gf::RenderTarget& target, gf::View& view);
@@ -26,4 +26,4 @@ namespace ggj {
   };
 }
 
-#endif // TMPGAME_VIEW_ADAPTATOR_H
+#endif // PEM_VIEW_ADAPTATOR_H

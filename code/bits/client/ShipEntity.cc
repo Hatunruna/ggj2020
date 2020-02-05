@@ -19,7 +19,7 @@ namespace {
     bool state = true;
   };
 
-  std::map<ggj::PlaceType, PlaceLocation> placeLocations;
+  std::map<pem::PlaceType, PlaceLocation> placeLocations;
 
   void initializeBounds() {
     {
@@ -35,9 +35,9 @@ namespace {
       struct PlaceLocation location;
       location.placeBounds = polygon;
       location.titlePosition = { 2450.0f, 350.0f };
-      location.name = ggj::placeTypeString(ggj::PlaceType::Armory);
+      location.name = pem::placeTypeString(pem::PlaceType::Armory);
 
-      placeLocations.emplace(ggj::PlaceType::Armory, location);
+      placeLocations.emplace(pem::PlaceType::Armory, location);
     }
     {
       gf::Polygon polygon;
@@ -51,9 +51,9 @@ namespace {
       struct PlaceLocation location;
       location.placeBounds = polygon;
       location.titlePosition = { 2200.0f, 370.0f };
-      location.name = ggj::placeTypeString(ggj::PlaceType::Bathroom);
+      location.name = pem::placeTypeString(pem::PlaceType::Bathroom);
 
-      placeLocations.emplace(ggj::PlaceType::Bathroom, location);
+      placeLocations.emplace(pem::PlaceType::Bathroom, location);
     }
     {
       gf::Polygon polygon;
@@ -68,9 +68,9 @@ namespace {
       struct PlaceLocation location;
       location.placeBounds = polygon;
       location.titlePosition = { 3165.0f, 490.0f };
-      location.name = ggj::placeTypeString(ggj::PlaceType::CommunicationCenter);
+      location.name = pem::placeTypeString(pem::PlaceType::CommunicationCenter);
 
-      placeLocations.emplace(ggj::PlaceType::CommunicationCenter, location);
+      placeLocations.emplace(pem::PlaceType::CommunicationCenter, location);
     }
     {
       gf::Polygon polygon;
@@ -85,9 +85,9 @@ namespace {
       struct PlaceLocation location;
       location.placeBounds = polygon;
       location.titlePosition = { 1870.0f, 275.0f };
-      location.name = ggj::placeTypeString(ggj::PlaceType::Dormitory);
+      location.name = pem::placeTypeString(pem::PlaceType::Dormitory);
 
-      placeLocations.emplace(ggj::PlaceType::Dormitory, location);
+      placeLocations.emplace(pem::PlaceType::Dormitory, location);
     }
     {
       gf::Polygon polygon;
@@ -105,9 +105,9 @@ namespace {
       struct PlaceLocation location;
       location.placeBounds = polygon;
       location.titlePosition = { 2660.0f, 350.0f };
-      location.name = ggj::placeTypeString(ggj::PlaceType::GreenHouse);
+      location.name = pem::placeTypeString(pem::PlaceType::GreenHouse);
 
-      placeLocations.emplace(ggj::PlaceType::GreenHouse, location);
+      placeLocations.emplace(pem::PlaceType::GreenHouse, location);
     }
     {
       gf::Polygon polygon;
@@ -121,9 +121,9 @@ namespace {
       struct PlaceLocation location;
       location.placeBounds = polygon;
       location.titlePosition = { 1820.0f, 770.0f };
-      location.name = ggj::placeTypeString(ggj::PlaceType::Infirmery);
+      location.name = pem::placeTypeString(pem::PlaceType::Infirmery);
 
-      placeLocations.emplace(ggj::PlaceType::Infirmery, location);
+      placeLocations.emplace(pem::PlaceType::Infirmery, location);
     }
     {
       gf::Polygon polygon;
@@ -137,9 +137,9 @@ namespace {
       struct PlaceLocation location;
       location.placeBounds = polygon;
       location.titlePosition = { 770.0f, 160.0f };
-      location.name = ggj::placeTypeString(ggj::PlaceType::LeftEngine);
+      location.name = pem::placeTypeString(pem::PlaceType::LeftEngine);
 
-      placeLocations.emplace(ggj::PlaceType::LeftEngine, location);
+      placeLocations.emplace(pem::PlaceType::LeftEngine, location);
     }
     {
       gf::Polygon polygon;
@@ -154,9 +154,9 @@ namespace {
       struct PlaceLocation location;
       location.placeBounds = polygon;
       location.titlePosition = { 2850.0f, 800.0f };
-      location.name = ggj::placeTypeString(ggj::PlaceType::LifeSupport);
+      location.name = pem::placeTypeString(pem::PlaceType::LifeSupport);
 
-      placeLocations.emplace(ggj::PlaceType::LifeSupport, location);
+      placeLocations.emplace(pem::PlaceType::LifeSupport, location);
     }
     {
       gf::Polygon polygon;
@@ -171,9 +171,9 @@ namespace {
       struct PlaceLocation location;
       location.placeBounds = polygon;
       location.titlePosition = { 3700.0f, 700.0f };
-      location.name = ggj::placeTypeString(ggj::PlaceType::MainBridge);
+      location.name = pem::placeTypeString(pem::PlaceType::MainBridge);
 
-      placeLocations.emplace(ggj::PlaceType::MainBridge, location);
+      placeLocations.emplace(pem::PlaceType::MainBridge, location);
     }
     {
       gf::Polygon polygon;
@@ -187,9 +187,9 @@ namespace {
       struct PlaceLocation location;
       location.placeBounds = polygon;
       location.titlePosition = { 3550.0f, 670.0f };
-      location.name = ggj::placeTypeString(ggj::PlaceType::MidEngine);
+      location.name = pem::placeTypeString(pem::PlaceType::MidEngine);
 
-      placeLocations.emplace(ggj::PlaceType::MidEngine, location);
+      placeLocations.emplace(pem::PlaceType::MidEngine, location);
     }
     {
       gf::Polygon polygon;
@@ -205,9 +205,9 @@ namespace {
       struct PlaceLocation location;
       location.placeBounds = polygon;
       location.titlePosition = { 2950.0f, 700.0f };
-      location.name = ggj::placeTypeString(ggj::PlaceType::Navigation);
+      location.name = pem::placeTypeString(pem::PlaceType::Navigation);
 
-      placeLocations.emplace(ggj::PlaceType::Navigation, location);
+      placeLocations.emplace(pem::PlaceType::Navigation, location);
     }
     {
       gf::Polygon polygon;
@@ -221,9 +221,9 @@ namespace {
       struct PlaceLocation location;
       location.placeBounds = polygon;
       location.titlePosition = { 600.0f, 350.0f };
-      location.name = ggj::placeTypeString(ggj::PlaceType::Prison);
+      location.name = pem::placeTypeString(pem::PlaceType::Prison);
 
-      placeLocations.emplace(ggj::PlaceType::Prison, location);
+      placeLocations.emplace(pem::PlaceType::Prison, location);
     }
     {
       gf::Polygon polygon;
@@ -238,9 +238,9 @@ namespace {
       struct PlaceLocation location;
       location.placeBounds = polygon;
       location.titlePosition = { 1550.0f, 600.0f };
-      location.name = ggj::placeTypeString(ggj::PlaceType::Refectory);
+      location.name = pem::placeTypeString(pem::PlaceType::Refectory);
 
-      placeLocations.emplace(ggj::PlaceType::Refectory, location);
+      placeLocations.emplace(pem::PlaceType::Refectory, location);
     }
     {
       gf::Polygon polygon;
@@ -255,9 +255,9 @@ namespace {
       struct PlaceLocation location;
       location.placeBounds = polygon;
       location.titlePosition = { 310.0f, 600.0f };
-      location.name = ggj::placeTypeString(ggj::PlaceType::RightEngine);
+      location.name = pem::placeTypeString(pem::PlaceType::RightEngine);
 
-      placeLocations.emplace(ggj::PlaceType::RightEngine, location);
+      placeLocations.emplace(pem::PlaceType::RightEngine, location);
     }
     {
       gf::Polygon polygon;
@@ -272,14 +272,14 @@ namespace {
       struct PlaceLocation location;
       location.placeBounds = polygon;
       location.titlePosition = { 2000.0f, 770.0f };
-      location.name = ggj::placeTypeString(ggj::PlaceType::Storage);
+      location.name = pem::placeTypeString(pem::PlaceType::Storage);
 
-      placeLocations.emplace(ggj::PlaceType::Storage, location);
+      placeLocations.emplace(pem::PlaceType::Storage, location);
     }
   }
 }
 
-namespace ggj {
+namespace pem {
   ShipEntity::ShipEntity(gf::ResourceManager& resources)
   : m_font(resources.getFont("DejaVuSans.ttf"))
   , m_shipTexture(resources.getTexture("image/ship.png"))

@@ -1,11 +1,11 @@
-#ifndef TMPGAME_CREW_H
-#define TMPGAME_CREW_H
+#ifndef PEM_CREW_H
+#define PEM_CREW_H
 
 #include <vector>
 
 #include "common/PemTypes.h"
 
-namespace ggj {
+namespace pem {
 
   struct Crew {
     static int computeRebels(int32_t players);
@@ -15,4 +15,4 @@ namespace ggj {
   };
 }
 
-#endif // TMPGAME_CREW_H
+#endif // PEM_CREW_H

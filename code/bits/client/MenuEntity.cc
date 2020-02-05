@@ -3,7 +3,7 @@
 #include <gf/Coordinates.h>
 #include <gf/RenderTarget.h>
 
-namespace ggj {
+namespace pem {
 
   MenuEntity::MenuEntity(gf::ResourceManager& resources, MenuChoice& choice)
   : m_font(resources.getFont("DejaVuSans.ttf"))

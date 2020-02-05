@@ -1,10 +1,10 @@
-#ifndef TMPGAME_MEMBER_H
-#define TMPGAME_MEMBER_H
+#ifndef PEM_MEMBER_H
+#define PEM_MEMBER_H
 
 #include "common/Constants.h"
 #include "common/PemTypes.h"
 
-namespace ggj {
+namespace pem {
 
   struct Member {
     // std::array<CardType, MaxCards> cards;
@@ -20,4 +20,4 @@ namespace ggj {
 
 }
 
-#endif // TMPGAME_MEMBER_H
+#endif // PEM_MEMBER_H

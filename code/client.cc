@@ -15,20 +15,20 @@
 #include "common/Protocol.h"
 
 int main(int argc, char *argv[]) {
-  ggj::ClientNetwork network;
+  pem::ClientNetwork network;
 
   // Singletons
-  gf::SingletonStorage<ggj::ResourceManager> storageForResourceManager(ggj::gResourceManager);
-  ggj::gResourceManager().addSearchDir(TMPGAME_DATA_DIR);
+  gf::SingletonStorage<pem::ResourceManager> storageForResourceManager(pem::gResourceManager);
+  pem::gResourceManager().addSearchDir(PEM_DATA_DIR);
 
   // Background music
-  ggj::gBackgroundMusic.setBuffer(ggj::gResourceManager().getSound("audio/main_theme.ogg"));
-  ggj::gBackgroundMusic.setLoop(true);
-  ggj::gBackgroundMusic.setVolume(ggj::BackgroundAmbiantVolume);
-  ggj::gBackgroundMusic.play();
+  pem::gBackgroundMusic.setBuffer(pem::gResourceManager().getSound("audio/main_theme.ogg"));
+  pem::gBackgroundMusic.setLoop(true);
+  pem::gBackgroundMusic.setVolume(pem::BackgroundAmbiantVolume);
+  pem::gBackgroundMusic.play();
 
   // Start graphics
-  ggj::Scenes scenes(network, TMPGAME_DATA_DIR);
+  pem::Scenes scenes(network, PEM_DATA_DIR);
 
   if (argc == 3 && std::string(argv[1]) == "--debug") {
     gf::Log::debug("(CLIENT) run in debug mode\n");
@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
 
     // Send hello package
     {
-      ggj::ClientHello data;
+      pem::ClientHello data;
       std::string name(argv[2]);
       assert(!name.empty());
       data.name = name;
@@ -49,22 +49,22 @@ int main(int argc, char *argv[]) {
 
     // Receive ack
     {
-      ggj::ProtocolBytes bytes;
+      pem::ProtocolBytes bytes;
       network.queue.wait(bytes);
-      assert(bytes.getType() == ggj::ServerHello::type);
+      assert(bytes.getType() == pem::ServerHello::type);
 
-      auto data = bytes.as<ggj::ServerHello>();
+      auto data = bytes.as<pem::ServerHello>();
       scenes.myPlayerId = data.playerId;
     }
 
     gf::Id roomID = gf::InvalidId;
     {
-      ggj::ProtocolBytes bytes;
+      pem::ProtocolBytes bytes;
       network.queue.wait(bytes);
-      assert(bytes.getType() == ggj::ServerListRooms::type);
+      assert(bytes.getType() == pem::ServerListRooms::type);
 
       // Check if room is already created
-      auto data = bytes.as<ggj::ServerListRooms>();
+      auto data = bytes.as<pem::ServerListRooms>();
       for (auto& room : data.rooms) {
         if (room.name == "DebugRoom") {
           roomID = room.id;
@@ -76,17 +76,17 @@ int main(int argc, char *argv[]) {
 
     // Ignore players list
     {
-      ggj::ProtocolBytes bytes;
+      pem::ProtocolBytes bytes;
       network.queue.wait(bytes);
-      assert(bytes.getType() == ggj::ServerListPlayers::type);
+      assert(bytes.getType() == pem::ServerListPlayers::type);
     }
 
     // If room was not created
     if (roomID == gf::InvalidId) {
-      ggj::ClientCreateRoom data;
+      pem::ClientCreateRoom data;
       data.name = "DebugRoom";
 
-      ggj::GameInstanceSettings settings;
+      pem::GameInstanceSettings settings;
       settings.playersByTeam = 4;
       settings.teams = 1;
 
@@ -94,7 +94,7 @@ int main(int argc, char *argv[]) {
       network.send(data);
     }
     else {
-      ggj::ClientJoinRoom data;
+      pem::ClientJoinRoom data;
       data.room = roomID;
       network.send(data);
     }
@@ -102,11 +102,11 @@ int main(int argc, char *argv[]) {
     // Join the room
     {
       gf::Log::debug("Join the room\n");
-      ggj::ProtocolBytes bytes;
+      pem::ProtocolBytes bytes;
       network.queue.wait(bytes);
-      assert(bytes.getType() == ggj::ServerJoinRoom::type);
+      assert(bytes.getType() == pem::ServerJoinRoom::type);
 
-      auto data = bytes.as<ggj::ServerJoinRoom>();
+      auto data = bytes.as<pem::ServerJoinRoom>();
       scenes.room.startRoom(data.settings);
 
       gf::Log::debug("Joined room %lX\n", data.room);
@@ -114,51 +114,51 @@ int main(int argc, char *argv[]) {
 
     // Ignore players list room
     {
-      ggj::ProtocolBytes bytes;
+      pem::ProtocolBytes bytes;
       network.queue.wait(bytes);
-      assert(bytes.getType() == ggj::ServerListRoomPlayers::type);
+      assert(bytes.getType() == pem::ServerListRoomPlayers::type);
     }
 
     // Ignore change team
     {
-      ggj::ProtocolBytes bytes;
+      pem::ProtocolBytes bytes;
       network.queue.wait(bytes);
-      assert(bytes.getType() == ggj::ServerChangeTeam::type);
+      assert(bytes.getType() == pem::ServerChangeTeam::type);
     }
 
     // Ignore players list room
     {
-      ggj::ProtocolBytes bytes;
+      pem::ProtocolBytes bytes;
       network.queue.wait(bytes);
-      assert(bytes.getType() == ggj::ServerListRoomPlayers::type);
+      assert(bytes.getType() == pem::ServerListRoomPlayers::type);
     }
 
     // Send player ready
     {
-      ggj::ClientReady data;
+      pem::ClientReady data;
       data.ready = true;
       network.send(data);
     }
 
     // Ack ready
     {
-      ggj::ProtocolBytes bytes;
+      pem::ProtocolBytes bytes;
       network.queue.wait(bytes);
-      assert(bytes.getType() == ggj::ServerReady::type);
+      assert(bytes.getType() == pem::ServerReady::type);
 
-      auto data = bytes.as<ggj::ServerReady>();
+      auto data = bytes.as<pem::ServerReady>();
       assert(data.ready);
     }
 
-    std::vector<ggj::PlayerData> players;
+    std::vector<pem::PlayerData> players;
     // Update player list
     {
-      ggj::ProtocolBytes bytes;
+      pem::ProtocolBytes bytes;
       for(;;) {
         network.queue.wait(bytes);
 
-        if (bytes.getType() == ggj::ServerListRoomPlayers::type) {
-          auto data = bytes.as<ggj::ServerListRoomPlayers>();
+        if (bytes.getType() == pem::ServerListRoomPlayers::type) {
+          auto data = bytes.as<pem::ServerListRoomPlayers>();
           players = std::move(data.players);
         }
         else {
@@ -166,7 +166,7 @@ int main(int argc, char *argv[]) {
         }
       }
 
-      assert(bytes.getType() == ggj::ServerStartGame::type);
+      assert(bytes.getType() == pem::ServerStartGame::type);
       assert(players.size() == 4u);
       scenes.game.initialize(players);
     }

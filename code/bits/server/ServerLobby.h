@@ -1,5 +1,5 @@
-#ifndef TMPGAME_SERVER_LOBBY_H
-#define TMPGAME_SERVER_LOBBY_H
+#ifndef PEM_SERVER_LOBBY_H
+#define PEM_SERVER_LOBBY_H
 
 #include <gf/Random.h>
 #include <gf/Ref.h>
@@ -10,7 +10,7 @@
 #include "ServerGroup.h"
 #include "ServerRoom.h"
 
-namespace ggj {
+namespace pem {
 
   class ServerLobby : public ServerGroup {
   public:
@@ -38,4 +38,4 @@ namespace ggj {
 
 }
 
-#endif // TMPGAME_SERVER_LOBBY_H
+#endif // PEM_SERVER_LOBBY_H

@@ -8,7 +8,7 @@
 
 #include "Scenes.h"
 
-namespace ggj {
+namespace pem {
 
   HelpScene::HelpScene(Scenes& scenes, gf::ResourceManager& resources)
   : gf::Scene(InitialSize)
@@ -17,6 +17,8 @@ namespace ggj {
   , m_font(resources.getFont("DejaVuSans.ttf"))
   , m_backgorund(resources)
   {
+    setClearColor(gf::Color::Black);
+
     m_escapeAction.addKeycodeKeyControl(gf::Keycode::Escape);
     addAction(m_escapeAction);
 

@@ -5,7 +5,7 @@
 #include <gf/RenderTarget.h>
 #include <gf/Text.h>
 
-namespace ggj {
+namespace pem {
 
   VoteEntity::VoteEntity(gf::ResourceManager &resources)
   : m_font(resources.getFont("DejaVuSans.ttf"))

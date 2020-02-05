@@ -1,5 +1,5 @@
-#ifndef TMPGAME_PROTOCOL_PACKET_H
-#define TMPGAME_PROTOCOL_PACKET_H
+#ifndef PEM_PROTOCOL_PACKET_H
+#define PEM_PROTOCOL_PACKET_H
 
 #include <gf/Id.h>
 #include <gf/Packet.h>
@@ -7,7 +7,7 @@
 #include <gf/Serialization.h>
 #include <gf/SerializationOps.h>
 
-namespace ggj {
+namespace pem {
 
   struct ProtocolBytes {
     gf::Id type = gf::InvalidId;
@@ -47,4 +47,4 @@ namespace ggj {
 
 }
 
-#endif // TMPGAME_PROTOCOL_PACKET_H
+#endif // PEM_PROTOCOL_PACKET_H

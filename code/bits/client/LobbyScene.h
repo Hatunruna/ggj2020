@@ -1,5 +1,5 @@
-#ifndef TMPGAME_LOBBY_SCENE_H
-#define TMPGAME_LOBBY_SCENE_H
+#ifndef PEM_LOBBY_SCENE_H
+#define PEM_LOBBY_SCENE_H
 
 #include <gf/Scene.h>
 #include <gf/StaticString.h>
@@ -11,7 +11,7 @@
 #include "ClientNetwork.h"
 #include "LobbyChat.h"
 
-namespace ggj {
+namespace pem {
 
   struct Scenes;
 
@@ -47,4 +47,4 @@ namespace ggj {
 
 }
 
-#endif // TMPGAME_LOBBY_SCENE_H
+#endif // PEM_LOBBY_SCENE_H

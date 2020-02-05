@@ -15,7 +15,7 @@
 
 #include "Scenes.h"
 
-namespace ggj {
+namespace pem {
 
   RoomScene::RoomScene(Scenes& scenes, gf::ResourceManager& resources, ClientNetwork& network)
   : gf::Scene(InitialSize)

@@ -1,5 +1,5 @@
-#ifndef TMPGAME_LOBBY_CHAT_H
-#define TMPGAME_LOBBY_CHAT_H
+#ifndef PEM_LOBBY_CHAT_H
+#define PEM_LOBBY_CHAT_H
 
 #include <vector>
 
@@ -15,7 +15,7 @@
 
 #include <SFML/Audio.hpp>
 
-namespace ggj {
+namespace pem {
 
   class LobbyChat {
   public:
@@ -46,4 +46,4 @@ namespace ggj {
 
 
 
-#endif // TMPGAME_LOBBY_CHAT_H
+#endif // PEM_LOBBY_CHAT_H

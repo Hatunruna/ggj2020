@@ -1,5 +1,5 @@
-#ifndef TMPGAME_ROOM_SCENE_H
-#define TMPGAME_ROOM_SCENE_H
+#ifndef PEM_ROOM_SCENE_H
+#define PEM_ROOM_SCENE_H
 
 #include <cstdint>
 #include <vector>
@@ -14,7 +14,7 @@
 #include "ClientNetwork.h"
 #include "LobbyChat.h"
 
-namespace ggj {
+namespace pem {
 
   struct Scenes;
 
@@ -47,4 +47,4 @@ namespace ggj {
 
 }
 
-#endif // TMPGAME_ROOM_SCENE_H
+#endif // PEM_ROOM_SCENE_H

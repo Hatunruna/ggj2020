@@ -9,7 +9,7 @@
 
 #include "common/Protocol.h"
 
-namespace ggj {
+namespace pem {
 
   ClientNetwork::ClientNetwork()
   : m_connecting(false)

@@ -1,11 +1,11 @@
-#ifndef TMPGAME_SINGLETONS_H
-#define TMPGAME_SINGLETONS_H
+#ifndef PEM_SINGLETONS_H
+#define PEM_SINGLETONS_H
 
 #include <gf/Singleton.h>
 
 #include "ResourceManager.h"
 
-namespace ggj {
+namespace pem {
 
   static constexpr float BackgroundAmbiantVolume = 10.0f;
   static constexpr float FxsVolume = 80.0f;
@@ -15,4 +15,4 @@ namespace ggj {
 
 }
 
-#endif // TMPGAME_SINGLETONS_H
+#endif // PEM_SINGLETONS_H

@@ -8,7 +8,7 @@
 
 #include "common/Protocol.h"
 
-namespace ggj {
+namespace pem {
 
   namespace {
 

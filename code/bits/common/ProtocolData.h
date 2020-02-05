@@ -1,5 +1,5 @@
-#ifndef TMPGAME_PROTOCOL_DATA_H
-#define TMPGAME_PROTOCOL_DATA_H
+#ifndef PEM_PROTOCOL_DATA_H
+#define PEM_PROTOCOL_DATA_H
 
 #include <string>
 
@@ -7,7 +7,7 @@
 
 #include "GameSettings.h"
 
-namespace ggj {
+namespace pem {
 
   struct PlayerData {
     gf::Id id;
@@ -47,4 +47,4 @@ namespace ggj {
 
 }
 
-#endif // TMPGAME_PROTOCOL_DATA_H
+#endif // PEM_PROTOCOL_DATA_H

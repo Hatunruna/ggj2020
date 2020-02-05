@@ -1,10 +1,10 @@
-#ifndef TMPGAME_RESOURCE_MANAGER_H
-#define TMPGAME_RESOURCE_MANAGER_H
+#ifndef PEM_RESOURCE_MANAGER_H
+#define PEM_RESOURCE_MANAGER_H
 
 #include <gf/ResourceManager.h>
 #include <SFML/Audio.hpp>
 
-namespace ggj {
+namespace pem {
 
   class ResourceManager : public gf::ResourceManager {
   public:
@@ -19,4 +19,4 @@ namespace ggj {
 
 }
 
-#endif // TMPGAME_RESOURCE_MANAGER_H
+#endif // PEM_RESOURCE_MANAGER_H

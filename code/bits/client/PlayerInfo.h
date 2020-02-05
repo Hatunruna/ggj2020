@@ -1,5 +1,5 @@
-#ifndef TMPGAME_PLAYER_INFO_H
-#define TMPGAME_PLAYER_INFO_H
+#ifndef PEM_PLAYER_INFO_H
+#define PEM_PLAYER_INFO_H
 
 #include <gf/TextureAtlas.h>
 #include <gf/Entity.h>
@@ -7,7 +7,7 @@
 
 #include "common/PemProtocol.h"
 
-namespace ggj {
+namespace pem {
   class PlayerInfo: public gf::Entity {
   public:
     PlayerInfo(gf::ResourceManager& resources);
@@ -51,4 +51,4 @@ namespace ggj {
 }
 
 
-#endif // TMPGAME_PLAYER_INFO_H
+#endif // PEM_PLAYER_INFO_H

@@ -15,7 +15,7 @@
 
 #include "Scenes.h"
 
-namespace ggj {
+namespace pem {
 
   LobbyScene::LobbyScene(Scenes& scenes, gf::ResourceManager& resources, ClientNetwork& network)
   : gf::Scene(InitialSize)
@@ -27,6 +27,8 @@ namespace ggj {
   , m_chat(network)
   , m_backgorund(resources)
   {
+    setClearColor(gf::Color::Black);
+
     m_roomBuffer.clear();
     m_nameBuffer.clear();
 

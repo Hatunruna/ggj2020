@@ -8,7 +8,7 @@
 #include "Scenes.h"
 
 
-namespace ggj {
+namespace pem {
 
   IntroScene::IntroScene(Scenes& scenes, gf::ResourceManager& resources)
   : gf::Scene(InitialSize)
@@ -18,6 +18,8 @@ namespace ggj {
   , m_menu(resources, m_choice)
   , m_backgorund(resources, false)
   {
+    setClearColor(gf::Color::Black);
+
     m_escapeAction.addKeycodeKeyControl(gf::Keycode::Escape);
     addAction(m_escapeAction);
 

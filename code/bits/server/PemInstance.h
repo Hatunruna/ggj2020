@@ -1,5 +1,5 @@
-#ifndef TMPGAME_PEM_INSTANCE_H
-#define TMPGAME_PEM_INSTANCE_H
+#ifndef PEM_PEM_INSTANCE_H
+#define PEM_PEM_INSTANCE_H
 
 #include <gf/Random.h>
 
@@ -8,7 +8,7 @@
 #include "Member.h"
 #include "Ship.h"
 
-namespace ggj {
+namespace pem {
 
   class PemInstance : public GameInstance {
   public:
@@ -40,4 +40,4 @@ namespace ggj {
 
 }
 
-#endif // TMPGAME_PEM_INSTANCE_H
+#endif // PEM_PEM_INSTANCE_H

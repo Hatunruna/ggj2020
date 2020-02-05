@@ -1,5 +1,5 @@
-#ifndef TMPGAME_PEM_TYPES_H
-#define TMPGAME_PEM_TYPES_H
+#ifndef PEM_PEM_TYPES_H
+#define PEM_PEM_TYPES_H
 
 #include <cassert>
 #include <cstdint>
@@ -7,7 +7,7 @@
 
 #include <gf/Id.h>
 
-namespace ggj {
+namespace pem {
 
   enum class CrewType : uint8_t {
     Rebel,
@@ -226,4 +226,4 @@ namespace ggj {
 
 }
 
-#endif // TMPGAME_PEM_TYPES_H
+#endif // PEM_PEM_TYPES_H

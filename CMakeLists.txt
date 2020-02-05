@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(TMPGAME
+project(PAX_ET_MORS
   VERSION 0.1.0
 )
 
@@ -14,7 +14,7 @@ find_package(gfnet REQUIRED)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(SFML2 REQUIRED sfml-audio>=2.1)
 
-set(TMPGAME_DATA_DIR "${CMAKE_INSTALL_PREFIX}/share/games/tmpgame" CACHE PATH "data path")
+set(PEM_DATA_DIR "${CMAKE_INSTALL_PREFIX}/share/games/pax_et_mors" CACHE PATH "data path")
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/code/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h @ONLY)
 
 set(CMAKE_CXX_STANDARD 14)
@@ -32,7 +32,7 @@ endif()
 
 # client
 
-add_executable(tmpgame
+add_executable(pax_et_mors
   code/client.cc
   code/bits/client/BackgroundEntity.cc
   code/bits/client/LobbyChat.cc
@@ -63,7 +63,7 @@ add_executable(tmpgame
   vendor/gf-imgui/imgui_impl_gf.cc
 )
 
-target_include_directories(tmpgame
+target_include_directories(pax_et_mors
   PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/vendor/imgui
     ${CMAKE_CURRENT_SOURCE_DIR}/vendor/gf-imgui
@@ -72,20 +72,20 @@ target_include_directories(tmpgame
     ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-target_link_libraries(tmpgame
+target_link_libraries(pax_et_mors
   gf::gf0
   gf::gfnet0
   ${SFML2_LIBRARIES}
 )
 
 install(
-  TARGETS tmpgame
+  TARGETS pax_et_mors
   RUNTIME DESTINATION bin
 )
 
 # server
 
-add_executable(tmpgame-server
+add_executable(pax_et_mors_server
   code/server.cc
   code/bits/server/Crew.cc
   code/bits/server/Deck.cc
@@ -101,26 +101,26 @@ add_executable(tmpgame-server
   code/bits/server/Ship.cc
 )
 
-target_include_directories(tmpgame-server
+target_include_directories(pax_et_mors_server
   PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/code
     ${CMAKE_CURRENT_SOURCE_DIR}/code/bits
     ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-target_link_libraries(tmpgame-server
+target_link_libraries(pax_et_mors_server
   gf::gfcore0
   gf::gfnet0
 )
 
 install(
-  TARGETS tmpgame-server
+  TARGETS pax_et_mors_server
   RUNTIME DESTINATION bin
 )
 
 # data
 
 install(
-  DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/data/tmpgame"
+  DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/data/pax_et_mors"
   DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/games"
 )

@@ -2,7 +2,7 @@
 
 #include "PemInstance.h"
 
-namespace ggj {
+namespace pem {
 
   std::unique_ptr<GameInstance> PemFactory::createInstance(const GameInstanceSettings& settings) {
     return std::make_unique<PemInstance>(settings.playersByTeam);

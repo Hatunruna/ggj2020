@@ -33,11 +33,11 @@ make install (May need elevated privileges)
 
 One server must be initialize
 ```
-./tmpgame-server
+./pem-server
 ```
 To run the game (n times for n players):
 ```
-./tmpgame
+./pem
 ```
 And connect to the server IP or hostname :
 

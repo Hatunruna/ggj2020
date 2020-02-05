@@ -1,5 +1,5 @@
-#ifndef TMPGAME_SHIP_H
-#define TMPGAME_SHIP_H
+#ifndef PEM_SHIP_H
+#define PEM_SHIP_H
 
 #include <cstdint>
 #include <map>
@@ -9,7 +9,7 @@
 #include <gf/Id.h>
 #include "common/PemTypes.h"
 
-namespace ggj {
+namespace pem {
 
 //     Blocked,    // true
 //     FalseAlarm, // false
@@ -86,4 +86,4 @@ namespace ggj {
   };
 }
 
-#endif // TMPGAME_SHIP_H
+#endif // PEM_SHIP_H

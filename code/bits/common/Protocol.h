@@ -1,5 +1,5 @@
-#ifndef TMPGAME_PROTOCOL_H
-#define TMPGAME_PROTOCOL_H
+#ifndef PEM_PROTOCOL_H
+#define PEM_PROTOCOL_H
 
 #include <string>
 #include <vector>
@@ -13,7 +13,7 @@
 
 using namespace gf::literals;
 
-namespace ggj {
+namespace pem {
 
   /*
    * server -> client
@@ -322,4 +322,4 @@ namespace ggj {
 
 }
 
-#endif // TMPGAME_PROTOCOL_H
+#endif // PEM_PROTOCOL_H

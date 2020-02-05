@@ -1,5 +1,5 @@
-#ifndef TMPGAME_GAME_CHAT_H
-#define TMPGAME_GAME_CHAT_H
+#ifndef PEM_GAME_CHAT_H
+#define PEM_GAME_CHAT_H
 
 #include <vector>
 
@@ -12,7 +12,7 @@
 #include "LobbyChat.h"
 #include "ClientPlayerData.h"
 
-namespace ggj {
+namespace pem {
 
   class GameChat: public LobbyChat {
   public:
@@ -33,4 +33,4 @@ namespace ggj {
 
 
 
-#endif // TMPGAME_GAME_CHAT_H
+#endif // PEM_GAME_CHAT_H

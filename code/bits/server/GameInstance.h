@@ -1,11 +1,11 @@
-#ifndef TMPGAME_GAME_INSTANCE_H
-#define TMPGAME_GAME_INSTANCE_H
+#ifndef PEM_GAME_INSTANCE_H
+#define PEM_GAME_INSTANCE_H
 
 #include "common/ProtocolBytes.h"
 
 #include "ServerGroup.h"
 
-namespace ggj {
+namespace pem {
 
   class GameInstance : public ServerGroup {
   public:
@@ -15,4 +15,4 @@ namespace ggj {
 
 }
 
-#endif // TMPGAME_GAME_INSTANCE_H
+#endif // PEM_GAME_INSTANCE_H

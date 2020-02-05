@@ -5,7 +5,7 @@
 
 #include "common/Constants.h"
 
-namespace ggj {
+namespace pem {
   ViewAdaptator::ViewAdaptator(const gf::RenderTarget& target, gf::View& view)
   : m_target(target)
   , m_view(view)

@@ -1,9 +1,9 @@
-#ifndef TMPGAME_GAME_SETTINGS_H
-#define TMPGAME_GAME_SETTINGS_H
+#ifndef PEM_GAME_SETTINGS_H
+#define PEM_GAME_SETTINGS_H
 
 #include <cstdint>
 
-namespace ggj {
+namespace pem {
 
   struct GameSettings {
     int32_t teamsMin;
@@ -29,4 +29,4 @@ namespace ggj {
 
 }
 
-#endif // TMPGAME_GAME_SETTINGS_H
+#endif // PEM_GAME_SETTINGS_H

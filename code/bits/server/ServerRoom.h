@@ -1,5 +1,5 @@
-#ifndef TMPGAME_SERVER_ROOM_H
-#define TMPGAME_SERVER_ROOM_H
+#ifndef PEM_SERVER_ROOM_H
+#define PEM_SERVER_ROOM_H
 
 #include "common/GameSettings.h"
 
@@ -7,7 +7,7 @@
 #include "GameInstance.h"
 #include "ServerGroup.h"
 
-namespace ggj {
+namespace pem {
 
   class ServerRoom : public ServerGroup {
   public:
@@ -38,4 +38,4 @@ namespace ggj {
 }
 
 
-#endif // TMPGAME_SERVER_ROOM_H
+#endif // PEM_SERVER_ROOM_H

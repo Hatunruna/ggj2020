@@ -1,5 +1,5 @@
-#ifndef TMPGAME_STARS_ENTITY_H
-#define TMPGAME_STARS_ENTITY_H
+#ifndef PEM_STARS_ENTITY_H
+#define PEM_STARS_ENTITY_H
 
 #include <array>
 #include <vector>
@@ -8,7 +8,7 @@
 #include <gf/Random.h>
 #include <gf/Rect.h>
 
-namespace ggj {
+namespace pem {
   class StarsEntity : public gf::Entity {
   public:
     StarsEntity(const gf::RectF& bounds);
@@ -52,4 +52,4 @@ namespace ggj {
   };
 }
 
-#endif /* ifndef TMPGAME_STARS_ENTITY_H */
+#endif /* ifndef PEM_STARS_ENTITY_H */

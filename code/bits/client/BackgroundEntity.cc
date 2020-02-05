@@ -6,7 +6,7 @@
 #include <gf/Shapes.h>
 #include <gf/Sprite.h>
 
-namespace ggj {
+namespace pem {
   BackgroundEntity::BackgroundEntity(gf::ResourceManager& resources, bool displayShip)
   : m_texture(resources.getTexture("image/ship.png"))
   , m_engineTexture(resources.getTexture("image/engine.png"))

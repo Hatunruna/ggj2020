@@ -5,10 +5,10 @@
 
 #include "common/Constants.h"
 
-namespace ggj {
+namespace pem {
 
   Scenes::Scenes(ClientNetwork& network, gf::Path searchDir)
-  : gf::SceneManager("tmpgame", InitialSize)
+  : gf::SceneManager("Pax et Mors", InitialSize)
   , resources({ searchDir })
   , intro(*this, resources)
   , connection(*this, resources, network)

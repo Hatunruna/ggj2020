@@ -27,7 +27,7 @@ namespace {
   }
 }
 
-namespace ggj {
+namespace pem {
   PemInstance::PemInstance(int32_t players)
   : m_players(players)
   , m_deck(players, m_random)

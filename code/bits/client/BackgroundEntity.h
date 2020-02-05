@@ -1,5 +1,5 @@
-#ifndef TMPGAME_BACKGROUND_ENTITY
-#define TMPGAME_BACKGROUND_ENTITY
+#ifndef PEM_BACKGROUND_ENTITY
+#define PEM_BACKGROUND_ENTITY
 
 #include <gf/Animation.h>
 #include <gf/Entity.h>
@@ -7,7 +7,7 @@
 
 #include "StarsEntity.h"
 
-namespace ggj {
+namespace pem {
 
   class BackgroundEntity: public gf::Entity {
   public:
@@ -27,4 +27,4 @@ namespace ggj {
 }
 
 
-#endif // TMPGAME_BACKGROUND_ENTITY
+#endif // PEM_BACKGROUND_ENTITY

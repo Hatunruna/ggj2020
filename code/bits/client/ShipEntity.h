@@ -1,5 +1,5 @@
-#ifndef TMPGAME_SHIP_ENTITY_H
-#define TMPGAME_SHIP_ENTITY_H
+#ifndef PEM_SHIP_ENTITY_H
+#define PEM_SHIP_ENTITY_H
 
 #include <gf/Entity.h>
 #include <gf/ResourceManager.h>
@@ -8,7 +8,7 @@
 #include <gf/Animation.h>
 #include "common/PemTypes.h"
 
-namespace ggj {
+namespace pem {
   class ShipEntity: public gf::Entity {
   public:
     ShipEntity(gf::ResourceManager& resources);
@@ -34,4 +34,4 @@ namespace ggj {
   };
 }
 
-#endif // TMPGAME_SHIP_ENTITY_H
+#endif // PEM_SHIP_ENTITY_H

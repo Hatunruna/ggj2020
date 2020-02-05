@@ -1,5 +1,5 @@
-#ifndef TMPGAME_SERVER_PLAYER_H
-#define TMPGAME_SERVER_PLAYER_H
+#ifndef PEM_SERVER_PLAYER_H
+#define PEM_SERVER_PLAYER_H
 
 #include <cstdint>
 #include <string>
@@ -8,7 +8,7 @@
 
 #include "common/ProtocolBytes.h"
 
-namespace ggj {
+namespace pem {
 
   class ServerRoom;
 
@@ -30,4 +30,4 @@ namespace ggj {
 
 }
 
-#endif // TMPGAME_SERVER_PLAYER_H
+#endif // PEM_SERVER_PLAYER_H

@@ -1,6 +1,6 @@
 #include "Singletons.h"
 
-namespace ggj {
+namespace pem {
 
   gf::Singleton<ResourceManager> gResourceManager;
   sf::Sound gBackgroundMusic;

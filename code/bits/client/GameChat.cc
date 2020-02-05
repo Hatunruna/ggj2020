@@ -8,7 +8,7 @@
 #include "common/Protocol.h"
 #include "common/ImGuiConstants.h"
 
-namespace ggj {
+namespace pem {
 
   GameChat::GameChat(ClientNetwork& network, std::map<gf::Id, ClientPlayerData>& players)
   : LobbyChat(network)

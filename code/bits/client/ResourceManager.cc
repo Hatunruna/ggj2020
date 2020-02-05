@@ -1,6 +1,6 @@
 #include "ResourceManager.h"
 
-namespace ggj {
+namespace pem {
   template<typename T>
   class ResourceLoader {
   public:

@@ -6,7 +6,7 @@
 #include <gf/Shapes.h>
 #include <gf/Vector.h>
 
-namespace ggj {
+namespace pem {
   namespace {
     gf::Color4f computeRandomStarColor(gf::Random random, float freq) {
       if (random.computeBernoulli(freq)) {

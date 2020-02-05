@@ -1,5 +1,5 @@
-#ifndef TMPGAME_CONNECTION_SCENE_H
-#define TMPGAME_CONNECTION_SCENE_H
+#ifndef PEM_CONNECTION_SCENE_H
+#define PEM_CONNECTION_SCENE_H
 
 #include <gf/Scene.h>
 #include <gf/StaticString.h>
@@ -7,7 +7,7 @@
 #include "BackgroundEntity.h"
 #include "ClientNetwork.h"
 
-namespace ggj {
+namespace pem {
 
   struct Scenes;
 
@@ -35,4 +35,4 @@ namespace ggj {
 
 }
 
-#endif // TMPGAME_INTRO_SCENE_H
+#endif // PEM_INTRO_SCENE_H

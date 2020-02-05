@@ -1,5 +1,5 @@
-#ifndef TMPGAME_GAME_SCENE_H
-#define TMPGAME_GAME_SCENE_H
+#ifndef PEM_GAME_SCENE_H
+#define PEM_GAME_SCENE_H
 
 #include <gf/ResourceManager.h>
 #include <gf/Scene.h>
@@ -16,7 +16,7 @@
 #include "ClientPlayerData.h"
 #include "VoteEntity.h"
 
-namespace ggj {
+namespace pem {
 
   struct Scenes;
 
@@ -60,4 +60,4 @@ namespace ggj {
 
 }
 
-#endif // TMPGAME_GAME_SCENE_H
+#endif // PEM_GAME_SCENE_H

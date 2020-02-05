@@ -1,5 +1,5 @@
-#ifndef TMPGAME_SERVER_GROUP_H
-#define TMPGAME_SERVER_GROUP_H
+#ifndef PEM_SERVER_GROUP_H
+#define PEM_SERVER_GROUP_H
 
 #include <cstdint>
 #include <vector>
@@ -11,7 +11,7 @@
 
 #include "ServerPlayer.h"
 
-namespace ggj {
+namespace pem {
 
   class ServerGroup {
   public:
@@ -70,4 +70,4 @@ namespace ggj {
 
 }
 
-#endif // TMPGAME_SERVER_GROUP_H
+#endif // PEM_SERVER_GROUP_H

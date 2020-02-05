@@ -1,5 +1,5 @@
-#ifndef TMPGAME_SCENES_H
-#define TMPGAME_SCENES_H
+#ifndef PEM_SCENES_H
+#define PEM_SCENES_H
 
 #include <gf/SceneManager.h>
 #include <gf/ResourceManager.h>
@@ -13,7 +13,7 @@
 #include "LobbyScene.h"
 #include "RoomScene.h"
 
-namespace ggj {
+namespace pem {
 
   struct Scenes : public gf::SceneManager {
     Scenes(ClientNetwork& network, gf::Path searchDir);
@@ -43,4 +43,4 @@ namespace ggj {
 
 }
 
-#endif // TMPGAME_SCENES_H
+#endif // PEM_SCENES_H

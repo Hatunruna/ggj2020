@@ -1,9 +1,9 @@
-#ifndef TMPGAME_IMGUI_CONSTANTS_H
-#define TMPGAME_IMGUI_CONSTANTS_H
+#ifndef PEM_IMGUI_CONSTANTS_H
+#define PEM_IMGUI_CONSTANTS_H
 
 #include <imgui.h>
 
-namespace ggj {
+namespace pem {
 
   constexpr ImGuiWindowFlags DefaultWindowFlags = ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings;
   const ImVec2 DefaultButtonSize = { 170.0f, 40.0f };
@@ -11,4 +11,4 @@ namespace ggj {
 
 }
 
-#endif // TMPGAME_IMGUI_CONSTANTS_H
+#endif // PEM_IMGUI_CONSTANTS_H

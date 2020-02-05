@@ -1,6 +1,6 @@
-#ifndef TMPGAME_CONFIG_H
-#define TMPGAME_CONFIG_H
+#ifndef PEM_CONFIG_H
+#define PEM_CONFIG_H
 
-#define TMPGAME_DATA_DIR "@TMPGAME_DATA_DIR@"
+#define PEM_DATA_DIR "@PEM_DATA_DIR@"
 
-#endif // TMPGAME_CONFIG_H
+#endif // PEM_CONFIG_H

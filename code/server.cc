@@ -7,16 +7,16 @@
 #include "bits/server/PemFactory.h"
 
 int main() {
-  ggj::PemFactory factory;
+  pem::PemFactory factory;
 
-  ggj::GameSettings settings;
+  pem::GameSettings settings;
   settings.teamsMin = 1;
   settings.teamsMax = 1;
   settings.playersByTeamMin = 4;
   settings.playersByTeamMax = 8;
 
   gf::Random random;
-  ggj::ServerNetwork network(random, factory, settings);
+  pem::ServerNetwork network(random, factory, settings);
   network.run();
   return EXIT_SUCCESS;
 }

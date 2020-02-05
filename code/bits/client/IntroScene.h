@@ -1,5 +1,5 @@
-#ifndef TMPGAME_INTRO_SCENE_H
-#define TMPGAME_INTRO_SCENE_H
+#ifndef PEM_INTRO_SCENE_H
+#define PEM_INTRO_SCENE_H
 
 #include <gf/ResourceManager.h>
 #include <gf/Scene.h>
@@ -7,7 +7,7 @@
 #include "BackgroundEntity.h"
 #include "MenuEntity.h"
 
-namespace ggj {
+namespace pem {
 
   struct Scenes;
 
@@ -33,4 +33,4 @@ namespace ggj {
 
 }
 
-#endif // TMPGAME_INTRO_SCENE_H
+#endif // PEM_INTRO_SCENE_H

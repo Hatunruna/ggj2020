@@ -1,5 +1,5 @@
-#ifndef TMPGAME_GAME_FACTORY_H
-#define TMPGAME_GAME_FACTORY_H
+#ifndef PEM_GAME_FACTORY_H
+#define PEM_GAME_FACTORY_H
 
 #include <memory>
 
@@ -7,7 +7,7 @@
 
 #include "GameInstance.h"
 
-namespace ggj {
+namespace pem {
 
   class GameFactory {
   public:
@@ -17,4 +17,4 @@ namespace ggj {
 
 }
 
-#endif // TMPGAME_GAME_FACTORY_H
+#endif // PEM_GAME_FACTORY_H

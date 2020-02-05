@@ -1,12 +1,12 @@
-#ifndef TMPGAME_HELP_SCENE_H
-#define TMPGAME_HELP_SCENE_H
+#ifndef PEM_HELP_SCENE_H
+#define PEM_HELP_SCENE_H
 
 #include <gf/ResourceManager.h>
 #include <gf/Scene.h>
 
 #include "BackgroundEntity.h"
 
-namespace ggj {
+namespace pem {
 
   struct Scenes;
 
@@ -29,4 +29,4 @@ namespace ggj {
 
 }
 
-#endif // TMPGAME_HELP_SCENE_H
+#endif // PEM_HELP_SCENE_H

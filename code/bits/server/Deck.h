@@ -1,5 +1,5 @@
-#ifndef TMPGAME_DECK_H
-#define TMPGAME_DECK_H
+#ifndef PEM_DECK_H
+#define PEM_DECK_H
 
 #include <cstdint>
 #include <vector>
@@ -8,7 +8,7 @@
 
 #include "common/PemTypes.h"
 
-namespace ggj {
+namespace pem {
 
   class Deck {
   public:
@@ -26,4 +26,4 @@ namespace ggj {
 
 }
 
-#endif // TMPGAME_DECK_H
+#endif // PEM_DECK_H

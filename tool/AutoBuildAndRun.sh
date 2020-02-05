@@ -2,6 +2,13 @@
 # !!!!!! Add this script into your build dir !!!!!!
 trap ctrl_c INT
 
+if [ $# -eq 1 ]
+then
+  NBPROC=$1
+else
+  NBPROC=1
+fi
+
 ctrl_c() {
   echo "** Trapped CTRL-C"
   echo "killing Server and client ..."
@@ -22,31 +29,31 @@ while true
 do
   fuser 2020/tcp
   echo "Compiling ..."
-  make -j 8
+  make -j $NBPROC
   echo "Running Server..."
-  ./tmpgame-server > server.log 2>&1 &
+  ./pax_et_mors_server > server.log 2>&1 &
   server=$!
 
   echo "and x clients..."
-  ./tmpgame --debug client1 > client1.log 2>&1 &
+  ./pax_et_mors --debug client1 > client1.log 2>&1 &
   client1=$!
   sleep 1
-  ./tmpgame --debug client2 > client2.log 2>&1 &
+  ./pax_et_mors --debug client2 > client2.log 2>&1 &
   client2=$!
   sleep 1
-  ./tmpgame --debug client3 > client3.log 2>&1 &
+  ./pax_et_mors --debug client3 > client3.log 2>&1 &
   client3=$!
   sleep 1
-  ./tmpgame --debug client4 > client4.log 2>&1 &
+  ./pax_et_mors --debug client4 > client4.log 2>&1 &
   client4=$!
   sleep 1
-  #./tmpgame &
+  #./pax_et_mors &
   #client5=$!
-  #./tmpgame &
+  #./pax_et_mors &
   #client6=$!
-  #./tmpgame &
+  #./pax_et_mors &
   #client7=$!
-  #./tmpgame &
+  #./pax_et_mors &
   #client8=$!
   while true
   do

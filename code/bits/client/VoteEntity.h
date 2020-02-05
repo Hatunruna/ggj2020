@@ -1,5 +1,5 @@
-#ifndef TMPGAME_VOTE_ENTITY_H
-#define TMPGAME_VOTE_ENTITY_H
+#ifndef PEM_VOTE_ENTITY_H
+#define PEM_VOTE_ENTITY_H
 
 #include <map>
 #include <string>
@@ -13,7 +13,7 @@
 
 #include "ClientPlayerData.h"
 
-namespace ggj {
+namespace pem {
   class VoteEntity: public gf::Entity {
   public:
     VoteEntity(gf::ResourceManager &resources);
@@ -37,4 +37,4 @@ namespace ggj {
   };
 }
 
-#endif // TMPGAME_VOTE_ENTITY_H
+#endif // PEM_VOTE_ENTITY_H

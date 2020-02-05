@@ -1,5 +1,5 @@
-#ifndef TMPGAME_CLIENT_NETWORK_H
-#define TMPGAME_CLIENT_NETWORK_H
+#ifndef PEM_CLIENT_NETWORK_H
+#define PEM_CLIENT_NETWORK_H
 
 #include <atomic>
 #include <mutex>
@@ -10,7 +10,7 @@
 
 #include "common/ProtocolBytes.h"
 
-namespace ggj {
+namespace pem {
 
   class ClientNetwork {
   public:
@@ -42,4 +42,4 @@ namespace ggj {
 
 }
 
-#endif // TMPGAME_CLIENT_NETWORK_H
+#endif // PEM_CLIENT_NETWORK_H

@@ -8,7 +8,7 @@
 #include <gf/StringUtils.h>
 #include <gf/Text.h>
 
-namespace ggj {
+namespace pem {
   static constexpr gf::Vector2i CardTextureSize = { 400, 500 };
   static constexpr float TextureRatio = static_cast<float>(CardTextureSize.x) / static_cast<float>(CardTextureSize.y);
   static constexpr float RelativeCardHeight = 0.30f;

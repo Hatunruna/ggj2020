@@ -4,7 +4,7 @@
 
 #include <gf/Unused.h>
 
-namespace ggj {
+namespace pem {
   ServerGroup::~ServerGroup() = default;
 
   void ServerGroup::addPlayer(ServerPlayer& player) {

@@ -1,5 +1,5 @@
-#ifndef TMPGAME_MENU_ENTITY_H
-#define TMPGAME_MENU_ENTITY_H
+#ifndef PEM_MENU_ENTITY_H
+#define PEM_MENU_ENTITY_H
 
 #include <gf/Entity.h>
 #include <gf/Font.h>
@@ -7,7 +7,7 @@
 #include <gf/WidgetContainer.h>
 #include <gf/Widgets.h>
 
-namespace ggj {
+namespace pem {
 
   enum class MenuChoice {
     None,
@@ -37,4 +37,4 @@ namespace ggj {
 
 }
 
-#endif // TMPGAME_MENU_ENTITY_H
+#endif // PEM_MENU_ENTITY_H

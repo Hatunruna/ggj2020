@@ -1,10 +1,10 @@
-#ifndef TMPGAME_CLIENT_PLAYER_DATA_H
-#define TMPGAME_CLIENT_PLAYER_DATA_H
+#ifndef PEM_CLIENT_PLAYER_DATA_H
+#define PEM_CLIENT_PLAYER_DATA_H
 
 #include <gf/Id.h>
 #include <string>
 
-namespace ggj
+namespace pem
 {
     struct ClientPlayerData {
       gf::Id id;
@@ -15,4 +15,4 @@ namespace ggj
 }
 
 
-#endif // TMPGAME_CLIENT_PLAYER_DATA_H
+#endif // PEM_CLIENT_PLAYER_DATA_H

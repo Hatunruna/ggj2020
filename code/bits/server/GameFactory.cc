@@ -1,6 +1,6 @@
 #include "GameFactory.h"
 
-namespace ggj {
+namespace pem {
 
   GameFactory::~GameFactory() = default;
 

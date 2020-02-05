@@ -8,7 +8,7 @@
 
 #include "common/Protocol.h"
 
-namespace ggj {
+namespace pem {
 
   ServerNetwork::ServerNetwork(gf::Random& random, GameFactory& factory, const GameSettings& settings)
   : m_random(random)

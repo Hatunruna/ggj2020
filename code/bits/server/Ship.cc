@@ -9,7 +9,7 @@
 
 #include <gf/Log.h>
 
-namespace ggj {
+namespace pem {
 
   namespace {
     ShipPlace createPlace(PlaceState state){

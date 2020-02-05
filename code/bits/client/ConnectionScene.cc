@@ -13,7 +13,7 @@
 
 #include "Scenes.h"
 
-namespace ggj {
+namespace pem {
 
   ConnectionScene::ConnectionScene(Scenes& scenes, gf::ResourceManager& resources, ClientNetwork& network)
   : gf::Scene(InitialSize)
@@ -22,6 +22,8 @@ namespace ggj {
   , m_connectionAsked(false)
   , m_backgorund(resources)
   {
+    setClearColor(gf::Color::Black);
+
     m_hostnameBuffer = "localhost";
     m_nameBuffer = "toto";
 
