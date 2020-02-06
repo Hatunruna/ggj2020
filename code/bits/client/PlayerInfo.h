@@ -7,31 +7,16 @@
 
 #include "common/PemProtocol.h"
 
+#include "GameModel.h"
+
 namespace pem {
   class PlayerInfo: public gf::Entity {
   public:
-    PlayerInfo(gf::ResourceManager& resources);
+    PlayerInfo(gf::ResourceManager& resources, GameModel &model);
+
+    void updateSelectedCard(const gf::Vector2f &mouseCoords, const gf::Vector2f& screenSize);
 
     void render(gf::RenderTarget& target, const gf::RenderStates& states) override;
-	  CardType getCardType(const gf::Vector2f& screenPosition, const gf::Vector2f& screenSize);
-
-    void showCards(bool show = true) {
-      m_showCards = show;
-    }
-
-    void resetCardSelection() {
-      m_selectedCard = -1;
-    }
-
-    void replaceCard(CardType type);
-
-    void initializeHand(const std::array<CardType, MaxCards>& cards);
-
-    void setRole(CrewType role) {
-      m_role = role;
-    }
-
-    void updateMission(int turn, float distance);
 
   private:
     gf::RectF getCardBounds(gf::Vector2f screeSize, std::size_t i) const;
@@ -40,12 +25,8 @@ namespace pem {
     gf::Font &m_font;
     gf::Texture &m_emptyCardTexture;
     gf::TextureAtlas m_atlas;
-    CrewType m_role;
-    std::array<CardType, MaxCards> m_cards;
-    int m_selectedCard;
-    bool m_showCards;
-    float m_distance;
-    int m_turn;
+
+    GameModel &m_model;
   };
 
 }

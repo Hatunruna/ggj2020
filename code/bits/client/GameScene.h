@@ -8,12 +8,12 @@
 #include <SFML/Audio.hpp>
 
 #include "ClientNetwork.h"
+#include "GameChat.h"
+#include "GameModel.h"
+#include "PlayerInfo.h"
 #include "ShipEntity.h"
 #include "StarsEntity.h"
-#include "PlayerInfo.h"
 #include "ViewAdaptator.h"
-#include "GameChat.h"
-#include "ClientPlayerData.h"
 #include "VoteEntity.h"
 
 namespace pem {
@@ -34,6 +34,7 @@ namespace pem {
     void doUpdate(gf::Time time) override;
     void doRender(gf::RenderTarget &target, const gf::RenderStates &states) override;
 
+    void resetGameModel();
     void resetTurn();
 
   private:
@@ -42,16 +43,15 @@ namespace pem {
 
     gf::Action m_escapeAction;
 
-    std::map<gf::Id, ClientPlayerData> m_players;
-    GamePhase m_gamePhase;
-    PlaceType m_placeTypeSelected;
+    GameModel m_model;
 
     StarsEntity m_stars;
     ShipEntity m_ship;
-    ViewAdaptator m_adaptator;
     PlayerInfo m_info;
     GameChat m_chat;
     VoteEntity m_vote;
+
+    ViewAdaptator m_adaptator;
 
     sf::Sound m_fx;
     sf::Sound m_ambiantBackground;

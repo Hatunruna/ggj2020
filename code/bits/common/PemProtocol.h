@@ -61,12 +61,11 @@ namespace pem {
 
   struct PemServerStartVoteForPrisoner {
     static constexpr gf::Id type = "PemServerStartVoteForPrisoner"_id;
-    std::set<gf::Id> voters;
   };
 
   template<typename Archive>
-  Archive operator|(Archive& ar, PemServerStartVoteForPrisoner& data) {
-    return ar | data.voters;
+  Archive operator|(Archive& ar, PemServerStartVoteForPrisoner&) {
+    return ar;
   }
 
   struct PemServerChoosePrisoner {

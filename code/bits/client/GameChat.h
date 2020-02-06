@@ -9,14 +9,14 @@
 #include "common/ProtocolData.h"
 
 #include "ClientNetwork.h"
+#include "GameModel.h"
 #include "LobbyChat.h"
-#include "ClientPlayerData.h"
 
 namespace pem {
 
   class GameChat: public LobbyChat {
   public:
-    GameChat(ClientNetwork& network, std::map<gf::Id, ClientPlayerData>& players);
+    GameChat(ClientNetwork& network, GameModel &model);
 
     void display(gf::Coordinates& coordinates);
 
@@ -24,7 +24,7 @@ namespace pem {
     std::string m_selectedUserName;
     gf::Id m_selectedUserId;
 
-    std::map<gf::Id, ClientPlayerData>& m_players;
+    GameModel &m_model;
 
     bool m_spawnedChat;
   };

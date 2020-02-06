@@ -7,10 +7,15 @@
 namespace pem
 {
     struct ClientPlayerData {
+      ClientPlayerData()
+      : id(gf::InvalidId)
+      , name("")
+      , jail(false)
+      {}
+
       gf::Id id;
       std::string name;
-      bool captain = false;
-      bool jail = false;
+      bool jail;
     };
 }
 

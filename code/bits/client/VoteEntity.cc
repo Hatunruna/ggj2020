@@ -7,55 +7,72 @@
 
 namespace pem {
 
-  VoteEntity::VoteEntity(gf::ResourceManager &resources)
+  VoteEntity::VoteEntity(gf::ResourceManager &resources, GameModel &model)
   : m_font(resources.getFont("DejaVuSans.ttf"))
-  , m_selected(gf::InvalidId)
-  , m_hasVoted(true) {
+  , m_model(model) {
   }
 
-  void VoteEntity::changeVoterList(const std::map<gf::Id, ClientPlayerData> &voterList) {
-    m_hasVoted = false;
-    m_selected = gf::InvalidId;
-
+  void VoteEntity::initialize() {
+    m_textWidgets.clear();
     m_container.clear();
-    m_voters.clear();
 
-    for (auto &voter: voterList) {
-      auto entry = m_voters.emplace(voter.first, gf::TextWidget(voter.second.name, m_font));
-      assert(entry.second);
+    // Add player choice
+    for (const auto &entry: m_model.players) {
+      gf::TextWidget textWidget(entry.second.name, m_font);
+      textWidget.setCallback([this, &entry](){
+        // No vote if in jail
+        if (m_model.players.at(m_model.myPlayerId).jail) {
+          return;
+        }
 
-      gf::Log::debug("Voter VoteEntity %lX\n", voter.first);
-
-      auto voterId = voter.first;
-      entry.first->second.setCallback([this, voterId](){
-        m_hasVoted = true;
-        gf::Log::debug("Voter callback %lX\n", voterId);
-        m_selected = voterId;
+        m_model.hasVoted = true;
+        m_model.voteSelection = entry.first;
       });
-      m_container.addWidget(entry.first->second);
+
+      m_textWidgets.emplace(entry.first, std::move(textWidget));
+      m_container.addWidget(m_textWidgets.at(entry.first));
     }
 
-    auto entry = m_voters.emplace(gf::InvalidId, gf::TextWidget("None Of The Above", m_font));
-    assert(entry.second);
-    entry.first->second.setCallback([this, &entry](){
-      m_hasVoted = true;
-      m_selected = gf::InvalidId;
+    // Add null vote
+    gf::TextWidget textWidget("None Of The Above", m_font);
+    textWidget.setCallback([this](){
+      // No vote if in jail
+      if (m_model.players.at(m_model.myPlayerId).jail) {
+        return;
+      }
+
+      m_model.hasVoted = true;
+      m_model.voteSelection = gf::InvalidId;
     });
-    m_container.addWidget(entry.first->second);
+
+    m_textWidgets.emplace(gf::InvalidId, std::move(textWidget));
+    m_container.addWidget(m_textWidgets.at(gf::InvalidId));
+  }
+
+  void VoteEntity::updateVoteList() {
+    // Update text widgets state
+    for (auto &entry: m_model.players) {
+      auto &textWidget = m_textWidgets.at(entry.first);
+      if (entry.second.jail) {
+        // textWidget.setDisabled(); // assert throw if uncommented
+      }
+      else {
+        textWidget.setDefault();
+      }
+    }
   }
 
   void VoteEntity::pointTo(gf::Vector2f coords) {
     m_container.pointTo(coords);
   }
 
-  bool VoteEntity::triggerAction() {
+  void VoteEntity::triggerAction() {
     m_container.triggerAction();
-
-    return m_hasVoted;
   }
 
   void VoteEntity::render(gf::RenderTarget& target, const gf::RenderStates& states) {
-    if (m_hasVoted == true) {
+    bool inJail = m_model.players.at(m_model.myPlayerId).jail;
+    if (m_model.gamePhase != GamePhase::Meeting || m_model.hasVoted || inJail) {
       return;
     }
 
@@ -73,18 +90,15 @@ namespace pem {
     text.setOutlineThickness(characterSize * 0.05f);
     target.draw(text, states);
 
-    for (auto &entry: m_voters) {
-      if (entry.first == gf::InvalidId) {
-        continue;
-      }
-
+    // Display vote for all players
+    for (auto &entry: m_model.players) {
       int col = index % 2;
       int row = index / 2;
       ++index;
 
       auto position = coords.getRelativePoint({ (1.0f / 6.0f) + (col * 1.0f / 3.0f), 0.85f - row * (0.10f) });
 
-      auto &textWidget = entry.second;
+      auto &textWidget = m_textWidgets.at(entry.first);
       textWidget.setCharacterSize(characterSize);
       textWidget.setAnchor(gf::Anchor::Center);
       textWidget.setPosition(position);
@@ -92,11 +106,10 @@ namespace pem {
       textWidget.setDefaultTextOutlineColor(gf::Color::Black);
       textWidget.setSelectedTextOutlineColor(gf::Color::Black);
       textWidget.setTextOutlineThickness(characterSize * 0.05f);
-      target.draw(textWidget, states);
     }
 
     position = coords.getRelativePoint({ 1.0f / 3.0f, 0.95f });
-    auto &textWidget = m_voters.at(gf::InvalidId);
+    auto &textWidget = m_textWidgets.at(gf::InvalidId);
     textWidget.setCharacterSize(characterSize);
     textWidget.setAnchor(gf::Anchor::Center);
     textWidget.setPosition(position);
@@ -104,7 +117,8 @@ namespace pem {
     textWidget.setDefaultTextOutlineColor(gf::Color::Black);
     textWidget.setSelectedTextOutlineColor(gf::Color::Black);
     textWidget.setTextOutlineThickness(characterSize * 0.05f);
-    target.draw(textWidget, states);
+
+    m_container.render(target, states);
   }
 
 }

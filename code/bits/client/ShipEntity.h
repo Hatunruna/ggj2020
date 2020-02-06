@@ -1,36 +1,37 @@
 #ifndef PEM_SHIP_ENTITY_H
 #define PEM_SHIP_ENTITY_H
 
+#include <gf/Animation.h>
 #include <gf/Entity.h>
 #include <gf/ResourceManager.h>
 #include <gf/Shapes.h>
 
-#include <gf/Animation.h>
 #include "common/PemTypes.h"
+
+#include "GameModel.h"
 
 namespace pem {
   class ShipEntity: public gf::Entity {
   public:
-    ShipEntity(gf::ResourceManager& resources);
+    ShipEntity(gf::ResourceManager& resources, GameModel &model);
 
-    PlaceType getPlaceType(const gf::Vector2f& position) const;
-    void updateMouseCoords(const gf::Vector2i& coords);
-    void selectPlace(PlaceType place);
-    void setPlaceState(PlaceType place, bool state);
-    void stopDrawWarnings();
+    void updateMouseCoords(const gf::Vector2f& coords);
+    void updateSelectedPlace();
 
     void update(gf::Time time) override;
     void render(gf::RenderTarget& target, const gf::RenderStates& states) override;
 
   private:
     gf::Font &m_font;
+
     gf::Texture &m_shipTexture;
     gf::Texture &m_engineTexture;
+
     gf::Animation m_engineAnimation;
-    gf::RectangleShape m_rect;
-    gf::Vector2i m_mouseCoords;
-    PlaceType m_selectedPlace;
-    bool m_drawWarning;
+
+    gf::Vector2f m_mouseCoords;
+
+    GameModel &m_model;
   };
 }
 

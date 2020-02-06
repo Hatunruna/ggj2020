@@ -237,12 +237,8 @@ namespace pem {
     broadcast(update);
 
     resetVote();
+
     PemServerStartVoteForPrisoner vote;
-    for (const auto &member: m_members) {
-      if (member.second.prison == 0) {
-        vote.voters.emplace(member.first);
-      }
-    }
     broadcast(vote);
   }
 

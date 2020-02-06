@@ -58,7 +58,6 @@ namespace pem {
           gf::Log::debug("(ROOM) Receive ServerLeaveRoom\n");
           m_currentTeam = -1;
           m_scenes.replaceScene(m_scenes.lobby, m_scenes.fadeEffect, gf::seconds(0.4f));
-//           m_scenes.replaceScene(m_scenes.lobby);
           // do not poll any more message as the next messages are for the lobby
           return;
 

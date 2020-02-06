@@ -10,11 +10,11 @@
 
 namespace pem {
 
-  GameChat::GameChat(ClientNetwork& network, std::map<gf::Id, ClientPlayerData>& players)
+  GameChat::GameChat(ClientNetwork& network, GameModel &model)
   : LobbyChat(network)
   , m_selectedUserName("")
   , m_selectedUserId(gf::InvalidId)
-  , m_players(players)
+  , m_model(model)
   , m_spawnedChat(false)
   {
   }
@@ -131,7 +131,7 @@ namespace pem {
 
       if (ImGui::BeginChild("Players", size, false)) {
         // List players
-        for (auto &player: m_players) {
+        for (auto &player: m_model.players) {
           ImGui::TextColored(toColor(player.second.id), player.second.name.c_str());
 
           if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {

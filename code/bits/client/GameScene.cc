@@ -26,20 +26,18 @@ namespace pem {
   , m_scenes(scenes)
   , m_network(network)
   , m_escapeAction("Escape")
-  , m_gamePhase(GamePhase::CapitainElection)
-  , m_placeTypeSelected(PlaceType::None)
-  , m_stars(gf::RectF::fromMinMax({-3000.0f, -1000.0f}, {6000.0f, 3000.0f}))
-  , m_ship(resources)
+  , m_stars(gf::RectF::fromMinMax({-3000.0f, -1000.0f}, {6000.0f, 3000.0f})) // TODO: set the right box
+  , m_ship(resources, m_model)
+  , m_info(resources, m_model)
+  , m_chat(network, m_model)
+  , m_vote(resources, m_model)
   , m_adaptator(m_scenes.getRenderer(), getWorldView())
-  , m_info(resources)
-  , m_chat(network, m_players)
-  , m_vote(resources)
-  // , m_votedPlayer(gf::InvalidId)
-  // , m_alreadyVote(false)
-  // , m_startMoveAndPlayButton("Continue", resources.getFont("DejaVuSans.ttf"))
-  // , m_alreadyUsedMoveAndPlayButton(false)
   {
+    // Set default clear color
     setClearColor(gf::Color::Black);
+
+    // Reset game state
+    resetGameModel();
 
     // Set the view size
     setWorldViewSize(WorldSize);
@@ -67,16 +65,22 @@ namespace pem {
   }
 
   void GameScene::initialize(const std::vector<PlayerData> &players) {
+    // Reset game
+    resetGameModel();
+
     // Initialize players
     for(auto &player: players) {
       ClientPlayerData playerData;
       playerData.id = player.id;
       playerData.name = player.name;
-      m_players.emplace(player.id, playerData);
+      m_model.players.emplace(player.id, playerData);
     }
 
     // Set game phase
-    m_gamePhase = GamePhase::Action;
+    m_model.gamePhase = GamePhase::Action;
+
+    // Initialize vote
+    m_vote.initialize();
 
     // Play songs
     gBackgroundMusic.stop();
@@ -105,7 +109,7 @@ namespace pem {
   void GameScene::doProcessEvent(gf::Event &event) {
     m_adaptator.processEvent(event);
 
-    switch (m_gamePhase) {
+    switch (m_model.gamePhase) {
       case GamePhase::Action: {
         // On left click
         if (event.type == gf::EventType::MouseButtonPressed && event.mouseButton.button == gf::MouseButton::Left) {
@@ -113,12 +117,19 @@ namespace pem {
           gf::Vector2f worldCoords = m_scenes.getRenderer().mapPixelToCoords(event.mouseButton.coords, getWorldView());
           auto screenSize = m_scenes.getRenderer().getSize();
 
-          // Get the clicked location
           // std::printf("      polygon.addPoint({ %gf, %gf });\n", worldCoords.x, worldCoords.y); // Debug print for hitbox
-          PlaceType clickedPlaceType = m_ship.getPlaceType(worldCoords);
-          if (clickedPlaceType != PlaceType::None) {
+
+          // Update player selection
+          PlaceType oldPlace = m_model.selectedPlace;
+          m_ship.updateMouseCoords(worldCoords);
+          m_ship.updateSelectedPlace();
+
+          // If a selected
+          if (m_model.selectedPlace != PlaceType::None && m_model.selectedPlace != oldPlace) {
             // Unable to move when we are in prison
-            if (m_players[m_scenes.myPlayerId].jail) {
+            if (m_model.players.at(m_scenes.myPlayerId).jail) {
+              m_model.selectedPlace = PlaceType::Prison;
+
               MessageData message;
               message.origin = gf::InvalidId;
               message.author = "server";
@@ -128,11 +139,7 @@ namespace pem {
               break;
             }
 
-            // TODO handle clickedPlaceType
-            gf::Log::debug("(GAME) Clicked place: %s\n", placeTypeString(clickedPlaceType).c_str());
-            m_placeTypeSelected = clickedPlaceType;
-            m_ship.selectPlace(clickedPlaceType);
-
+            gf::Log::debug("(GAME) Clicked place: %s\n", placeTypeString(m_model.selectedPlace).c_str());
             m_fx.setBuffer(gResourceManager().getSound("audio/foot_steps.ogg"));
             m_fx.setVolume(FxsVolume);
             m_fx.play();
@@ -140,21 +147,21 @@ namespace pem {
 
           // Check if a card was selected after select a place
           // TODO: Replace by SpriteWidget
-          if (m_placeTypeSelected != PlaceType::None) {
+          if (m_model.selectedPlace != PlaceType::None) {
             // Get the clicked card
-            CardType clickedCardType = m_info.getCardType(mouseCoords, screenSize);
-            if (clickedCardType == CardType::None) {
+            m_info.updateSelectedCard(mouseCoords, screenSize);
+            if (m_model.selectedCard == -1) {
               break;
             }
 
             // Can select only release type card when in jail
-            if (m_players[m_scenes.myPlayerId].jail && clickedCardType != CardType::Release) {
-              m_info.resetCardSelection();
+            if (m_model.players.at(m_scenes.myPlayerId).jail && m_model.cards[m_model.selectedCard] != CardType::Release) {
+              m_model.selectedCard = -1;
 
               MessageData message;
               message.origin = gf::InvalidId;
               message.author = "server";
-              message.content = "You can only select \"Release\" type card when you are in jail!";
+              message.content = "You can only select \"Release\" card when you are in jail!";
 
               m_chat.appendMessage(std::move(message));
               break;
@@ -162,20 +169,17 @@ namespace pem {
 
             // Send the action to the server
             PemClientMoveAndPlay moveAndPlay;
-            moveAndPlay.place = m_placeTypeSelected;
-            moveAndPlay.card = clickedCardType;
-            gf::Log::debug("(GAME) Action is: %s -> %s\n", placeTypeString(m_placeTypeSelected).c_str(), cardTypeString(clickedCardType).c_str());
+            moveAndPlay.place = m_model.selectedPlace;
+            moveAndPlay.card = m_model.cards[m_model.selectedCard];
+            gf::Log::debug("(GAME) Action is: %s -> %s\n", placeTypeString(moveAndPlay.place).c_str(), cardTypeString(moveAndPlay.card).c_str());
             m_network.send(moveAndPlay);
 
             // Pass to the next phase
-            m_gamePhase = GamePhase::Resolution;
-
-            // Unselect the place
-            m_placeTypeSelected = PlaceType::None;
+            m_model.gamePhase = GamePhase::Resolution;
 
             // Play fx sound if avaible
             bool playFx = true;
-            switch (clickedCardType) {
+            switch (moveAndPlay.card) {
               case CardType::Block: {
                 m_fx.setBuffer(gResourceManager().getSound("audio/block.ogg"));
                 break;
@@ -234,7 +238,7 @@ namespace pem {
         }
         else if (event.type == gf::EventType::MouseMoved) {
           // Update mouse location for ship entity if not in jail
-          if (!(m_players[m_scenes.myPlayerId].jail)) {
+          if (!(m_model.players.at(m_scenes.myPlayerId).jail)) {
             gf::Vector2f worldCoords = m_scenes.getRenderer().mapPixelToCoords(event.mouseCursor.coords, getWorldView());
             m_ship.updateMouseCoords(worldCoords);
           }
@@ -249,9 +253,12 @@ namespace pem {
           break;
 
         case gf::EventType::MouseButtonPressed:
+          // Update vote entity
           m_vote.pointTo(m_scenes.getRenderer().mapPixelToCoords(event.mouseButton.coords));
-          if (m_vote.triggerAction()) {
-            auto id = m_vote.getSelectedPlayer();
+          m_vote.triggerAction();
+
+          if (m_model.hasVoted) {
+            auto id = m_model.voteSelection;
             gf::Log::debug("(GAME) voted for %lX\n", id);
             PemClientChoosePrisoner vote;
             vote.member = id;
@@ -307,8 +314,9 @@ namespace pem {
           else{
             gf::Log::debug("(GAME) Role is Protector\n");
           }
-          m_info.setRole(data.role);
-          m_info.initializeHand(data.cards);
+
+          m_model.role = data.role;
+          m_model.cards = data.cards;
           break;
         }
 
@@ -324,7 +332,7 @@ namespace pem {
 
           auto data = bytes.as<PemServerUpdateShip>();
           for (auto &entry: data.states) {
-            m_ship.setPlaceState(entry.first, entry.second);
+            m_model.placeLocations.at(entry.first).working = entry.second;
           }
 
           break;
@@ -332,18 +340,10 @@ namespace pem {
 
         case PemServerStartVoteForPrisoner::type: {
           gf::Log::debug("(GAME) receive PemServerStartVoteForPrisoner\n");
-          auto data = bytes.as<PemServerStartVoteForPrisoner>();
 
-          m_gamePhase = GamePhase::Meeting;
-          m_info.showCards(false);
+          m_model.gamePhase = GamePhase::Meeting;
 
-          std::map<gf::Id, ClientPlayerData> voters;
-          for (const auto &id: data.voters) {
-            gf::Log::debug("Voter %lX\n", id);
-            voters.emplace(id, m_players.at(id));
-          }
-
-          m_vote.changeVoterList(voters);
+          m_vote.updateVoteList();
           break;
         }
 
@@ -355,14 +355,16 @@ namespace pem {
           message.origin = gf::InvalidId;
           message.author = "server";
 
-          auto it = m_players.find(data.member);
-          if (it != m_players.end()) {
+          auto it = m_model.players.find(data.member);
+          if (it != m_model.players.end()) {
             it->second.jail = true;
             message.content = it->second.name + " is now jailed";
           } else {
             message.content = "No one has been in prison";
           }
           m_chat.appendMessage(std::move(message));
+
+          m_vote.updateVoteList();
           break;
         }
 
@@ -378,7 +380,7 @@ namespace pem {
           // status of all player.
           // So the question is: Do we need to know the status of all players or just our own?
 
-          m_players.at(data.prisoner).jail = false;
+          m_model.players.at(data.prisoner).jail = false;
 
           MessageData message;
           message.origin = gf::InvalidId;
@@ -388,16 +390,18 @@ namespace pem {
               message.content = "You were released from prison";
             }
             else {
-              auto member = m_players.at(data.deliverer);
+              auto member = m_model.players.at(data.deliverer);
               message.content = member.name + " released you from prison";
             }
           }
           else {
-            auto member = m_players.at(data.prisoner);
+            auto member = m_model.players.at(data.prisoner);
             message.content = member.name + " was released from prison";
           }
 
           m_chat.appendMessage(std::move(message));
+
+          m_vote.updateVoteList();
           break;
         }
 
@@ -476,11 +480,11 @@ namespace pem {
           gf::Log::debug("(GAME) receive PemServerMissionStatus\n");
           auto data = bytes.as<PemServerMissionStatus>();
 
-          m_info.updateMission(data.turn, data.distance);
+          m_model.turn = data.turn;
+          m_model.distance = data.distance;
 
           if (data.distance <= 0.0f || data.turn <= 0) {
-            m_gamePhase = GamePhase::CapitainElection;
-            m_info.showCards(false);
+            m_model.gamePhase = GamePhase::CapitainElection;
           }
           break;
         }
@@ -491,76 +495,6 @@ namespace pem {
   void GameScene::doRender(gf::RenderTarget &target, const gf::RenderStates &states) {
     gf::Coordinates coordinates(target);
 
-    // // Election window
-    // gf::Vector2f electionWindowSize = coordinates.getRelativeSize({ 0.25f, 0.28f });
-    // gf::Vector2f electionWindowPos = coordinates.getCenter();
-
-    // ImGui::NewFrame();
-    // if (m_gamePhase == GamePhase::CapitainElection && !m_alreadyVote) {
-    //   ImGui::SetNextWindowSize(ImVec2(electionWindowSize.width, electionWindowSize.height));
-    //   ImGui::SetNextWindowPos(ImVec2(electionWindowPos.x, electionWindowPos.y), 0, ImVec2(0.5f, 0.5f));
-
-    //   if (ImGui::Begin("Vote for your Capitain", nullptr, DefaultWindowFlags)) {
-    //     // List players
-    //     unsigned i = 0;
-    //     for (auto &player: m_players) {
-    //       std::string name = std::to_string(i) + ". " + player.second.name;
-    //       if (ImGui::Selectable(name.c_str(), m_votedPlayer == player.second.id)) {
-    //         m_votedPlayer = player.second.id;
-    //       }
-    //       ++i;
-    //     }
-    //     if (ImGui::Selectable("None Of The Above", m_votedPlayer == gf::InvalidId)) {
-    //       m_votedPlayer = gf::InvalidId;
-    //     }
-
-    //     if (ImGui::Button("Vote", ImVec2(ImGui::GetWindowWidth(), DefaultButtonSize.y))) {
-    //       gf::Log::debug("(GAME) Vote for: %" PRIX64 "\n", m_votedPlayer);
-
-    //       PemClientVoteForCaptain vote;
-    //       vote.member = m_votedPlayer;
-    //       m_network.send(vote);
-
-    //       m_alreadyVote = true;
-    //     }
-    //   }
-    //   ImGui::End();
-    // }
-
-    // //Prisoner vote window
-    // if (m_gamePhase == GamePhase::Meeting && !m_alreadyVote) {
-    //   ImGui::SetNextWindowSize(ImVec2(electionWindowSize.width, electionWindowSize.height));
-    //   ImGui::SetNextWindowPos(ImVec2(electionWindowPos.x, electionWindowPos.y), 0, ImVec2(0.5f, 0.5f));
-
-    //   if (ImGui::Begin("Vote for the next prisoner", nullptr, DefaultWindowFlags)) {
-    //     // List players
-    //     unsigned i = 0;
-    //     for (auto &player: m_players) {
-    //       if (!(player.second.jail)) {
-    //         std::string name = std::to_string(i) + ". " + player.second.name;
-    //         if (ImGui::Selectable(name.c_str(), m_votedPlayer == player.second.id)) {
-    //           m_votedPlayer = player.second.id;
-    //         }
-    //         ++i;
-    //       }
-    //     }
-    //     if (ImGui::Selectable("None Of The Above", m_votedPlayer == gf::InvalidId)) {
-    //       m_votedPlayer = gf::InvalidId;
-    //     }
-
-    //     if (ImGui::Button("Vote", ImVec2(ImGui::GetWindowWidth(), DefaultButtonSize.y))) {
-    //       gf::Log::debug("(GAME) Vote for: %" PRIX64 "\n", m_votedPlayer);
-
-    //       PemClientChoosePrisoner vote;
-    //       vote.member = m_votedPlayer;
-    //       m_network.send(vote);
-
-    //       m_alreadyVote = true;
-    //     }
-    //   }
-    //   ImGui::End();
-    // }
-
     // Chat window
     m_chat.display(coordinates);
 
@@ -568,35 +502,44 @@ namespace pem {
     renderWorldEntities(target, states);
     renderHudEntities(target, states);
 
-    // //Start move and play button
-    // if (m_gamePhase == GamePhase::CapitainElection && m_players[m_scenes.myPlayerId].captain) {
-    //   float characterSize = coordinates.getRelativeCharacterSize(0.05f);
-    //   m_startMoveAndPlayButton.setCharacterSize(characterSize);
-    //   m_startMoveAndPlayButton.setPosition(coordinates.getRelativePoint({0.5f, 0.05f}));
-    //   m_startMoveAndPlayButton.setTextOutlineThickness(characterSize * 0.05f);
-
-    //   target.draw(m_startMoveAndPlayButton, states);
-    // }
-
     ImGui::Render();
     ImGui_ImplGF_RenderDrawData(ImGui::GetDrawData());
   }
 
+  void GameScene::resetGameModel() {
+    m_model.myPlayerId = m_scenes.myPlayerId;
+    m_model.players.clear();
+    m_model.gamePhase = GamePhase::Action;
+    m_model.initializePlaceLocations();
+    m_model.selectedPlace = PlaceType::None;
+    m_model.selectedCard = -1;
+
+    // Must be initialize by the server
+    m_model.distance = -1.0f;
+    m_model.turn = -1;
+
+    m_model.hasVoted = false;
+    m_model.voteSelection = gf::InvalidId;
+  }
+
   void GameScene::resetTurn() {
     // Change the game phase
-    m_gamePhase = GamePhase::Action;
-    m_info.resetCardSelection();
-    m_info.showCards();
-    m_ship.stopDrawWarnings();
+    m_model.gamePhase = GamePhase::Action;
+
+    // Unselect cards
+    m_model.selectedCard = -1;
 
     // A player in jail stay in jail
-    if (m_players[m_scenes.myPlayerId].jail) {
-      m_placeTypeSelected = PlaceType::Prison;
+    if (m_model.players.at(m_scenes.myPlayerId).jail) {
+      m_model.selectedPlace = PlaceType::Prison;
     }
     else {
-      m_placeTypeSelected = PlaceType::None;
+      m_model.selectedPlace = PlaceType::None;
     }
-    m_ship.selectPlace(m_placeTypeSelected);
+
+    // Reset vote
+    m_model.hasVoted = false;
+    m_model.voteSelection = gf::InvalidId;
 
     // Tell to the player
     MessageData message;
