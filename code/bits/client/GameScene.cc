@@ -467,14 +467,15 @@ namespace pem {
         //   break;
         // }
 
-        // case PemServerUpdateHand::type: {
-        //   gf::Log::debug("(GAME) receive PemServerUpdateHand\n");
+        case PemServerUpdateHand::type: {
+          gf::Log::debug("(GAME) receive PemServerUpdateHand\n");
 
-        //   auto data = bytes.as<PemServerUpdateHand>();
-        //   m_info.replaceCard(data.card);
+          auto data = bytes.as<PemServerUpdateHand>();
+          assert(m_model.selectedCard != -1);
+          m_model.cards[m_model.selectedCard] = data.card;
 
-        //   break;
-        // }
+          break;
+        }
 
         case PemServerMissionStatus::type: {
           gf::Log::debug("(GAME) receive PemServerMissionStatus\n");

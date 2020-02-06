@@ -56,14 +56,14 @@ namespace pem {
           for (auto& card : data.cards) {
             card = m_deck.pickProtectorCard();
           }
-          // member.type = CrewType::Protector;
+          member.crewType = CrewType::Protector;
           break;
 
         case CrewType::Rebel:
           for (auto& card : data.cards) {
             card = m_deck.pickRebelCard();
           }
-          // member.type = CrewType::Rebel;
+          member.crewType = CrewType::Rebel;
           break;
       }
 
@@ -308,6 +308,20 @@ namespace pem {
 
     // Get the new distance
     m_distance -= m_ship.computeDistance();
+
+    // Send new card if needed
+    for (const auto &member: m_members) {
+      if (member.second.card != CardType::None) {
+        PemServerUpdateHand hand;
+        if(member.second.crewType == CrewType::Rebel) {
+          hand.card = m_deck.pickRebelCard();
+        }
+        else {
+          hand.card = m_deck.pickProtectorCard();
+        }
+        send(member.first, hand);
+      }
+    }
 
     resetTurn();
 

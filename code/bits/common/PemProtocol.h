@@ -100,15 +100,15 @@ namespace pem {
     return ar | data.distance | data.turn;
   }
 
-  // struct PemServerUpdateHand {
-  //   static constexpr gf::Id type = "PemServerUpdateHand"_id;
-  //   CardType card;
-  // };
+  struct PemServerUpdateHand {
+    static constexpr gf::Id type = "PemServerUpdateHand"_id;
+    CardType card;
+  };
 
-  // template<typename Archive>
-  // Archive operator|(Archive& ar, PemServerUpdateHand& data) {
-  //   return ar | data.card;
-  // }
+  template<typename Archive>
+  Archive operator|(Archive& ar, PemServerUpdateHand& data) {
+    return ar | data.card;
+  }
 
 
   /*
