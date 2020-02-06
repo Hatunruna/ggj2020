@@ -164,7 +164,7 @@ namespace pem {
       return entry.second.realState;
     });
 
-    return static_cast<float>(workingRoom) * 2.0f / static_cast<float>(places.size());
+    return static_cast<float>(workingRoom) / static_cast<float>(places.size());
   }
 
   // void Ship::addCrew(PlaceType type, gf::Id id){

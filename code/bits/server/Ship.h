@@ -30,7 +30,9 @@ namespace pem {
     int remainingTurn;
 
     bool operator<(const Action& other) {
-      return remainingTurn < other.remainingTurn && static_cast<uint8_t>(actionType) < static_cast<uint8_t>(other.actionType);
+      bool turnLesser = remainingTurn < other.remainingTurn;
+      bool actionLesser = remainingTurn == other.remainingTurn && static_cast<uint8_t>(actionType) < static_cast<uint8_t>(other.actionType);
+      return turnLesser || actionLesser;
     }
   };
 
