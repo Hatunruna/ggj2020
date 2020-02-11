@@ -23,7 +23,6 @@ namespace pem {
 
   private:
     gf::Font &m_font;
-    gf::Texture &m_emptyCardTexture;
     gf::TextureAtlas m_atlas;
 
     GameModel &m_model;

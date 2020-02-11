@@ -1,4 +1,4 @@
-<TextureAtlas imagePath="image/cards.png">
+<TextureAtlas imagePath="images/cards.png">
   <SubTexture name="Demine" x="800" y="1000" width="400" height="500"/>
   <SubTexture name="Examine" x="0" y="2000" width="400" height="500"/>
   <SubTexture name="Hide" x="1200" y="1000" width="400" height="500"/>

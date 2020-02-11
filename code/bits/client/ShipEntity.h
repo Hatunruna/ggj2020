@@ -10,7 +10,18 @@
 
 #include "GameModel.h"
 
+
 namespace pem {
+
+  class PlaceEntity: public gf::Entity {
+  public:
+    PlaceEntity();
+
+  private:
+    gf::Animation m_workingAnimation;
+    gf::Animation m_brokenAnimation;
+  };
+
   class ShipEntity: public gf::Entity {
   public:
     ShipEntity(gf::ResourceManager& resources, GameModel &model);
@@ -24,10 +35,14 @@ namespace pem {
   private:
     gf::Font &m_font;
 
+    // Global ship texture
     gf::Texture &m_shipTexture;
-    gf::Texture &m_engineTexture;
 
-    gf::Animation m_engineAnimation;
+    // Texture and animation for left flame
+    gf::Animation m_leftFlameWorkingAnimation;
+    gf::Animation m_leftFlameBrokenAnimation;
+    gf::Animation m_rightFlameWorkingAnimation;
+    gf::Animation m_rightFlameBrokenAnimation;
 
     gf::Vector2f m_mouseCoords;
 

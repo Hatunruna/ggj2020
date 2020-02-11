@@ -18,8 +18,8 @@ namespace pem {
 
   private:
     gf::Texture &m_texture;
-    gf::Texture &m_engineTexture;
-    gf::Animation m_engineAnimation;
+    // gf::Texture &m_engineTexture;
+    // gf::Animation m_engineAnimation;
     StarsEntity m_stars;
     bool m_displayShip;
   };

@@ -18,17 +18,14 @@ namespace {
 namespace pem {
   ShipEntity::ShipEntity(gf::ResourceManager& resources, GameModel &model)
   : m_font(resources.getFont("DejaVuSans.ttf"))
-  , m_shipTexture(resources.getTexture("image/ship.png"))
-  , m_engineTexture(resources.getTexture("image/engine.png"))
+  , m_shipTexture(resources.getTexture("images/ship.png"))
   , m_model(model) {
-    // Load sprite for animation
-    static constexpr gf::Vector2f EngineTextureSize = { 1072.0f / 6432.0f, 1521.0f / 6084.0f };
-    for (int j = 0; j < 4; ++j) {
-      for (int i = 0; i < 6; ++i) {
-        auto rectTexture = gf::RectF::fromPositionSize({ i * EngineTextureSize.width, j * EngineTextureSize.height }, EngineTextureSize);
-        m_engineAnimation.addFrame(m_engineTexture, rectTexture, gf::seconds(1.0f/25.0f));
-      }
-    }
+    // Load sprites for animations
+    constexpr gf::Vector2f FlameTextureSize = { 1051.0f / 6306.0f, 1521.0f / 6084.0f };
+    m_leftFlameWorkingAnimation.addTileset(resources.getTexture("animations/left_flame_working.png"), FlameTextureSize, { 6, 4}, 24, gf::seconds(1.0f / 25.0f));
+    m_leftFlameBrokenAnimation.addTileset(resources.getTexture("animations/left_flame_broken.png"), FlameTextureSize, { 6, 4}, 24, gf::seconds(1.0f / 25.0f));
+    m_rightFlameWorkingAnimation.addTileset(resources.getTexture("animations/right_flame_working.png"), FlameTextureSize, { 6, 4}, 24, gf::seconds(1.0f / 25.0f));
+    m_rightFlameBrokenAnimation.addTileset(resources.getTexture("animations/right_flame_broken.png"), FlameTextureSize, { 6, 4}, 24, gf::seconds(1.0f / 25.0f));
   }
 
   void ShipEntity::updateMouseCoords(const gf::Vector2f& coords) {
@@ -46,15 +43,53 @@ namespace pem {
   }
 
   void ShipEntity::update(gf::Time time) {
-    m_engineAnimation.update(time);
+    if (m_model.placeLocations.at(PlaceType::LeftEngine).working) {
+      m_leftFlameWorkingAnimation.update(time);
+    }
+    else {
+      m_leftFlameBrokenAnimation.update(time);
+    }
+
+    if (m_model.placeLocations.at(PlaceType::RightEngine).working) {
+      m_rightFlameWorkingAnimation.update(time);
+    }
+    else {
+      m_rightFlameBrokenAnimation.update(time);
+    }
   }
 
   void ShipEntity::render(gf::RenderTarget& target, const gf::RenderStates& states) {
-    gf::AnimatedSprite animation;
-    animation.setAnimation(m_engineAnimation);
-    animation.setPosition({ 625.0f, 0.0f });
-    animation.setAnchor(gf::Anchor::TopRight);
-    target.draw(animation, states);
+    // Display the right animation for left flame
+    if (m_model.placeLocations.at(PlaceType::LeftEngine).working) {
+      gf::AnimatedSprite animation;
+      animation.setAnimation(m_leftFlameWorkingAnimation);
+      animation.setPosition({ 625.0f, 0.0f });
+      animation.setAnchor(gf::Anchor::TopRight);
+      target.draw(animation, states);
+    }
+    else {
+      gf::AnimatedSprite animation;
+      animation.setAnimation(m_leftFlameBrokenAnimation);
+      animation.setPosition({ 625.0f, 0.0f });
+      animation.setAnchor(gf::Anchor::TopRight);
+      target.draw(animation, states);
+    }
+
+    // Display the right animation for right flame
+    if (m_model.placeLocations.at(PlaceType::RightEngine).working) {
+      gf::AnimatedSprite animation;
+      animation.setAnimation(m_rightFlameWorkingAnimation);
+      animation.setPosition({ 625.0f, 0.0f });
+      animation.setAnchor(gf::Anchor::TopRight);
+      target.draw(animation, states);
+    }
+    else {
+      gf::AnimatedSprite animation;
+      animation.setAnimation(m_rightFlameBrokenAnimation);
+      animation.setPosition({ 625.0f, 0.0f });
+      animation.setAnchor(gf::Anchor::TopRight);
+      target.draw(animation, states);
+    }
 
     gf::Coordinates coordinates(target);
     gf::Sprite ship(m_shipTexture);

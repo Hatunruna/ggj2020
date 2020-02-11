@@ -15,7 +15,6 @@ namespace pem {
 
   PlayerInfo::PlayerInfo(gf::ResourceManager& resources, GameModel &model)
   : m_font(resources.getFont("DejaVuSans.ttf"))
-  , m_emptyCardTexture(resources.getTexture("image/empty_card.png"))
   , m_atlas("atlas.xml", resources)
   , m_model(model) {
 
