@@ -2,5 +2,10 @@
   "left_engine_broken": {
     "size": [357, 203],
     "position": [721, 219]
+  },
+
+  "right_engine_broken": {
+    "size": [336, 208],
+    "position": [347, 661]
   }
 }
