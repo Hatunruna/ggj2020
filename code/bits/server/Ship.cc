@@ -82,6 +82,11 @@ namespace pem {
         action.remainingTurn = 2;
         break;
 
+      case CardType::Demine:
+        action.actionType = ActionType::Demine;
+        action.remainingTurn = 0;
+        break;
+
       default:
         assert(false);
         break;
@@ -113,14 +118,24 @@ namespace pem {
     for (auto &place: places) {
       // Select the action to do
       // NOTE: Useless since the vector is ordered but it's simpler
-      auto partition = std::partition(place.second.actions.begin(), place.second.actions.end(), [](const auto &action) {
-        return action.remainingTurn == 0;
-      });
+      auto partition = getLastActionIterator(place.second.actions);
 
       // Apply actions
       auto &actions = place.second.actions;
-      for (auto it = actions.begin(); it != partition; ++it) {
+      for (auto it = actions.begin(); it != partition;++it) {
         switch (it->actionType) {
+          case ActionType::Demine: {
+            gf::Log::debug("(Ship) The place '%s' has been demine\n", placeTypeString(place.first).c_str());
+            auto itRemove = std::remove_if(actions.begin(), actions.end(), [](const auto &action) {
+              return action.actionType == ActionType::Explode;
+            });
+
+            actions.erase(itRemove, actions.end());
+            // Update the last action if needed
+            partition = getLastActionIterator(place.second.actions);
+            break;
+          }
+
           case ActionType::Explode:
             gf::Log::debug("(Ship) The place '%s' has explode\n", placeTypeString(place.first).c_str());
             place.second.publicState = PlaceState::Broken;
@@ -167,83 +182,10 @@ namespace pem {
     return static_cast<float>(workingRoom) / static_cast<float>(places.size());
   }
 
-  // void Ship::addCrew(PlaceType type, gf::Id id){
-  //   places.at(type).members.insert(id);
-  // }
-
-  // void Ship::endOfActions() {
-  //   for (auto& kv : places) {
-  //     auto & place = kv.second;
-
-  //     if (place.jammed == 2) {
-  //       place.previous = place.state;
-  //     }
-
-  //     if (place.jammed > 0) {
-  //       --place.jammed;
-  //     }
-
-  //     if (place.bomb == 1) {
-  //       if (place.reinforcement == 0) {
-  //         // bomb explodes
-  //         place.state = PlaceState::Broken;
-  //       } else {
-  //         place.reinforcement = 0;
-  //       }
-  //     }
-
-  //     if (place.bomb > 0) {
-  //       --place.bomb;
-  //     }
-
-  //     if (place.reinforcement > 0) {
-  //       --place.reinforcement;
-  //     }
-
-  //     if (place.blocked > 0) {
-  //       --place.blocked;
-  //     }
-
-  //     if (place.alarm > 0) {
-  //       --place.alarm;
-  //     }
-
-  //     if (place.repair > 0) {
-  //       --place.repair;
-  //     }
-  //   }
-  // }
-
-  // std::map<PlaceType, bool> Ship::getState() {
-  //   std::map<PlaceType, bool> state;
-
-  //   for (auto& kv : places) {
-  //     auto& place = kv.second;
-
-  //     if (place.state == PlaceState::Working) {
-  //       bool res = true;
-
-  //       if (place.jammed > 0) {
-  //         res = (place.previous == PlaceState::Working);
-  //       } else if (place.alarm > 0) {
-  //         res = false;
-  //       }
-
-  //       state.emplace(kv.first, res);
-  //     } else {
-  //       assert(place.state == PlaceState::Broken);
-  //       bool res = false;
-
-  //       if (place.jammed > 0) {
-  //         res = (place.previous == PlaceState::Working);
-  //       } else if (place.repair > 0) {
-  //         res = true;
-  //       }
-
-  //       state.emplace(kv.first, res);
-  //     }
-  //   }
-
-  //   return state;
-  // }
+  std::vector<Action>::iterator Ship::getLastActionIterator(std::vector<Action> &actions) {
+    auto partition = std::partition(actions.begin(), actions.end(), [](const auto &action) {
+      return action.remainingTurn == 0;
+    });
+    return partition;
+  }
 }

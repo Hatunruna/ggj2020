@@ -21,6 +21,7 @@ namespace pem {
   };
 
   enum class ActionType : uint8_t {
+    Demine,
     Explode,
     Repair,
   };
@@ -85,6 +86,9 @@ namespace pem {
       // void endOfActions();
 
       std::map<PlaceType, ShipPlace> places;
+
+    private:
+      std::vector<Action>::iterator getLastActionIterator(std::vector<Action> &actions);
   };
 }
 
