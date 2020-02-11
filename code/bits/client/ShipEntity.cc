@@ -12,10 +12,62 @@
 #include "common/PemTypes.h"
 
 namespace {
+  gf::Vector2f getPlaceLocation(pem::PlaceType place) {
+    switch (place) {
+    case pem::PlaceType::LeftEngine:
+      return { 721.0f, 219.0f };
+      break;
 
+    default:
+      assert(false);
+      break;
+    }
+
+    return { 0.0f, 0.0f };
+  }
+
+  gf::Vector2f getPlaceSize(pem::PlaceType place) {
+    switch (place) {
+    case pem::PlaceType::LeftEngine:
+      return { 357.0f / 1428.0f, 203.0f / 1218.0f };
+      break;
+
+    default:
+      assert(false);
+      break;
+    }
+
+    return { 0.0f, 0.0f };
+  }
 }
 
 namespace pem {
+  PlaceEntity::PlaceEntity(gf::Texture& texture, GameModel &model, PlaceType place)
+  : m_model(model)
+  , m_place(place)
+  , m_position(getPlaceLocation(place)) {
+    gf::Vector2f TextureSize = getPlaceSize(place);
+    m_brokenAnimation.addTileset(texture, TextureSize, { 4, 6 }, 24, gf::seconds(1.0f / 25.0f));
+  }
+
+  void PlaceEntity::update(gf::Time time) {
+    if (!m_model.placeLocations.at(m_place).working) {
+      m_brokenAnimation.update(time);
+    }
+    else {
+      m_brokenAnimation.reset();
+    }
+  }
+
+  void PlaceEntity::render(gf::RenderTarget& target, const gf::RenderStates& states) {
+    if (!m_model.placeLocations.at(m_place).working) {
+      gf::AnimatedSprite animation;
+      animation.setAnimation(m_brokenAnimation);
+      animation.setPosition(m_position);
+      target.draw(animation, states);
+    }
+  }
+
   ShipEntity::ShipEntity(gf::ResourceManager& resources, GameModel &model)
   : m_font(resources.getFont("DejaVuSans.ttf"))
   , m_shipTexture(resources.getTexture("images/ship.png"))
@@ -26,6 +78,9 @@ namespace pem {
     m_leftFlameBrokenAnimation.addTileset(resources.getTexture("animations/left_flame_broken.png"), FlameTextureSize, { 6, 4}, 24, gf::seconds(1.0f / 25.0f));
     m_rightFlameWorkingAnimation.addTileset(resources.getTexture("animations/right_flame_working.png"), FlameTextureSize, { 6, 4}, 24, gf::seconds(1.0f / 25.0f));
     m_rightFlameBrokenAnimation.addTileset(resources.getTexture("animations/right_flame_broken.png"), FlameTextureSize, { 6, 4}, 24, gf::seconds(1.0f / 25.0f));
+
+    // Add all animations for broken place
+    m_places.emplace_back(resources.getTexture("animations/left_engine_broken.png"), m_model, PlaceType::LeftEngine);
   }
 
   void ShipEntity::updateMouseCoords(const gf::Vector2f& coords) {
@@ -45,16 +100,24 @@ namespace pem {
   void ShipEntity::update(gf::Time time) {
     if (m_model.placeLocations.at(PlaceType::LeftEngine).working) {
       m_leftFlameWorkingAnimation.update(time);
+      m_leftFlameBrokenAnimation.reset();
     }
     else {
       m_leftFlameBrokenAnimation.update(time);
+      m_leftFlameWorkingAnimation.reset();
     }
 
     if (m_model.placeLocations.at(PlaceType::RightEngine).working) {
       m_rightFlameWorkingAnimation.update(time);
+      m_rightFlameBrokenAnimation.reset();
     }
     else {
       m_rightFlameBrokenAnimation.update(time);
+      m_rightFlameWorkingAnimation.reset();
+    }
+
+    for (auto &place: m_places) {
+      place.update(time);
     }
   }
 
@@ -91,10 +154,16 @@ namespace pem {
       target.draw(animation, states);
     }
 
+    // Display the ship
     gf::Coordinates coordinates(target);
     gf::Sprite ship(m_shipTexture);
     ship.setPosition({ 0.0f, 0.0f });
     target.draw(ship, states);
+
+    // Display the broken animations
+    for (auto &place: m_places) {
+      place.render(target, states);
+    }
 
     auto drawCursor = [&target, &states, &coordinates](PlaceLocation location, gf::Color4f fillColor) {
       auto characterSize = coordinates.getRelativeCharacterSize(0.1f);

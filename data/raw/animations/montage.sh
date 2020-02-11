@@ -3,7 +3,7 @@
 if [ $# -ne 4 ]; then
   echo "Missing arguments"
   echo "Usage"
-  echo "\t$0 IMAGES_FOLDER IMAGE_SIZE TILESET_SIZE TILESET_NAME"
+  echo -e "\t$0 IMAGES_FOLDER IMAGE_SIZE TILESET_SIZE TILESET_NAME"
   exit 1
 fi
 

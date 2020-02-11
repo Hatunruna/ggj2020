@@ -3,6 +3,7 @@
 
 #include <gf/Animation.h>
 #include <gf/Entity.h>
+#include <gf/EntityContainer.h>
 #include <gf/ResourceManager.h>
 #include <gf/Shapes.h>
 
@@ -15,11 +16,17 @@ namespace pem {
 
   class PlaceEntity: public gf::Entity {
   public:
-    PlaceEntity();
+    PlaceEntity(gf::Texture& texture, GameModel &model, PlaceType place);
+
+    void update(gf::Time time) override;
+    void render(gf::RenderTarget& target, const gf::RenderStates& states) override;
 
   private:
-    gf::Animation m_workingAnimation;
+    pem::GameModel &m_model;
+
+    PlaceType m_place;
     gf::Animation m_brokenAnimation;
+    gf::Vector2f m_position;
   };
 
   class ShipEntity: public gf::Entity {
@@ -43,6 +50,9 @@ namespace pem {
     gf::Animation m_leftFlameBrokenAnimation;
     gf::Animation m_rightFlameWorkingAnimation;
     gf::Animation m_rightFlameBrokenAnimation;
+
+    // Container for all other animations
+    std::vector<PlaceEntity> m_places;
 
     gf::Vector2f m_mouseCoords;
 

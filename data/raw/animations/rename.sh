@@ -3,7 +3,7 @@
 if [ $# -ne 3 ]; then
   echo "Missing arguments"
   echo "Usage"
-  echo "\t$0 WORKING_DIR BASE_NAME NEW_BASE_NAME"
+  echo -e "\t$0 WORKING_DIR BASE_NAME NEW_BASE_NAME"
   exit 1
 fi
 
