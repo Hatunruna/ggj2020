@@ -22,6 +22,10 @@ namespace {
       return { 347.0f, 661.0f };
       break;
 
+    case pem::PlaceType::Prison:
+      return { 479.0f, 414.0f };
+      break;
+
     default:
       assert(false);
       break;
@@ -38,6 +42,10 @@ namespace {
 
     case pem::PlaceType::RightEngine:
       return { 336.0f / 1344.0f, 208.0f / 1248.0f };
+      break;
+
+    case pem::PlaceType::Prison:
+      return { 422.0f / 1688.0f, 278.0f / 1668.0f };
       break;
 
     default:
@@ -90,6 +98,7 @@ namespace pem {
     // Add all animations for broken place
     m_places.emplace_back(resources.getTexture("animations/left_engine_broken.png"), m_model, PlaceType::LeftEngine);
     m_places.emplace_back(resources.getTexture("animations/right_engine_broken.png"), m_model, PlaceType::RightEngine);
+    m_places.emplace_back(resources.getTexture("animations/prison_broken.png"), m_model, PlaceType::Prison);
   }
 
   void ShipEntity::updateMouseCoords(const gf::Vector2f& coords) {
