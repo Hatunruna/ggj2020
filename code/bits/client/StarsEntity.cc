@@ -62,9 +62,9 @@ namespace pem {
   : gf::Entity(-1)
   , m_bounds(bounds)
   {
-    m_layers.emplace_back(*this, 125.0f, 5.0f, 0.25f);
-    m_layers.emplace_back(*this, 75.0f, 4.0f, 0.25f);
-    m_layers.emplace_back(*this, 20.0f, 3.0f, 1.0f);
+    m_layers.emplace_back(*this, 800.0f, 5.0f, 0.25f);
+    m_layers.emplace_back(*this, 400.0f, 4.0f, 0.25f);
+    m_layers.emplace_back(*this, 100.0f, 3.0f, 1.0f);
   }
 
   void StarsEntity::update(gf::Time time) {

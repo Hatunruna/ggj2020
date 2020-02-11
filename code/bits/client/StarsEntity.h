@@ -24,7 +24,7 @@ namespace pem {
 
     class StarsLayer {
     private:
-      static constexpr std::size_t Count = 100;
+      static constexpr std::size_t Count = 1000;
 
     public:
       StarsLayer(StarsEntity& parent, float velocity, float radius, float whiteFreq);

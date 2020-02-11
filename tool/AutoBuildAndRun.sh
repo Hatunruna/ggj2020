@@ -68,6 +68,7 @@ do
     #kill -9 $client6
     #kill -9 $client7
     #kill -9 $client8
+    sleep 1
     kill -s 2 $server
     break
   done
