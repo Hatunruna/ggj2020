@@ -49,18 +49,6 @@ namespace pem {
     return ar | data.name;
   }
 
-  struct ServerAnswerRoom {
-    static constexpr gf::Id type = "ServerAnswerRoom"_id;
-    gf::Id room;
-    std::string name;
-    GameInstanceSettings settings;
-  };
-
-  template<typename Archive>
-  Archive operator|(Archive& ar, ServerAnswerRoom& data) {
-    return ar | data.room | data.name | data.settings;
-  }
-
   struct ServerJoinRoom {
     static constexpr gf::Id type = "ServerJoinRoom"_id;
     gf::Id room;
@@ -258,16 +246,6 @@ namespace pem {
   template<typename Archive>
   Archive operator|(Archive& ar, ClientCreateRoom& data) {
     return ar | data.name | data.settings;
-  }
-
-  struct ClientQueryRoom {
-    static constexpr gf::Id type = "ClientQueryRoom"_id;
-    gf::Id room;
-  };
-
-  template<typename Archive>
-  Archive operator|(Archive& ar, ClientQueryRoom& data) {
-    return ar | data.room;
   }
 
   struct ClientJoinRoom {
