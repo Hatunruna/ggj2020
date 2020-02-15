@@ -4,9 +4,8 @@
 #include <cstdint>
 #include <string>
 
+#include <gf/Packet.h>
 #include <gf/TcpSocket.h>
-
-#include "common/ProtocolBytes.h"
 
 namespace pem {
 
@@ -22,9 +21,9 @@ namespace pem {
 
     template<typename T>
     void send(const T& data) {
-      ProtocolBytes bytes;
-      bytes.is(data);
-      socket.sendPacket(bytes.packet);
+      gf::Packet packet;
+      packet.is(data);
+      socket.sendPacket(packet);
     }
   };
 

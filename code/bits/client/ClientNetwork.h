@@ -5,10 +5,10 @@
 #include <mutex>
 #include <string>
 
+#include <gf/Packet.h>
 #include <gf/Queue.h>
 #include <gf/TcpSocket.h>
 
-#include "common/ProtocolBytes.h"
 
 namespace pem {
 
@@ -23,13 +23,13 @@ namespace pem {
 
     template<typename T>
     void send(const T& data) {
-      ProtocolBytes bytes;
-      bytes.is(data);
-      m_socket.sendPacket(bytes.packet);
+      gf::Packet packet;
+      packet.is(data);
+      m_socket.sendPacket(packet);
     }
 
   public:
-    gf::Queue<ProtocolBytes> queue;
+    gf::Queue<gf::Packet> queue;
 
   private:
     void run(std::string hostname);

@@ -5,8 +5,8 @@
 #include <vector>
 
 #include <gf/Ref.h>
+#include <gf/Packet.h>
 
-#include "common/ProtocolBytes.h"
 #include "common/ProtocolData.h"
 
 #include "ServerPlayer.h"
@@ -33,16 +33,16 @@ namespace pem {
 
     bool areAllPlayersReady();
 
-    virtual void update(ServerPlayer& player, ProtocolBytes& bytes) = 0;
+    virtual void update(ServerPlayer& player, gf::Packet& packet) = 0;
 
     template<typename T>
     void send(gf::Id id, const T& data) {
-      ProtocolBytes bytes;
-      bytes.is(data);
+      gf::Packet packet;
+      packet.is(data);
 
       for (ServerPlayer& player : m_players) {
         if (player.id == id) {
-          player.socket.sendPacket(bytes.packet);
+          player.socket.sendPacket(packet);
           return;
         }
       }
@@ -50,11 +50,11 @@ namespace pem {
 
     template<typename T>
     void broadcast(const T& data) {
-      ProtocolBytes bytes;
-      bytes.is(data);
+      gf::Packet packet;
+      packet.is(data);
 
       for (ServerPlayer& player : m_players) {
-        player.socket.sendPacket(bytes.packet);
+        player.socket.sendPacket(packet);
       }
     }
 

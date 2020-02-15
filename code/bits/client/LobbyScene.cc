@@ -46,13 +46,13 @@ namespace pem {
 
     ImGui_ImplGF_Update(time);
 
-    ProtocolBytes bytes;
+    gf::Packet packet;
 
-    while (m_network.queue.poll(bytes)) {
-      switch (bytes.getType()) {
+    while (m_network.queue.poll(packet)) {
+      switch (packet.getType()) {
         case ServerHello::type: {
           gf::Log::debug("(LOBBY) Receive ServerHello\n");
-          auto data = bytes.as<ServerHello>();
+          auto data = packet.as<ServerHello>();
           m_settings = data.settings;
           m_instance.teams = m_settings.teamsMin;
           m_instance.playersByTeam = m_settings.playersByTeamMin;
@@ -69,14 +69,14 @@ namespace pem {
 
         case ServerChangeName::type: {
           gf::Log::debug("(LOBBY) Receive ServerChangeName\n");
-          auto data = bytes.as<ServerChangeName>();
+          auto data = packet.as<ServerChangeName>();
           m_nameBuffer = data.name;
           break;
         }
 
         case ServerListPlayers::type: {
           gf::Log::debug("(LOBBY) Receive ServerListPlayers\n");
-          auto data = bytes.as<ServerListPlayers>();
+          auto data = packet.as<ServerListPlayers>();
           m_players = std::move(data.players);
 
           m_playersView.clear();
@@ -88,7 +88,7 @@ namespace pem {
 
         case ServerListRooms::type: {
           gf::Log::debug("(LOBBY) Receive ServerListRooms\n");
-          auto data = bytes.as<ServerListRooms>();
+          auto data = packet.as<ServerListRooms>();
           m_rooms = std::move(data.rooms);
 
           int32_t index = 0;
@@ -107,7 +107,7 @@ namespace pem {
 
         case ServerJoinRoom::type: {
           gf::Log::debug("(LOBBY) Receive ServerJoinRoom\n");
-          auto data = bytes.as<ServerJoinRoom>();
+          auto data = packet.as<ServerJoinRoom>();
           m_scenes.room.startRoom(data.settings);
           m_scenes.replaceScene(m_scenes.room, m_scenes.fadeEffect, gf::seconds(0.4f));
 //           m_scenes.replaceScene(m_scenes.room);
@@ -117,14 +117,14 @@ namespace pem {
 
         case ServerChatMessage::type: {
           gf::Log::debug("(LOBBY) Receive ServerChatMessage\n");
-          auto data = bytes.as<ServerChatMessage>();
+          auto data = packet.as<ServerChatMessage>();
           m_chat.appendMessage(std::move(data.message));
           break;
         }
 
         case ServerError::type: {
           gf::Log::debug("(LOBBY) Receive ServerError\n");
-          auto data = bytes.as<ServerError>();
+          auto data = packet.as<ServerError>();
           MessageData message;
           message.origin = gf::InvalidId;
           message.author = "server";

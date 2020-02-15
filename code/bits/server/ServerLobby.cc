@@ -46,11 +46,11 @@ namespace pem {
     }
   }
 
-  void ServerLobby::update(ServerPlayer& player, ProtocolBytes& bytes) {
-    switch (bytes.getType()) {
+  void ServerLobby::update(ServerPlayer& player, gf::Packet& packet) {
+    switch (packet.getType()) {
       case ClientHello::type: {
         gf::Log::info("(LOBBY) {%" PRIX64 "} Hello.\n", player.id);
-        auto data = bytes.as<ClientHello>();
+        auto data = packet.as<ClientHello>();
         player.name = data.name;
         // send an acknowledgement to the player
         ServerHello hello;
@@ -68,7 +68,7 @@ namespace pem {
 
       case ClientChangeName::type: {
         gf::Log::info("(LOBBY) {%" PRIX64 "} Change name.\n", player.id);
-        auto data = bytes.as<ClientChangeName>();
+        auto data = packet.as<ClientChangeName>();
         player.name = data.name;
         // send an acknowledgement to the player
         ServerChangeName change;
@@ -83,7 +83,7 @@ namespace pem {
         auto id = m_random.get().computeId();
         gf::Log::info("(LOBBY) {%" PRIX64 "} Create room @%" PRIX64 "\n", player.id, id);
         // deserialize
-        auto data = bytes.as<ClientCreateRoom>();
+        auto data = packet.as<ClientCreateRoom>();
         // create new room
         ServerRoom roomInstance(m_factory);
         roomInstance.id = id;
@@ -117,7 +117,7 @@ namespace pem {
           break;
         }
         // deserialize
-        auto data = bytes.as<ClientJoinRoom>();
+        auto data = packet.as<ClientJoinRoom>();
         // find the room
         auto it = m_rooms.find(data.room);
         if (it == m_rooms.end()) {
@@ -182,7 +182,7 @@ namespace pem {
           break;
         }
         // deserialize
-        auto in = bytes.as<ClientChatMessage>();
+        auto in = packet.as<ClientChatMessage>();
         // broadcast the message
         ServerChatMessage out;
         out.message.origin = player.id;
@@ -196,7 +196,7 @@ namespace pem {
 
     if (player.room != nullptr) {
       gf::Log::info("(LOBBY) {%" PRIX64 "} Forwarding to room @%" PRIX64 ".\n", player.id, player.room->id);
-      player.room->update(player, bytes);
+      player.room->update(player, packet);
     }
 
   }

@@ -13,7 +13,7 @@ namespace pem {
   public:
     ServerRoom(GameFactory& factory);
 
-    void update(ServerPlayer& player, ProtocolBytes& bytes) override;
+    void update(ServerPlayer& player, gf::Packet& packet) override;
 
     gf::Id id;
     std::string name;

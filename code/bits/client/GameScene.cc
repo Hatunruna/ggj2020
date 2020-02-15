@@ -283,18 +283,19 @@ namespace pem {
 
     ImGui_ImplGF_Update(time);
 
-    ProtocolBytes bytes;
-    while (m_network.queue.poll(bytes)) {
-      switch (bytes.getType()) {
+    gf::Packet packet;
+
+    while (m_network.queue.poll(packet)) {
+      switch (packet.getType()) {
         case ServerChatMessage::type: {
           gf::Log::debug("(GAME) receive ServerChatMessage\n");
-          auto data = bytes.as<ServerChatMessage>();
+          auto data = packet.as<ServerChatMessage>();
           m_chat.appendMessage(std::move(data.message));
           break;
         }
 
         case ServerError::type: {
-          auto data = bytes.as<ServerError>();
+          auto data = packet.as<ServerError>();
           MessageData message;
           message.origin = gf::InvalidId;
           message.author = "server";
@@ -307,7 +308,7 @@ namespace pem {
         case PemServerInitRole::type: {
           gf::Log::debug("(GAME) receive PemServerInitRole\n");
 
-          auto data = bytes.as<PemServerInitRole>();
+          auto data = packet.as<PemServerInitRole>();
           if(data.role == CrewType::Rebel){
             gf::Log::debug("(GAME) Role is Rebel\n");
           }
@@ -330,7 +331,7 @@ namespace pem {
         case PemServerUpdateShip::type: {
           gf::Log::debug("(GAME) receive PemServerUpdateShip\n");
 
-          auto data = bytes.as<PemServerUpdateShip>();
+          auto data = packet.as<PemServerUpdateShip>();
           for (auto &entry: data.states) {
             m_model.placeLocations.at(entry.first).working = entry.second;
           }
@@ -349,7 +350,7 @@ namespace pem {
 
         case PemServerChoosePrisoner::type: {
           gf::Log::debug("(GAME) receive PemServerChoosePrisoner\n");
-          auto data = bytes.as<PemServerChoosePrisoner>();
+          auto data = packet.as<PemServerChoosePrisoner>();
 
           MessageData message;
           message.origin = gf::InvalidId;
@@ -370,7 +371,7 @@ namespace pem {
 
         case PemServerReleasePrisoner::type: {
           gf::Log::debug("(GAME) receive PemServerReleasePrisoner\n");
-          auto data = bytes.as<PemServerReleasePrisoner>();
+          auto data = packet.as<PemServerReleasePrisoner>();
 
           // NOTE: leak of information
           // When a player relased another player, the server send a packet
@@ -408,7 +409,7 @@ namespace pem {
 
         // case PemServerResolution::type: {
         //   gf::Log::debug("(GAME) receive PemServerResolution\n");
-        //   auto data = bytes.as<PemServerResolution>();
+        //   auto data = packet.as<PemServerResolution>();
 
         //   for(auto &resolution: data.conclusion) {
         //     MessageData message;
@@ -470,7 +471,7 @@ namespace pem {
         case PemServerUpdateHand::type: {
           gf::Log::debug("(GAME) receive PemServerUpdateHand\n");
 
-          auto data = bytes.as<PemServerUpdateHand>();
+          auto data = packet.as<PemServerUpdateHand>();
           assert(m_model.selectedCard != -1);
           m_model.cards[m_model.selectedCard] = data.card;
 
@@ -479,7 +480,7 @@ namespace pem {
 
         case PemServerMissionStatus::type: {
           gf::Log::debug("(GAME) receive PemServerMissionStatus\n");
-          auto data = bytes.as<PemServerMissionStatus>();
+          auto data = packet.as<PemServerMissionStatus>();
 
           m_model.turn = data.turn;
           m_model.distance = data.distance;

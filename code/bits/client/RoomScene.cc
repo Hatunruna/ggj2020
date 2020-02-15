@@ -50,10 +50,10 @@ namespace pem {
 
     ImGui_ImplGF_Update(time);
 
-    ProtocolBytes bytes;
+    gf::Packet packet;
 
-    while (m_network.queue.poll(bytes)) {
-      switch (bytes.getType()) {
+    while (m_network.queue.poll(packet)) {
+      switch (packet.getType()) {
         case ServerLeaveRoom::type:
           gf::Log::debug("(ROOM) Receive ServerLeaveRoom\n");
           m_currentTeam = -1;
@@ -63,28 +63,28 @@ namespace pem {
 
         case ServerChangeTeam::type: {
           gf::Log::debug("(ROOM) Receive ServerChangeTeam\n");
-          auto data = bytes.as<ServerChangeTeam>();
+          auto data = packet.as<ServerChangeTeam>();
           m_currentTeam = data.team;
           break;
         }
 
         case ServerReady::type: {
           gf::Log::debug("(ROOM) Receive ServerReady\n");
-          auto data = bytes.as<ServerReady>();
+          auto data = packet.as<ServerReady>();
           m_ready = data.ready;
           break;
         }
 
         case ServerListRoomPlayers::type: {
           gf::Log::debug("(ROOM) Receive ServerListRoomPlayers\n");
-          auto data = bytes.as<ServerListRoomPlayers>();
+          auto data = packet.as<ServerListRoomPlayers>();
           m_players = std::move(data.players);
           break;
         }
 
         case ServerChatMessage::type: {
           gf::Log::debug("(ROOM) Receive ServerChatMessage\n");
-          auto data = bytes.as<ServerChatMessage>();
+          auto data = packet.as<ServerChatMessage>();
           m_chat.appendMessage(std::move(data.message));
           break;
         }
@@ -100,7 +100,7 @@ namespace pem {
 
         case ServerError::type: {
           gf::Log::debug("(ROOM) Receive ServerError\n");
-          auto data = bytes.as<ServerError>();
+          auto data = packet.as<ServerError>();
           MessageData message;
           message.origin = gf::InvalidId;
           message.author = "server";

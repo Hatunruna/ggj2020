@@ -46,17 +46,17 @@ namespace pem {
         auto& player = kv.second;
 
         if (m_selector.isReady(player.socket)) {
-          ProtocolBytes bytes;
+          gf::Packet packet;
 
-          switch (player.socket.recvPacket(bytes.packet)) {
+          switch (player.socket.recvPacket(packet)) {
             case gf::SocketStatus::Data:
-              switch (bytes.getType()) {
+              switch (packet.getType()) {
                 case ClientDisconnect::type:
                   gf::Log::info("(SERVER) {%" PRIX64 "} Disconnected.\n", player.id);
                   purgatory.push_back(player.id);
                   break;
                 default:
-                  m_lobby.update(player, bytes);
+                  m_lobby.update(player, packet);
                   break;
               }
               break;

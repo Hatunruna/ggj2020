@@ -16,7 +16,7 @@ namespace pem {
   public:
     ServerLobby(gf::Random& random, GameFactory& factory, const GameSettings& settings);
 
-    void update(ServerPlayer& player, ProtocolBytes& bytes) override;
+    void update(ServerPlayer& player, gf::Packet& packet) override;
 
     std::vector<RoomData> getRooms();
 

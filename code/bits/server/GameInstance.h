@@ -1,8 +1,6 @@
 #ifndef PEM_GAME_INSTANCE_H
 #define PEM_GAME_INSTANCE_H
 
-#include "common/ProtocolBytes.h"
-
 #include "ServerGroup.h"
 
 namespace pem {

@@ -85,12 +85,12 @@ namespace pem {
     return false;
   }
 
-  void PemInstance::update(ServerPlayer& player, ProtocolBytes& bytes) {
-    switch (bytes.getType()) {
+  void PemInstance::update(ServerPlayer& player, gf::Packet& packet) {
+    switch (packet.getType()) {
       case ClientChatMessage::type: {
         gf::Log::info("(PemInstance) {%" PRIX64 "} Chat message.\n", player.id);
         // deserialize
-        auto in = bytes.as<ClientChatMessage>();
+        auto in = packet.as<ClientChatMessage>();
 
         ServerChatMessage out;
         out.message.origin = player.id;
@@ -116,7 +116,7 @@ namespace pem {
 
       case PemClientMoveAndPlay::type: {
         gf::Log::info("(PemInstance) {%" PRIX64 "} Move and play.\n", player.id);
-        auto in = bytes.as<PemClientMoveAndPlay>();
+        auto in = packet.as<PemClientMoveAndPlay>();
 
         // move player into the room
         // m_ship.addCrew(in.place, player.id);
@@ -136,7 +136,7 @@ namespace pem {
       // case PemClientVoteForCaptain::type: {
       //   gf::Log::info("(PemInstance) {%" PRIX64 "} Vote for captain.\n", player.id);
 
-      //   auto in = bytes.as<PemClientVoteForCaptain>();
+      //   auto in = packet.as<PemClientVoteForCaptain>();
 
       //   auto it = m_members.find(player.id);
       //   assert(it != m_members.end());
@@ -152,7 +152,7 @@ namespace pem {
 
       case PemClientChoosePrisoner::type: {
         gf::Log::info("(PemInstance) {%" PRIX64 "} Vote for prisoner.\n", player.id);
-        auto in = bytes.as<PemClientChoosePrisoner>();
+        auto in = packet.as<PemClientChoosePrisoner>();
 
         assert(m_members.count(player.id) == 1);
 

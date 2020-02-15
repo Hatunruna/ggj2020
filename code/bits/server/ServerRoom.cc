@@ -16,10 +16,10 @@ namespace pem {
   {
   }
 
-  void ServerRoom::update(ServerPlayer& player, ProtocolBytes& bytes) {
+  void ServerRoom::update(ServerPlayer& player, gf::Packet& packet) {
     assert(player.room == this);
 
-    switch (bytes.getType()) {
+    switch (packet.getType()) {
       case ClientChangeTeam::type: {
         gf::Log::info("(ROOM) {%" PRIX64 "} Change team.\n", player.id);
         if (isGameStarted()) {
@@ -36,7 +36,7 @@ namespace pem {
           player.send(error);
           break;
         }
-        auto data = bytes.as<ClientChangeTeam>();
+        auto data = packet.as<ClientChangeTeam>();
         if (player.team == data.team) {
           break;
         }
@@ -75,7 +75,7 @@ namespace pem {
           player.send(error);
           break;
         }
-        auto data = bytes.as<ClientReady>();
+        auto data = packet.as<ClientReady>();
         // Check if the player is in a team
         if (player.team == -1) {
           gf::Log::warning("(ROOM) {%" PRIX64 "} Player not in a team\n", player.id);
@@ -102,7 +102,7 @@ namespace pem {
           break;
         }
         // deserialize
-        auto in = bytes.as<ClientChatMessage>();
+        auto in = packet.as<ClientChatMessage>();
         // broadcast the message
         ServerChatMessage out;
         out.message.origin = player.id;
@@ -121,7 +121,7 @@ namespace pem {
         m_instance = nullptr;
       } else {
         gf::Log::info("(ROOM) {%" PRIX64 "} Forwarding to game in @%" PRIX64 ".\n", player.id, player.room->id);
-        m_instance->update(player, bytes);
+        m_instance->update(player, packet);
       }
     }
   }

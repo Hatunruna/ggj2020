@@ -18,7 +18,7 @@ namespace pem {
 
     bool isFinished() override;
 
-    void update(ServerPlayer& player, ProtocolBytes& bytes) override;
+    void update(ServerPlayer& player, gf::Packet& packet) override;
 
   private:
     void resetTurn();

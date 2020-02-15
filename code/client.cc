@@ -49,22 +49,22 @@ int main(int argc, char *argv[]) {
 
     // Receive ack
     {
-      pem::ProtocolBytes bytes;
-      network.queue.wait(bytes);
-      assert(bytes.getType() == pem::ServerHello::type);
+      gf::Packet packet;
+      network.queue.wait(packet);
+      assert(packet.getType() == pem::ServerHello::type);
 
-      auto data = bytes.as<pem::ServerHello>();
+      auto data = packet.as<pem::ServerHello>();
       scenes.myPlayerId = data.playerId;
     }
 
     gf::Id roomID = gf::InvalidId;
     {
-      pem::ProtocolBytes bytes;
-      network.queue.wait(bytes);
-      assert(bytes.getType() == pem::ServerListRooms::type);
+      gf::Packet packet;
+      network.queue.wait(packet);
+      assert(packet.getType() == pem::ServerListRooms::type);
 
       // Check if room is already created
-      auto data = bytes.as<pem::ServerListRooms>();
+      auto data = packet.as<pem::ServerListRooms>();
       for (auto& room : data.rooms) {
         if (room.name == "DebugRoom") {
           roomID = room.id;
@@ -76,9 +76,9 @@ int main(int argc, char *argv[]) {
 
     // Ignore players list
     {
-      pem::ProtocolBytes bytes;
-      network.queue.wait(bytes);
-      assert(bytes.getType() == pem::ServerListPlayers::type);
+      gf::Packet packet;
+      network.queue.wait(packet);
+      assert(packet.getType() == pem::ServerListPlayers::type);
     }
 
     // If room was not created
@@ -102,11 +102,11 @@ int main(int argc, char *argv[]) {
     // Join the room
     {
       gf::Log::debug("Join the room\n");
-      pem::ProtocolBytes bytes;
-      network.queue.wait(bytes);
-      assert(bytes.getType() == pem::ServerJoinRoom::type);
+      gf::Packet packet;
+      network.queue.wait(packet);
+      assert(packet.getType() == pem::ServerJoinRoom::type);
 
-      auto data = bytes.as<pem::ServerJoinRoom>();
+      auto data = packet.as<pem::ServerJoinRoom>();
       scenes.room.startRoom(data.settings);
 
       gf::Log::debug("Joined room %lX\n", data.room);
@@ -114,23 +114,23 @@ int main(int argc, char *argv[]) {
 
     // Ignore players list room
     {
-      pem::ProtocolBytes bytes;
-      network.queue.wait(bytes);
-      assert(bytes.getType() == pem::ServerListRoomPlayers::type);
+      gf::Packet packet;
+      network.queue.wait(packet);
+      assert(packet.getType() == pem::ServerListRoomPlayers::type);
     }
 
     // Ignore change team
     {
-      pem::ProtocolBytes bytes;
-      network.queue.wait(bytes);
-      assert(bytes.getType() == pem::ServerChangeTeam::type);
+      gf::Packet packet;
+      network.queue.wait(packet);
+      assert(packet.getType() == pem::ServerChangeTeam::type);
     }
 
     // Ignore players list room
     {
-      pem::ProtocolBytes bytes;
-      network.queue.wait(bytes);
-      assert(bytes.getType() == pem::ServerListRoomPlayers::type);
+      gf::Packet packet;
+      network.queue.wait(packet);
+      assert(packet.getType() == pem::ServerListRoomPlayers::type);
     }
 
     // Send player ready
@@ -142,23 +142,23 @@ int main(int argc, char *argv[]) {
 
     // Ack ready
     {
-      pem::ProtocolBytes bytes;
-      network.queue.wait(bytes);
-      assert(bytes.getType() == pem::ServerReady::type);
+      gf::Packet packet;
+      network.queue.wait(packet);
+      assert(packet.getType() == pem::ServerReady::type);
 
-      auto data = bytes.as<pem::ServerReady>();
+      auto data = packet.as<pem::ServerReady>();
       assert(data.ready);
     }
 
     std::vector<pem::PlayerData> players;
     // Update player list
     {
-      pem::ProtocolBytes bytes;
+      gf::Packet packet;
       for(;;) {
-        network.queue.wait(bytes);
+        network.queue.wait(packet);
 
-        if (bytes.getType() == pem::ServerListRoomPlayers::type) {
-          auto data = bytes.as<pem::ServerListRoomPlayers>();
+        if (packet.getType() == pem::ServerListRoomPlayers::type) {
+          auto data = packet.as<pem::ServerListRoomPlayers>();
           players = std::move(data.players);
         }
         else {
@@ -166,7 +166,7 @@ int main(int argc, char *argv[]) {
         }
       }
 
-      assert(bytes.getType() == pem::ServerStartGame::type);
+      assert(packet.getType() == pem::ServerStartGame::type);
       assert(players.size() == 4u);
       scenes.game.initialize(players);
     }

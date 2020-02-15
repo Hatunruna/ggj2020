@@ -56,11 +56,11 @@ namespace pem {
     }
 
     for (;;) {
-      ProtocolBytes bytes;
+      gf::Packet packet;
 
-      switch (m_socket.recvPacket(bytes.packet)) {
+      switch (m_socket.recvPacket(packet)) {
         case gf::SocketStatus::Data:
-          queue.push(std::move(bytes));
+          queue.push(std::move(packet));
           break;
         case gf::SocketStatus::Error:
           gf::Log::error("Error while receiving a packet from server\n");
