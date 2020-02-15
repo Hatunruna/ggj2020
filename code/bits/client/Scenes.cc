@@ -33,6 +33,7 @@ namespace pem {
   }
 
   Scenes::~Scenes() {
+    ImGui_ImplGF_Shutdown();
     ImGui::DestroyContext();
   }
 
