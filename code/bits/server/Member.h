@@ -11,12 +11,14 @@ namespace pem {
     : prison(0)
     , place(PlaceType::None)
     , card(CardType::None)
+    , cardIndex(-1)
     {}
 
-    // std::array<CardType, MaxCards> cards;
-    int32_t prison = 0;
+    std::array<CardType, MaxCards> cards;
+    int32_t prison;
     PlaceType place; // Played place
     CardType card; // Played card
+    int8_t cardIndex;
     CrewType crewType;
   };
 

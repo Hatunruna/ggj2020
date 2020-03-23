@@ -129,11 +129,12 @@ namespace pem {
     static constexpr gf::Id type = "PemClientMoveAndPlay"_id;
     PlaceType place;
     CardType card;
+    int8_t indexCard;
   };
 
   template<typename Archive>
   Archive operator|(Archive& ar, PemClientMoveAndPlay& data) {
-    return ar | data.place | data.card;
+    return ar | data.place | data.card | data.indexCard;
   }
 
 

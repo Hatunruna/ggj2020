@@ -28,6 +28,7 @@ namespace pem {
       // { CardType::Release,     1 },
       { CardType::Demine,     15 },
       { CardType::Repair,     15 },
+      { CardType::Release,    100},
     };
 
     constexpr DeckData RebelDeckConfig[] = {
@@ -43,6 +44,7 @@ namespace pem {
       { CardType::PlaceBomb0,   15 },
       { CardType::PlaceBomb1,   10 },
       { CardType::PlaceBomb2,   5  },
+      { CardType::Release,      100},
     };
 
 

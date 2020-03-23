@@ -171,6 +171,7 @@ namespace pem {
             PemClientMoveAndPlay moveAndPlay;
             moveAndPlay.place = m_model.selectedPlace;
             moveAndPlay.card = m_model.cards[m_model.selectedCard];
+            moveAndPlay.indexCard = m_model.selectedCard;
             gf::Log::debug("(GAME) Action is: %s -> %s\n", placeTypeString(moveAndPlay.place).c_str(), cardTypeString(moveAndPlay.card).c_str());
             m_network.send(moveAndPlay);
 

@@ -46,6 +46,7 @@ namespace pem {
     assert(players.size() == crew.size());
 
     for (auto& player : players) {
+      int cardIndex = 0;
       PemServerInitRole data;
       Member member;
       data.role = crew.back();
@@ -54,14 +55,18 @@ namespace pem {
       switch (data.role) {
         case CrewType::Protector:
           for (auto& card : data.cards) {
+            assert(cardIndex >= 0 && cardIndex < MaxCards);
             card = m_deck.pickProtectorCard();
+            member.cards[cardIndex++] = card;
           }
           member.crewType = CrewType::Protector;
           break;
 
         case CrewType::Rebel:
           for (auto& card : data.cards) {
+            assert(cardIndex >= 0 && cardIndex < MaxCards);
             card = m_deck.pickRebelCard();
+            member.cards[cardIndex++] = card;
           }
           member.crewType = CrewType::Rebel;
           break;
@@ -126,8 +131,10 @@ namespace pem {
 
         // TODO: check if is a valid action
 
+        assert(in.indexCard >= 0 && in.indexCard < MaxCards);
         member.card = in.card;
         member.place = in.place;
+        member.cardIndex = in.indexCard;
 
         checkEndOfTurn();
         break;
@@ -197,11 +204,24 @@ namespace pem {
       const auto member = entry.second;
 
       bool hasPlayed = member.card != CardType::None && member.place != PlaceType::None;
+
+      return hasPlayed;
+    });
+
+    int excpectedActions = std::count_if(m_members.begin(), m_members.end(), [](const auto &entry) {
+      const auto member = entry.second;
+
+      bool hasReleaseCard = false;
+      for (const auto &card: member.cards) {
+        if (card == CardType::Release) {
+          hasReleaseCard = true;
+          break;
+        }
+      }
       bool inJail = member.prison > 0;
 
-      return hasPlayed || inJail;
+      return !inJail || hasReleaseCard;
     });
-    int excpectedActions = m_members.size();
 
     gf::Log::debug("(PemInstance) actions played %d\n", nbActions);
     gf::Log::debug("(PemInstance) actions expected %d\n", excpectedActions);
@@ -222,7 +242,26 @@ namespace pem {
         continue;
       }
 
-      m_ship.addAction(member.place, member.card);
+      // If we release the players
+      if (member.place == PlaceType::Prison && member.card == CardType::Release) {
+        for (auto &prisonner: m_members) {
+          if (prisonner.second.prison > 0) {
+            prisonner.second.prison = 0;
+
+            PemServerReleasePrisoner release;
+            release.prisoner = prisonner.first;
+            release.deliverer = entry.first;
+
+            gf::Log::debug("(PemInstance) Release the player %lX by %lX\n", release.prisoner, release.deliverer);
+
+            send(release.prisoner, release);
+          }
+        }
+      }
+      // We ignore wrong release card place
+      else if (member.card != CardType::Release) {
+        m_ship.addAction(member.place, member.card);
+      }
     }
 
     // Sort action by priority
@@ -295,6 +334,7 @@ namespace pem {
       else if (member.second.prison > 1) {
         --member.second.prison;
       }
+      gf::Log::debug("Member prison state %d\n", member.second.prison);
       assert(member.second.prison >= 0 && member.second.prison <= MaxSentence);
     }
 
@@ -310,7 +350,7 @@ namespace pem {
     m_distance -= m_ship.computeDistance();
 
     // Send new card if needed
-    for (const auto &member: m_members) {
+    for (auto &member: m_members) {
       if (member.second.card != CardType::None) {
         PemServerUpdateHand hand;
         if(member.second.crewType == CrewType::Rebel) {
@@ -319,6 +359,13 @@ namespace pem {
         else {
           hand.card = m_deck.pickProtectorCard();
         }
+
+        // Update player hand
+        assert(member.second.cardIndex >= 0 && member.second.cardIndex < 3);
+        member.second.cards[member.second.cardIndex] = hand.card;
+        member.second.cardIndex = -1;
+
+        // Send new card
         send(member.first, hand);
       }
     }

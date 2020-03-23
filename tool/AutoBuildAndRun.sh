@@ -9,19 +9,23 @@ else
   NBPROC=1
 fi
 
-ctrl_c() {
-  echo "** Trapped CTRL-C"
-  echo "killing Server and client ..."
-  kill -9 $server
-  kill -9 $client1
-  kill -9 $client2
-  kill -9 $client3
-  kill -9 $client4
+kill_process() {
+  kill -s 15 $client1
+  kill -s 15 $client2
+  kill -s 15 $client3
+  kill -s 15 $client4
   #kill -9 $client5
   #kill -9 $client6
   #kill -9 $client7
   #kill -9 $client8
-  fuser 2020/tcp
+  sleep 1
+  kill -s 2 $server
+}
+
+ctrl_c() {
+  echo "** Trapped CTRL-C"
+  echo "killing Server and client ..."
+  kill_process
   exit 0
 }
 
@@ -29,7 +33,7 @@ while true
 do
   fuser 2020/tcp
   echo "Compiling ..."
-  make -j $NBPROC
+  make -j $NBPROC || exit 1
   echo "Running Server..."
   ./pax_et_mors_server > server.log 2>&1 &
   server=$!
@@ -55,23 +59,11 @@ do
   #client7=$!
   #./pax_et_mors &
   #client8=$!
-  while true
-  do
-    echo "\e[5mPress Enter to make and start the server and clients again\e[25m"
-    read var1
-    echo "killing Server and client ..."
-    kill -2 $client1
-    kill -2 $client2
-    kill -2 $client3
-    kill -2 $client4
-    #kill -9 $client5
-    #kill -9 $client6
-    #kill -9 $client7
-    #kill -9 $client8
-    sleep 1
-    kill -s 2 $server
-    break
-  done
+
+  echo "\e[5mPress Enter to make and start the server and clients again\e[25m"
+  read var1
+  echo "killing Server and client ..."
+  kill_process
 done
 
 
