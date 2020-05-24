@@ -15,15 +15,17 @@ namespace pem {
 //     FalseAlarm, // false
 //     Jammed,     // true
 
-  enum class PlaceState : uint8_t {
-    Broken,
-    Working,
-  };
+  // enum class PlaceState : uint8_t {
+  //   Broken,
+  //   Working,
+  // };
 
   enum class ActionType : uint8_t {
     Demine,
     Explode,
     Repair,
+    AlarmStart,
+    AlarmStop,
   };
 
   struct Action {
@@ -38,10 +40,13 @@ namespace pem {
   };
 
   struct ShipPlace {
-    PlaceState publicState; // "fake" state, depending of current action
-    PlaceState realState; // Real current state
-
     std::vector<Action> actions;
+
+    // State of place
+    bool broken = false;
+
+    // Alarm
+    bool alarm = false;
 
     // SetupJammer
     // PlaceState previous;
@@ -78,12 +83,6 @@ namespace pem {
 
       std::map<PlaceType, bool> getPublicStates() const;
       float computeDistance() const;
-
-      // std::map<PlaceType, bool> getState();
-
-      // void addCrew(PlaceType type, gf::Id id);
-
-      // void endOfActions();
 
       std::map<PlaceType, ShipPlace> places;
 

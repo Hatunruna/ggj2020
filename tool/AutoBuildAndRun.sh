@@ -60,7 +60,7 @@ do
   #./pax_et_mors &
   #client8=$!
 
-  echo "\e[5mPress Enter to make and start the server and clients again\e[25m"
+  echo -e "\e[5mPress Enter to make and start the server and clients again\e[25m"
   read var1
   echo "killing Server and client ..."
   kill_process

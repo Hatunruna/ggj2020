@@ -12,59 +12,59 @@
 namespace pem {
 
   namespace {
-    ShipPlace createPlace(PlaceState state){
-      ShipPlace place;
-      place.publicState = state;
-      place.realState = state;
-
-      return place;
-    }
-
     std::map<PlaceType,ShipPlace> createShip(int32_t players){
       std::map<PlaceType,ShipPlace> ship = {
-        { PlaceType::Infirmery,           createPlace(PlaceState::Working) },
-        { PlaceType::CommunicationCenter, createPlace(PlaceState::Working) },
-        { PlaceType::Navigation,          createPlace(PlaceState::Working) },
-        { PlaceType::Prison,              createPlace(PlaceState::Working) },
-        { PlaceType::Refectory,           createPlace(PlaceState::Working) },
-        { PlaceType::RightEngine,         createPlace(PlaceState::Working) },
-        { PlaceType::LeftEngine,          createPlace(PlaceState::Working) },
-        { PlaceType::Storage,             createPlace(PlaceState::Working) },
-        { PlaceType::MainBridge,          createPlace(PlaceState::Working) },
-        { PlaceType::LifeSupport,         createPlace(PlaceState::Working) },
-        { PlaceType::MidEngine,           createPlace(PlaceState::Working) },
-        { PlaceType::Bathroom,            createPlace(PlaceState::Working) },
-        { PlaceType::Dormitory,           createPlace(PlaceState::Working) },
-        { PlaceType::Armory,              createPlace(PlaceState::Working) },
-        { PlaceType::GreenHouse,          createPlace(PlaceState::Working) },
+        { PlaceType::Infirmery,           ShipPlace() },
+        { PlaceType::CommunicationCenter, ShipPlace() },
+        { PlaceType::Navigation,          ShipPlace() },
+        { PlaceType::Prison,              ShipPlace() },
+        { PlaceType::Refectory,           ShipPlace() },
+        { PlaceType::RightEngine,         ShipPlace() },
+        { PlaceType::LeftEngine,          ShipPlace() },
+        { PlaceType::Storage,             ShipPlace() },
+        { PlaceType::MainBridge,          ShipPlace() },
+        { PlaceType::LifeSupport,         ShipPlace() },
+        { PlaceType::MidEngine,           ShipPlace() },
+        { PlaceType::Bathroom,            ShipPlace() },
+        { PlaceType::Dormitory,           ShipPlace() },
+        { PlaceType::Armory,              ShipPlace() },
+        { PlaceType::GreenHouse,          ShipPlace() },
       };
 
       // if (players > 4){
-        ship.insert({ PlaceType::LifeSupport,   createPlace(PlaceState::Working)});
-        ship.insert({ PlaceType::MidEngine,     createPlace(PlaceState::Working)});
+        ship.insert({ PlaceType::LifeSupport,   ShipPlace() });
+        ship.insert({ PlaceType::MidEngine,     ShipPlace() });
       // }
 
       // if (players > 5){
-        ship.insert({ PlaceType::Bathroom,      createPlace(PlaceState::Working)});
-        ship.insert({ PlaceType::Dormitory,     createPlace(PlaceState::Working)});
+        ship.insert({ PlaceType::Bathroom,      ShipPlace() });
+        ship.insert({ PlaceType::Dormitory,     ShipPlace() });
       // }
 
       // if (players > 6){
-        ship.insert({ PlaceType::Armory,        createPlace(PlaceState::Working)});
-        ship.insert({ PlaceType::GreenHouse,    createPlace(PlaceState::Working)});
+        ship.insert({ PlaceType::Armory,        ShipPlace() });
+        ship.insert({ PlaceType::GreenHouse,    ShipPlace() });
       // }
 
       return ship;
     }
 
-    Action createAction(CardType card) {
+    void createAction(CardType card, std::vector<Action> &actions) {
       assert(card != CardType::None);
 
       Action action;
       switch (card) {
-      case CardType::Repair:
-        action.actionType = ActionType::Repair;
+      case CardType::Demine:
+        action.actionType = ActionType::Demine;
         action.remainingTurn = 0;
+        break;
+
+      case CardType::FalseAlarm:
+        action.actionType = ActionType::AlarmStart;
+        action.remainingTurn = 0;
+        actions.push_back(action);
+        action.actionType = ActionType::AlarmStop;
+        action.remainingTurn = 1;
         break;
 
       case CardType::PlaceBomb0:
@@ -82,8 +82,8 @@ namespace pem {
         action.remainingTurn = 2;
         break;
 
-      case CardType::Demine:
-        action.actionType = ActionType::Demine;
+      case CardType::Repair:
+        action.actionType = ActionType::Repair;
         action.remainingTurn = 0;
         break;
 
@@ -92,7 +92,7 @@ namespace pem {
         break;
       }
 
-      return action;
+      actions.push_back(action);
     }
   }
 
@@ -103,7 +103,7 @@ namespace pem {
   void Ship::addAction(PlaceType place, CardType card) {
     assert(place != PlaceType::None && card != CardType::None);
     auto &placeEntry = places.at(place);
-    placeEntry.actions.push_back(createAction(card));
+    createAction(card, placeEntry.actions);
   }
 
   void Ship::sortActions() {
@@ -138,14 +138,22 @@ namespace pem {
 
           case ActionType::Explode:
             gf::Log::debug("(Ship) The place '%s' has explode\n", placeTypeString(place.first).c_str());
-            place.second.publicState = PlaceState::Broken;
-            place.second.realState = PlaceState::Broken;
+            place.second.broken = true;
+            break;
+
+          case ActionType::AlarmStart:
+            gf::Log::debug("(Ship) The place '%s' trigger a false alarm\n", placeTypeString(place.first).c_str());
+            place.second.alarm = true;
+            break;
+
+          case ActionType::AlarmStop:
+            gf::Log::debug("(Ship) The place '%s' end of a false alarm\n", placeTypeString(place.first).c_str());
+            place.second.alarm = false;
             break;
 
           case ActionType::Repair:
             gf::Log::debug("(Ship) The place '%s' has been repair\n", placeTypeString(place.first).c_str());
-            place.second.publicState = PlaceState::Working;
-            place.second.realState = PlaceState::Working;
+            place.second.broken = false;
             break;
 
           default:
@@ -168,7 +176,14 @@ namespace pem {
     std::map<PlaceType, bool> states;
 
     for (const auto &place: places) {
-      states.emplace(place.first, place.second.publicState == PlaceState::Working);
+      const auto &state = place.second;
+
+      if (state.alarm) {
+        states.emplace(place.first, false);
+      }
+      else {
+        states.emplace(place.first, !state.broken);
+      }
     }
 
     return states;
@@ -176,7 +191,7 @@ namespace pem {
 
   float Ship::computeDistance() const {
     int workingRoom = std::count_if(places.begin(), places.end(), [](const auto &entry) {
-      return entry.second.realState;
+      return entry.second.broken;
     });
 
     return static_cast<float>(workingRoom) / static_cast<float>(places.size());
