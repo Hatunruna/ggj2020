@@ -26,9 +26,10 @@ namespace pem {
       // { CardType::Track,       2 },
       // { CardType::Block,       2 },
       // { CardType::Release,     1 },
+      { CardType::Block,      99 },
       { CardType::Demine,     15 },
+      { CardType::Release,     1 },
       { CardType::Repair,     15 },
-      { CardType::Release,    1  },
     };
 
     constexpr DeckData RebelDeckConfig[] = {
@@ -41,11 +42,11 @@ namespace pem {
       // { CardType::SetupJammer,   2 },
       // { CardType::Block,         2 },
       // { CardType::Release,       1 },
-      { CardType::FalseAlarm,   3  },
+      { CardType::FalseAlarm,    3 },
       { CardType::PlaceBomb0,   15 },
       { CardType::PlaceBomb1,   10 },
-      { CardType::PlaceBomb2,   5  },
-      { CardType::Release,      1  },
+      { CardType::PlaceBomb2,    5 },
+      { CardType::Release,       1 },
     };
 
 

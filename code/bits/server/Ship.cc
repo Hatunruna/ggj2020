@@ -54,6 +54,11 @@ namespace pem {
 
       Action action;
       switch (card) {
+      case CardType::Block:
+        action.actionType = ActionType::Jammed;
+        action.remainingTurn = 0;
+        break;
+
       case CardType::Demine:
         action.actionType = ActionType::Demine;
         action.remainingTurn = 0;
@@ -124,6 +129,16 @@ namespace pem {
       auto &actions = place.second.actions;
       for (auto it = actions.begin(); it != partition;++it) {
         switch (it->actionType) {
+          case ActionType::AlarmStart:
+            gf::Log::debug("(Ship) The place '%s' triggers a false alarm\n", placeTypeString(place.first).c_str());
+            place.second.alarm = true;
+            break;
+
+          case ActionType::AlarmStop:
+            gf::Log::debug("(Ship) The place '%s' end of a false alarm\n", placeTypeString(place.first).c_str());
+            place.second.alarm = false;
+            break;
+
           case ActionType::Demine: {
             gf::Log::debug("(Ship) The place '%s' has been demine\n", placeTypeString(place.first).c_str());
             auto itRemove = std::remove_if(actions.begin(), actions.end(), [](const auto &action) {
@@ -141,14 +156,9 @@ namespace pem {
             place.second.broken = true;
             break;
 
-          case ActionType::AlarmStart:
-            gf::Log::debug("(Ship) The place '%s' trigger a false alarm\n", placeTypeString(place.first).c_str());
-            place.second.alarm = true;
-            break;
+          case ActionType::Jammed:
+            gf::Log::debug("(Ship) The place '%s' is jammed\n", placeTypeString(place.first).c_str());
 
-          case ActionType::AlarmStop:
-            gf::Log::debug("(Ship) The place '%s' end of a false alarm\n", placeTypeString(place.first).c_str());
-            place.second.alarm = false;
             break;
 
           case ActionType::Repair:

@@ -208,9 +208,38 @@ namespace pem {
 
     gf::Log::debug("(PemInstance) All players are played\n");
 
+    // Jammed the place
+    for (const auto &entry: m_members) {
+      const auto &member = entry.second;
+      gf::Log::debug("(PemInstance) Jammed?\n");
+
+      // Ignore prisonner
+      if (member.prison > 0) {
+        continue;
+      }
+
+      // When the player want block the place
+      if (member.card == CardType::Block) {
+        gf::Log::debug("(PemInstance) Player %lX jams the place '%s'\n", entry.first, placeTypeString(member.place).c_str());
+
+        // We remove the other cards
+        for (auto &other: m_members) {
+          if (other.second.place == member.place) {
+            other.second.card = CardType::None;
+            gf::Log::debug("(PemInstance) Player %lX action has been canceled\n", other.first);
+          }
+        }
+      }
+    }
+
     // Register all action in ship model
     for (const auto &entry: m_members) {
       const auto &member = entry.second;
+
+      // Skip the removed card
+      if (member.card == CardType::None) {
+        continue;
+      }
 
       // Skip the turn of prisoner, except for an release card
       if (member.prison > 0 && member.card != CardType::Release) {

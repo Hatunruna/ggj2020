@@ -21,11 +21,12 @@ namespace pem {
   // };
 
   enum class ActionType : uint8_t {
+    AlarmStart,
+    AlarmStop,
+    Jammed,
     Demine,
     Explode,
     Repair,
-    AlarmStart,
-    AlarmStop,
   };
 
   struct Action {
@@ -47,6 +48,9 @@ namespace pem {
 
     // Alarm
     bool alarm = false;
+
+    // Jammed
+    bool jammed = false;
 
     // SetupJammer
     // PlaceState previous;
