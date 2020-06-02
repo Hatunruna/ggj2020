@@ -211,7 +211,6 @@ namespace pem {
     // Jammed the place
     for (const auto &entry: m_members) {
       const auto &member = entry.second;
-      gf::Log::debug("(PemInstance) Jammed?\n");
 
       // Ignore prisonner
       if (member.prison > 0) {
@@ -224,9 +223,20 @@ namespace pem {
 
         // We remove the other cards
         for (auto &other: m_members) {
-          if (other.second.place == member.place) {
+          if (other.first != entry.first && other.second.place == member.place) {
             other.second.card = CardType::None;
             gf::Log::debug("(PemInstance) Player %lX action has been canceled\n", other.first);
+
+            MessageData message;
+            message.author = "server";
+            message.origin = gf::InvalidId;
+            message.recipient = other.first;
+            message.content = "The place " + placeTypeString(member.place) + " has been jammed. Our action has been canceled.";
+
+            ServerChatMessage packet;
+            packet.message = message;
+
+            send(other.first, packet);
           }
         }
       }
