@@ -16,7 +16,10 @@ namespace pem {
 
   class PlaceEntity: public gf::Entity {
   public:
-    PlaceEntity(gf::Texture& texture, GameModel &model, PlaceType place);
+    PlaceEntity(gf::Texture &workingTexture,
+      std::vector<gf::Ref<gf::Texture>> brokenTextures,
+      GameModel &model, PlaceType place,
+      int lastNumberFrame = 24, gf::Vector2i tilesetLayout = { 4, 6});
 
     void update(gf::Time time) override;
     void render(gf::RenderTarget& target, const gf::RenderStates& states) override;
@@ -25,6 +28,7 @@ namespace pem {
     pem::GameModel &m_model;
 
     PlaceType m_place;
+    gf::Texture &m_workingTexture;
     gf::Animation m_brokenAnimation;
     gf::Vector2f m_position;
   };

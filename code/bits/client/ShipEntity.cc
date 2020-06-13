@@ -14,39 +14,50 @@
 namespace {
   gf::Vector2f getPlaceLocation(pem::PlaceType place) {
     switch (place) {
-    case pem::PlaceType::LeftEngine:
-      return { 721.0f, 219.0f };
-      break;
+    case pem::PlaceType::Armory:
+      return { 2277.0f, 258.0f };
 
-    case pem::PlaceType::RightEngine:
-      return { 347.0f, 661.0f };
-      break;
+    case pem::PlaceType::Bathroom:
+      return { 2070.0f, 342.0f };
+
+    case pem::PlaceType::CommunicationCenter:
+      return { 2985.0f, 438.0f };
+
+    case pem::PlaceType::Dormitory:
+      return { 1599.0f, 288.0f };
+
+    case pem::PlaceType::GreenHouse:
+      return { 2028.0f, 228.0f };
+
+    case pem::PlaceType::Infirmery:
+      return { 1629.0f, 771.0f };
+
+    case pem::PlaceType::LeftEngine:
+      return { 673.0f, 219.0f };
+
+    case pem::PlaceType::LifeSupport:
+      return { 2619.0f, 831.0f };
+
+    case pem::PlaceType::MainBridge:
+      return { 3315.0f, 654.0f };
+
+    case pem::PlaceType::MidEngine:
+      return { 3504.0f, 658.0f };
+
+    case pem::PlaceType::Navigation:
+      return { 2898.0f, 642.0f };
 
     case pem::PlaceType::Prison:
       return { 479.0f, 414.0f };
-      break;
 
-    default:
-      assert(false);
-      break;
-    }
-
-    return { 0.0f, 0.0f };
-  }
-
-  gf::Vector2f getPlaceSize(pem::PlaceType place) {
-    switch (place) {
-    case pem::PlaceType::LeftEngine:
-      return { 357.0f / 1428.0f, 203.0f / 1218.0f };
-      break;
+    case pem::PlaceType::Refectory:
+      return { 1233.0f, 582.0f };
 
     case pem::PlaceType::RightEngine:
-      return { 336.0f / 1344.0f, 208.0f / 1248.0f };
-      break;
+      return { 153.0f, 633.0f };
 
-    case pem::PlaceType::Prison:
-      return { 422.0f / 1688.0f, 278.0f / 1668.0f };
-      break;
+    case pem::PlaceType::Storage:
+      return { 1728.0f, 717.0f };
 
     default:
       assert(false);
@@ -58,12 +69,26 @@ namespace {
 }
 
 namespace pem {
-  PlaceEntity::PlaceEntity(gf::Texture& texture, GameModel &model, PlaceType place)
+  PlaceEntity::PlaceEntity(gf::Texture &workingTexture,
+    std::vector<gf::Ref<gf::Texture>> brokenTextures,
+    GameModel &model, PlaceType place,
+    int lastNumberFrame, gf::Vector2i tilesetLayout)
   : m_model(model)
   , m_place(place)
+  , m_workingTexture(workingTexture)
   , m_position(getPlaceLocation(place)) {
-    gf::Vector2f TextureSize = getPlaceSize(place);
-    m_brokenAnimation.addTileset(texture, TextureSize, { 4, 6 }, 24, gf::seconds(1.0f / 25.0f));
+
+    const gf::Vector2f textureSize = gf::vec(1.0f / tilesetLayout.width, 1.0f / tilesetLayout.height);
+
+    // Add tileset without empty frame
+    for (int i = 0; i < static_cast<int>(brokenTextures.size()) - 1; ++i) {
+      auto &texture = brokenTextures[i];
+
+      m_brokenAnimation.addTileset(texture, textureSize, tilesetLayout, tilesetLayout.width * tilesetLayout.height, gf::seconds(1.0f / 25.0f));
+    }
+
+    // Add the last tileset with probably missing frames
+    m_brokenAnimation.addTileset(brokenTextures.back(), textureSize, tilesetLayout, lastNumberFrame, gf::seconds(1.0f / 25.0f));
   }
 
   void PlaceEntity::update(gf::Time time) {
@@ -82,6 +107,12 @@ namespace pem {
       animation.setPosition(m_position);
       target.draw(animation, states);
     }
+    else {
+      gf::Sprite sprite;
+      sprite.setTexture(m_workingTexture);
+      sprite.setPosition(m_position);
+      target.draw(sprite);
+    }
   }
 
   ShipEntity::ShipEntity(gf::ResourceManager& resources, GameModel &model)
@@ -96,9 +127,142 @@ namespace pem {
     m_rightFlameBrokenAnimation.addTileset(resources.getTexture("animations/right_flame_broken.png"), FlameTextureSize, { 6, 4}, 24, gf::seconds(1.0f / 25.0f));
 
     // Add all animations for broken place
-    m_places.emplace_back(resources.getTexture("animations/left_engine_broken.png"), m_model, PlaceType::LeftEngine);
-    m_places.emplace_back(resources.getTexture("animations/right_engine_broken.png"), m_model, PlaceType::RightEngine);
-    m_places.emplace_back(resources.getTexture("animations/prison_broken.png"), m_model, PlaceType::Prison);
+    m_places.emplace_back(
+      resources.getTexture("images/left_engine.png"),
+      std::vector<gf::Ref<gf::Texture>>({
+        resources.getTexture("animations/left_engine_broken.png")
+      }),
+      m_model, PlaceType::LeftEngine
+    );
+    m_places.emplace_back(
+      resources.getTexture("images/right_engine.png"),
+      std::vector<gf::Ref<gf::Texture>>({
+        resources.getTexture("animations/right_engine_broken.png")
+      }),
+      m_model, PlaceType::RightEngine
+    );
+    m_places.emplace_back(
+      resources.getTexture("images/prison.png"),
+      std::vector<gf::Ref<gf::Texture>>({
+        resources.getTexture("animations/prison_broken.png")
+      }),
+      m_model, PlaceType::Prison
+    );
+    m_places.emplace_back(
+      resources.getTexture("images/main_bridge.png"),
+      std::vector<gf::Ref<gf::Texture>>({
+        resources.getTexture("animations/main_bridge_broken_0.png"),
+        resources.getTexture("animations/main_bridge_broken_1.png"),
+        resources.getTexture("animations/main_bridge_broken_2.png"),
+        resources.getTexture("animations/main_bridge_broken_3.png")
+      }),
+      m_model, PlaceType::MainBridge, 20
+    );
+    m_places.emplace_back(
+      resources.getTexture("images/hyperdrive.png"),
+      std::vector<gf::Ref<gf::Texture>>({
+        resources.getTexture("animations/hyperdrive_broken_0.png"),
+        resources.getTexture("animations/hyperdrive_broken_1.png"),
+        resources.getTexture("animations/hyperdrive_broken_2.png"),
+        resources.getTexture("animations/hyperdrive_broken_3.png"),
+        resources.getTexture("animations/hyperdrive_broken_4.png")
+      }),
+      m_model, PlaceType::MidEngine, 12
+    );
+    m_places.emplace_back(
+      resources.getTexture("images/navigation.png"),
+      std::vector<gf::Ref<gf::Texture>>({
+        resources.getTexture("animations/navigation_broken_0.png"),
+        resources.getTexture("animations/navigation_broken_1.png"),
+        resources.getTexture("animations/navigation_broken_2.png"),
+        resources.getTexture("animations/navigation_broken_3.png"),
+        resources.getTexture("animations/navigation_broken_4.png")
+      }),
+      m_model, PlaceType::Navigation, 15
+    );
+    m_places.emplace_back(
+      resources.getTexture("images/communication_center.png"),
+      std::vector<gf::Ref<gf::Texture>>({
+        resources.getTexture("animations/communication_center_broken_0.png"),
+        resources.getTexture("animations/communication_center_broken_1.png"),
+        resources.getTexture("animations/communication_center_broken_2.png"),
+        resources.getTexture("animations/communication_center_broken_3.png"),
+        resources.getTexture("animations/communication_center_broken_4.png")
+      }),
+      m_model, PlaceType::CommunicationCenter, 6
+    );
+    m_places.emplace_back(
+      resources.getTexture("images/life_support.png"),
+      std::vector<gf::Ref<gf::Texture>>({
+        resources.getTexture("animations/life_support_broken_0.png"),
+        resources.getTexture("animations/life_support_broken_1.png"),
+        resources.getTexture("animations/life_support_broken_2.png"),
+        resources.getTexture("animations/life_support_broken_3.png"),
+        resources.getTexture("animations/life_support_broken_4.png")
+      }),
+      m_model, PlaceType::LifeSupport, 8
+    );
+    m_places.emplace_back(
+      resources.getTexture("images/greenhouse.png"),
+      std::vector<gf::Ref<gf::Texture>>({
+        resources.getTexture("animations/greenhouse_broken_0.png"),
+        resources.getTexture("animations/greenhouse_broken_1.png"),
+        resources.getTexture("animations/greenhouse_broken_2.png"),
+        resources.getTexture("animations/greenhouse_broken_3.png"),
+        resources.getTexture("animations/greenhouse_broken_4.png")
+      }),
+      m_model, PlaceType::GreenHouse, 6, gf::vec(3, 3)
+    );
+    m_places.emplace_back(
+      resources.getTexture("images/armory.png"),
+      std::vector<gf::Ref<gf::Texture>>({
+        resources.getTexture("animations/armory_broken_0.png"),
+        resources.getTexture("animations/armory_broken_1.png"),
+        resources.getTexture("animations/armory_broken_2.png")
+      }), m_model, PlaceType::Armory, 12
+    );
+    m_places.emplace_back(
+      resources.getTexture("images/storage.png"),
+      std::vector<gf::Ref<gf::Texture>>({
+        resources.getTexture("animations/storage_broken_0.png"),
+        resources.getTexture("animations/storage_broken_1.png"),
+      }),
+      m_model, PlaceType::Storage, 12
+    );
+    m_places.emplace_back(
+      resources.getTexture("images/bathroom.png"),
+        std::vector<gf::Ref<gf::Texture>>({
+        resources.getTexture("animations/bathroom_broken_0.png"),
+        resources.getTexture("animations/bathroom_broken_1.png"),
+      }),
+      m_model, PlaceType::Bathroom, 16
+    );
+    m_places.emplace_back(
+      resources.getTexture("images/infirmery.png"),
+      std::vector<gf::Ref<gf::Texture>>({
+        resources.getTexture("animations/infirmery_broken_0.png"),
+        resources.getTexture("animations/infirmery_broken_1.png"),
+      }),
+      m_model, PlaceType::Infirmery, 12
+    );
+    m_places.emplace_back(
+      resources.getTexture("images/dormitory.png"),
+      std::vector<gf::Ref<gf::Texture>>({
+        resources.getTexture("animations/dormitory_broken_0.png"),
+        resources.getTexture("animations/dormitory_broken_1.png"),
+        resources.getTexture("animations/dormitory_broken_2.png"),
+        resources.getTexture("animations/dormitory_broken_3.png"),
+      }),
+      m_model, PlaceType::Dormitory, 7
+    );
+    m_places.emplace_back(
+      resources.getTexture("images/refectory.png"),
+      std::vector<gf::Ref<gf::Texture>>({
+        resources.getTexture("animations/refectory_broken_0.png"),
+        resources.getTexture("animations/refectory_broken_1.png"),
+      }),
+      m_model, PlaceType::Refectory, 12
+    );
   }
 
   void ShipEntity::updateMouseCoords(const gf::Vector2f& coords) {
@@ -172,16 +336,16 @@ namespace pem {
       target.draw(animation, states);
     }
 
+    // Display the broken animations
+    for (auto &place: m_places) {
+      place.render(target, states);
+    }
+
     // Display the ship
     gf::Coordinates coordinates(target);
     gf::Sprite ship(m_shipTexture);
     ship.setPosition({ 0.0f, 0.0f });
     target.draw(ship, states);
-
-    // Display the broken animations
-    for (auto &place: m_places) {
-      place.render(target, states);
-    }
 
     auto drawCursor = [&target, &states, &coordinates](PlaceLocation location, gf::Color4f fillColor) {
       auto characterSize = coordinates.getRelativeCharacterSize(0.1f);
