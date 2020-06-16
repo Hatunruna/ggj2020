@@ -1,5 +1,7 @@
 #include "ConnectionScene.h"
 
+#include <cstring>
+
 #include <gf/Coordinates.h>
 #include <gf/Log.h>
 #include <gf/Unused.h>
@@ -24,8 +26,8 @@ namespace pem {
   {
     setClearColor(gf::Color::Black);
 
-    m_hostnameBuffer = "localhost";
-    m_nameBuffer = "toto";
+    std::strncpy(m_hostnameBuffer.data(), "localhost", 256);
+    std::strncpy(m_nameBuffer.data(), "toto", 256);
 
     addHudEntity(m_backgorund);
   }
@@ -55,19 +57,19 @@ namespace pem {
           m_scenes.replaceScene(m_scenes.lobby, m_scenes.fadeEffect, gf::seconds(0.4f));
 
           ClientHello data;
-          data.name = m_nameBuffer.getData();
+          data.name = std::string(m_nameBuffer.cbegin(), m_nameBuffer.cend());
           m_network.send(data);
         }
       } else {
         ImGui::Text("Hostname:");
         ImGui::SameLine();
         float x = ImGui::GetCursorPosX();
-        ImGui::InputText("###hostname", m_hostnameBuffer.getData(), m_hostnameBuffer.getSize());
+        ImGui::InputText("###hostname", m_hostnameBuffer.data(), m_hostnameBuffer.size());
 
         ImGui::Text("Name:");
         ImGui::SameLine();
         ImGui::SetCursorPosX(x);
-        ImGui::InputText("###name", m_nameBuffer.getData(), m_nameBuffer.getSize());
+        ImGui::InputText("###name", m_nameBuffer.data(), m_nameBuffer.size());
         ImGui::SetItemDefaultFocus();
 
         ImGui::Indent();
@@ -80,7 +82,7 @@ namespace pem {
         ImGui::SameLine();
 
         if (ImGui::Button("Connect", DefaultButtonSize)) {
-          m_network.connect(m_hostnameBuffer.getData());
+          m_network.connect(std::string(m_hostnameBuffer.cbegin(), m_hostnameBuffer.cend()));
           m_connectionAsked = true;
         }
 

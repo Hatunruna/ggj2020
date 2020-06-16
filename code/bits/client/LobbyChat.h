@@ -3,8 +3,6 @@
 
 #include <vector>
 
-#include <gf/StaticString.h>
-
 #include <imgui.h>
 
 #include "common/ProtocolData.h"
@@ -34,7 +32,7 @@ namespace pem {
 
   protected:
     ClientNetwork& m_network;
-    gf::StaticString<255> m_lineBuffer;
+    std::array<char, 256> m_lineBuffer;
     std::vector<MessageData> m_messages;
     bool m_autoscroll;
 

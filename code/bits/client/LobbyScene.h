@@ -2,7 +2,6 @@
 #define PEM_LOBBY_SCENE_H
 
 #include <gf/Scene.h>
-#include <gf/StaticString.h>
 
 #include "common/GameSettings.h"
 #include "common/ProtocolData.h"
@@ -27,8 +26,8 @@ namespace pem {
   private:
     Scenes& m_scenes;
     ClientNetwork& m_network;
-    gf::StaticString<255> m_roomBuffer;
-    gf::StaticString<255> m_nameBuffer;
+    std::array<char, 256> m_roomBuffer;
+    std::array<char, 256> m_nameBuffer;
 
     GameSettings m_settings;
     GameInstanceSettings m_instance;

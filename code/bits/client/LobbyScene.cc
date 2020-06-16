@@ -29,8 +29,8 @@ namespace pem {
   {
     setClearColor(gf::Color::Black);
 
-    m_roomBuffer.clear();
-    m_nameBuffer.clear();
+    m_roomBuffer[0] = '\0';
+    m_nameBuffer[0] = '\0';
 
     addHudEntity(m_backgorund);
   }
@@ -70,7 +70,7 @@ namespace pem {
         case ServerChangeName::type: {
           gf::Log::debug("(LOBBY) Receive ServerChangeName\n");
           auto data = packet.as<ServerChangeName>();
-          m_nameBuffer = data.name;
+          std::strncpy(m_nameBuffer.data(), data.name.c_str(), 256);
           break;
         }
 
@@ -197,14 +197,14 @@ namespace pem {
       ImGui::Spacing();
       ImGui::Text("Name:");
       ImGui::SameLine();
-      ImGui::InputText("###player_name", m_nameBuffer.getData(), m_nameBuffer.getSize());
+      ImGui::InputText("###player_name", m_nameBuffer.data(), m_nameBuffer.size());
 
       ImGui::Spacing();
       ImGui::Indent();
 
       if (ImGui::Button("Change name", DefaultButtonSize) && m_nameBuffer[0] != '\0') {
         ClientChangeName data;
-        data.name = m_nameBuffer.getData();
+        data.name = std::string(m_nameBuffer.cbegin(), m_nameBuffer.cend());
         m_network.send(data);
       }
 
@@ -230,7 +230,7 @@ namespace pem {
       ImGui::Spacing();
       ImGui::Text("Name:");
       ImGui::SameLine();
-      ImGui::InputText("###room_name", m_roomBuffer.getData(), m_roomBuffer.getSize());
+      ImGui::InputText("###room_name", m_roomBuffer.data(), m_roomBuffer.size());
       ImGui::SliderScalar(" players", ImGuiDataType_S32, &m_instance.playersByTeam, &m_settings.playersByTeamMin, &m_settings.playersByTeamMax);
 
       ImGui::Spacing();
@@ -238,10 +238,10 @@ namespace pem {
 
       if (m_settings.teamsMin > 0 && ImGui::Button("Create room", DefaultButtonSize) && m_roomBuffer[0] != '\0') {
         ClientCreateRoom data;
-        data.name = m_roomBuffer.getData();
+        data.name = std::string(m_roomBuffer.cbegin(), m_roomBuffer.cend());
         data.settings = m_instance;
         m_network.send(data);
-        m_roomBuffer.clear();
+        m_roomBuffer[0] = '\0';
       }
 
       ImGui::EndGroup();

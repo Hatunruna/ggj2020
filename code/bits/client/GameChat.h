@@ -3,7 +3,6 @@
 
 #include <vector>
 
-#include <gf/StaticString.h>
 #include <gf/Coordinates.h>
 
 #include "common/ProtocolData.h"

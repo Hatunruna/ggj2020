@@ -2,7 +2,6 @@
 #define PEM_CONNECTION_SCENE_H
 
 #include <gf/Scene.h>
-#include <gf/StaticString.h>
 
 #include "BackgroundEntity.h"
 #include "ClientNetwork.h"
@@ -26,8 +25,8 @@ namespace pem {
   private:
     Scenes& m_scenes;
     ClientNetwork& m_network;
-    gf::StaticString<255> m_hostnameBuffer;
-    gf::StaticString<255> m_nameBuffer;
+    std::array<char, 256> m_hostnameBuffer;
+    std::array<char, 256> m_nameBuffer;
     bool m_connectionAsked;
 
     BackgroundEntity m_backgorund;

@@ -61,7 +61,7 @@ namespace pem {
           if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && message.origin != gf::InvalidId) {
             m_selectedUserName = "@" + message.author;
             m_selectedUserId = message.origin;
-            m_lineBuffer.clear();
+            m_lineBuffer[0] = '\0';
           }
 
           ImGui::SameLine();
@@ -95,11 +95,11 @@ namespace pem {
       //Fix InputText not resized correctly
       ImGui::PushItemWidth(-1.0f);
 
-      size_t oldSize = strlen(m_lineBuffer.getData());
+      size_t oldSize = std::strlen(m_lineBuffer.data());
 
-      if (ImGui::InputText("###chat", m_lineBuffer.getData(), m_lineBuffer.getSize(), ImGuiInputTextFlags_EnterReturnsTrue) && m_lineBuffer[0] != '\0') {
+      if (ImGui::InputText("###chat", m_lineBuffer.data(), m_lineBuffer.size(), ImGuiInputTextFlags_EnterReturnsTrue) && m_lineBuffer[0] != '\0') {
           ClientChatMessage data;
-          data.content = m_lineBuffer.getData();
+          data.content = std::string(m_lineBuffer.cbegin(), m_lineBuffer.cend());
 
           if (m_selectedUserId != gf::InvalidId)
           {
@@ -109,7 +109,7 @@ namespace pem {
           }
 
           m_network.send(data);
-          m_lineBuffer.clear();
+          m_lineBuffer[0] = '\0';
           ImGui::SetKeyboardFocusHere(-1);
       }
 
@@ -137,7 +137,7 @@ namespace pem {
           if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
             m_selectedUserName = "@" + player.second.name;
             m_selectedUserId = player.second.id;
-            m_lineBuffer.clear();
+            m_lineBuffer[0] = '\0';
           }
         }
       }

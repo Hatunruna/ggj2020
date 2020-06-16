@@ -43,7 +43,7 @@ namespace pem {
   : m_network(network)
   , m_autoscroll(false)
   {
-    m_lineBuffer.clear();
+    m_lineBuffer[0] = '\0';
   }
 
   void LobbyChat::appendMessage(const MessageData& message) {
@@ -90,11 +90,11 @@ namespace pem {
     //Fix InputText not resized correctly
     ImGui::SetNextItemWidth(ImGui::GetWindowWidth());
 
-    if (ImGui::InputText("###chat", m_lineBuffer.getData(), m_lineBuffer.getSize(), ImGuiInputTextFlags_EnterReturnsTrue) && m_lineBuffer[0] != '\0') {
+    if (ImGui::InputText("###chat", m_lineBuffer.data(), m_lineBuffer.size(), ImGuiInputTextFlags_EnterReturnsTrue) && m_lineBuffer[0] != '\0') {
       ClientChatMessage data;
-      data.content = m_lineBuffer.getData();
+      data.content = std::string(m_lineBuffer.cbegin(), m_lineBuffer.cend());
       m_network.send(data);
-      m_lineBuffer.clear();
+      m_lineBuffer[0] = '\0';
       ImGui::SetKeyboardFocusHere(-1);
     }
   }
