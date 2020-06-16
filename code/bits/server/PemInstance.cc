@@ -208,7 +208,66 @@ namespace pem {
 
     gf::Log::debug("(PemInstance) All players are played\n");
 
-    // Jammed the place
+    // Handle actions which non related to room state
+
+    // Spy room
+    for (auto &entry: m_members) {
+      auto &member = entry.second;
+
+      // Ignore prisonner
+      if (member.prison > 0) {
+        continue;
+      }
+
+      // When the player want spy a place
+      if (member.card == CardType::Hide) {
+        gf::Log::debug("(PemInstance) Player %lX spies the place '%s'\n", entry.first, placeTypeString(member.place).c_str());
+
+        for (auto &other: m_members) {
+          if (other.first != entry.first && other.second.place == member.place) {
+            gf::Log::debug("(PemInstance) Player %lX has '%s' at the place '%s'\n", other.first, cardTypeString(other.second.card).c_str(), placeTypeString(member.place).c_str());
+
+            std::string otherName;
+            const auto& serverPlayers = getPlayers();
+            for (const auto& serverPlayer: serverPlayers) {
+              if (serverPlayer.id == other.first) {
+                otherName = serverPlayer.name;
+                break;
+              }
+            }
+
+            MessageData message;
+            message.author = "server";
+            message.origin = gf::InvalidId;
+            message.recipient = other.first;
+            message.content = "You see the player '" + otherName + "' '" + cardTypeString(other.second.card) + "' at the place '" + placeTypeString(other.second.place) + "'.";
+
+            ServerChatMessage packet;
+            packet.message = message;
+
+            send(entry.first, packet);
+          }
+        }
+      }
+    }
+
+    // Remove hide action
+    // No in previous loop to permit the hidden player to see each other
+    for ( auto &entry: m_members) {
+      auto &member = entry.second;
+
+      // Ignore prisonner
+      if (member.prison > 0) {
+        continue;
+      }
+
+      // When the player want spy a place
+      if (member.card == CardType::Hide) {
+        member.card = CardType::None;
+      }
+    }
+
+    // Jammed room
     for (const auto &entry: m_members) {
       const auto &member = entry.second;
 
@@ -223,7 +282,8 @@ namespace pem {
 
         // We remove the other cards
         for (auto &other: m_members) {
-          if (other.first != entry.first && other.second.place == member.place) {
+          // If not same player at same location with a action card
+          if (other.first != entry.first && other.second.place == member.place && other.second.card != CardType::None) {
             other.second.card = CardType::None;
             gf::Log::debug("(PemInstance) Player %lX action has been canceled\n", other.first);
 
