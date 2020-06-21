@@ -11,19 +11,10 @@
 
 namespace pem {
 
-//     Blocked,    // true
-//     FalseAlarm, // false
-//     Blocked,     // true
-
-  // enum class PlaceState : uint8_t {
-  //   Broken,
-  //   Working,
-  // };
-
   enum class ActionType : uint8_t {
-    AlarmStart,
-    AlarmStop,
+    Alarm,
     Blocked,
+    FakeFix,
     Demine,
     Explode,
     Repair,
@@ -51,6 +42,9 @@ namespace pem {
 
     // Blocked
     bool blocked = false;
+
+    // False Repair
+    bool fakeFix = false;
 
     // SetupJammer
     // PlaceState previous;
@@ -91,7 +85,7 @@ namespace pem {
       std::map<PlaceType, ShipPlace> places;
 
     private:
-      std::vector<Action>::iterator getLastActionIterator(std::vector<Action> &actions);
+      std::vector<Action>::iterator getLastTurnAction(std::vector<Action> &actions);
   };
 }
 

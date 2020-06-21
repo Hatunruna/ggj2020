@@ -65,10 +65,7 @@ namespace pem {
         break;
 
       case CardType::FalseAlarm:
-        action.actionType = ActionType::AlarmStart;
-        action.remainingTurn = 0;
-        actions.push_back(action);
-        action.actionType = ActionType::AlarmStop;
+        action.actionType = ActionType::Alarm;
         action.remainingTurn = 1;
         break;
 
@@ -89,6 +86,11 @@ namespace pem {
 
       case CardType::Repair:
         action.actionType = ActionType::Repair;
+        action.remainingTurn = 0;
+        break;
+
+      case CardType::FalseRepair1:
+        action.actionType = ActionType::FakeFix;
         action.remainingTurn = 0;
         break;
 
@@ -123,20 +125,22 @@ namespace pem {
     for (auto &place: places) {
       // Select the action to do
       // NOTE: Useless since the vector is ordered but it's simpler
-      auto partition = getLastActionIterator(place.second.actions);
+      // auto partition = getLastActionIterator(place.second.actions);
 
       // Apply actions
       auto &actions = place.second.actions;
-      for (auto it = actions.begin(); it != partition;++it) {
-        switch (it->actionType) {
-          case ActionType::AlarmStart:
-            gf::Log::debug("(Ship) The place '%s' triggers a false alarm\n", placeTypeString(place.first).c_str());
-            place.second.alarm = true;
-            break;
-
-          case ActionType::AlarmStop:
-            gf::Log::debug("(Ship) The place '%s' end of a false alarm\n", placeTypeString(place.first).c_str());
-            place.second.alarm = false;
+      for (unsigned i = 0; i < actions.size(); ++i) {
+        auto &action = actions.at(i);
+        switch (action.actionType) {
+          case ActionType::Alarm:
+            if (action.remainingTurn == 0) {
+              gf::Log::debug("(Ship) The place '%s' end of a false alarm\n", placeTypeString(place.first).c_str());
+              place.second.alarm = false;
+            }
+            else {
+              gf::Log::debug("(Ship) The place '%s' triggers a false alarm\n", placeTypeString(place.first).c_str());
+              place.second.alarm = true;
+            }
             break;
 
           case ActionType::Demine: {
@@ -146,12 +150,15 @@ namespace pem {
             });
 
             actions.erase(itRemove, actions.end());
-            // Update the last action if needed
-            partition = getLastActionIterator(place.second.actions);
             break;
           }
 
           case ActionType::Explode:
+            // Handle the action only when its turn
+            if (action.remainingTurn != 0) {
+              break;
+            }
+
             gf::Log::debug("(Ship) The place '%s' has explode\n", placeTypeString(place.first).c_str());
             place.second.broken = true;
             break;
@@ -173,7 +180,7 @@ namespace pem {
       }
 
       // Remove old actions
-      actions.erase(actions.begin(), partition);
+      actions.erase(actions.begin(), getLastTurnAction(actions));
 
       // Update remaining turns
       for (auto &action: actions) {
@@ -207,7 +214,7 @@ namespace pem {
     return static_cast<float>(workingRoom) / static_cast<float>(places.size());
   }
 
-  std::vector<Action>::iterator Ship::getLastActionIterator(std::vector<Action> &actions) {
+  std::vector<Action>::iterator Ship::getLastTurnAction(std::vector<Action> &actions) {
     auto partition = std::partition(actions.begin(), actions.end(), [](const auto &action) {
       return action.remainingTurn == 0;
     });
