@@ -44,6 +44,8 @@ namespace pem {
       // { CardType::Block,         2 },
       // { CardType::Release,       1 },
       { CardType::FalseAlarm,    3 },
+      { CardType::FalseRepair1,  2 },
+      { CardType::FalseRepair2,  2 },
       { CardType::PlaceBomb0,   10 },
       { CardType::PlaceBomb1,    5 },
       { CardType::PlaceBomb2,    3 },

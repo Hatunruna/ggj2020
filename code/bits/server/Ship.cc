@@ -69,6 +69,16 @@ namespace pem {
         action.remainingTurn = 1;
         break;
 
+      case CardType::FalseRepair1:
+        action.actionType = ActionType::FakeFix;
+        action.remainingTurn = 1;
+        break;
+
+      case CardType::FalseRepair2:
+        action.actionType = ActionType::FakeFix;
+        action.remainingTurn = 2;
+        break;
+
       case CardType::PlaceBomb0:
         action.actionType = ActionType::Explode;
         action.remainingTurn = 0;
@@ -86,11 +96,6 @@ namespace pem {
 
       case CardType::Repair:
         action.actionType = ActionType::Repair;
-        action.remainingTurn = 0;
-        break;
-
-      case CardType::FalseRepair1:
-        action.actionType = ActionType::FakeFix;
         action.remainingTurn = 0;
         break;
 
@@ -123,10 +128,6 @@ namespace pem {
 
   void Ship::updateActions() {
     for (auto &place: places) {
-      // Select the action to do
-      // NOTE: Useless since the vector is ordered but it's simpler
-      // auto partition = getLastActionIterator(place.second.actions);
-
       // Apply actions
       auto &actions = place.second.actions;
       for (unsigned i = 0; i < actions.size(); ++i) {
@@ -163,9 +164,19 @@ namespace pem {
             place.second.broken = true;
             break;
 
+          case ActionType::FakeFix:
+            if (action.remainingTurn == 0) {
+              place.second.fakeFix = false;
+            }
+            else {
+              place.second.fakeFix = true;
+            }
+
+            gf::Log::debug("(Ship) The place '%s' has been fake fixed\n", placeTypeString(place.first).c_str());
+            break;
+
           case ActionType::Blocked:
             gf::Log::debug("(Ship) The place '%s' is blocked\n", placeTypeString(place.first).c_str());
-
             break;
 
           case ActionType::Repair:
@@ -197,6 +208,9 @@ namespace pem {
 
       if (state.alarm) {
         states.emplace(place.first, false);
+      }
+      else if (state.fakeFix) {
+        states.emplace(place.first, true);
       }
       else {
         states.emplace(place.first, !state.broken);
