@@ -267,7 +267,7 @@ namespace pem {
       }
     }
 
-    // Jammed room
+    // Blocked room
     for (const auto &entry: m_members) {
       const auto &member = entry.second;
 
@@ -291,7 +291,7 @@ namespace pem {
             message.author = "server";
             message.origin = gf::InvalidId;
             message.recipient = other.first;
-            message.content = "The place " + placeTypeString(member.place) + " has been jammed. Our action has been canceled.";
+            message.content = "The place " + placeTypeString(member.place) + " has been blocked. Our action has been canceled.";
 
             ServerChatMessage packet;
             packet.message = message;

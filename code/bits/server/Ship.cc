@@ -55,7 +55,7 @@ namespace pem {
       Action action;
       switch (card) {
       case CardType::Block:
-        action.actionType = ActionType::Jammed;
+        action.actionType = ActionType::Blocked;
         action.remainingTurn = 0;
         break;
 
@@ -156,8 +156,8 @@ namespace pem {
             place.second.broken = true;
             break;
 
-          case ActionType::Jammed:
-            gf::Log::debug("(Ship) The place '%s' is jammed\n", placeTypeString(place.first).c_str());
+          case ActionType::Blocked:
+            gf::Log::debug("(Ship) The place '%s' is blocked\n", placeTypeString(place.first).c_str());
 
             break;
 

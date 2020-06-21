@@ -13,7 +13,7 @@ namespace pem {
 
 //     Blocked,    // true
 //     FalseAlarm, // false
-//     Jammed,     // true
+//     Blocked,     // true
 
   // enum class PlaceState : uint8_t {
   //   Broken,
@@ -23,7 +23,7 @@ namespace pem {
   enum class ActionType : uint8_t {
     AlarmStart,
     AlarmStop,
-    Jammed,
+    Blocked,
     Demine,
     Explode,
     Repair,
@@ -49,8 +49,8 @@ namespace pem {
     // Alarm
     bool alarm = false;
 
-    // Jammed
-    bool jammed = false;
+    // Blocked
+    bool blocked = false;
 
     // SetupJammer
     // PlaceState previous;
