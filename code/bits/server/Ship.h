@@ -18,6 +18,7 @@ namespace pem {
     Demine,
     Explode,
     Repair,
+    Examine,
   };
 
   struct Action {
@@ -81,6 +82,7 @@ namespace pem {
 
       std::map<PlaceType, bool> getPublicStates() const;
       float computeDistance() const;
+      std::vector<std::string> getPlaceStateStrings(PlaceType place) const;
 
       std::map<PlaceType, ShipPlace> places;
 

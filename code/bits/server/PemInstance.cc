@@ -344,6 +344,28 @@ namespace pem {
     // Apply the different pending actions
     m_ship.updateActions();
 
+    // Examine a room
+    for (const auto &entry: m_members) {
+      const auto &member = entry.second;
+
+      if (member.card == CardType::Examine) {
+        MessageData message;
+        message.author = "server";
+        message.origin = gf::InvalidId;
+        message.recipient = entry.first;
+        message.content = "You examined the room '" + placeTypeString(member.place) + "':";
+
+        for (auto &string: m_ship.getPlaceStateStrings(member.place)) {
+          message.content += "\n" + string;
+        }
+
+        ServerChatMessage packet;
+        packet.message = message;
+
+        send(entry.first, packet);
+      }
+    }
+
     // Send the ship states
     PemServerUpdateShip update;
     update.states = std::move(m_ship.getPublicStates());

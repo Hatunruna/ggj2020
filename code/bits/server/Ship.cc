@@ -64,6 +64,11 @@ namespace pem {
         action.remainingTurn = 0;
         break;
 
+      case CardType::Examine:
+        action.actionType = ActionType::Examine;
+        action.remainingTurn = 0;
+        break;
+
       case CardType::FalseAlarm:
         action.actionType = ActionType::Alarm;
         action.remainingTurn = 1;
@@ -154,6 +159,11 @@ namespace pem {
             break;
           }
 
+          case ActionType::Examine:
+            gf::Log::debug("(Ship) The place '%s' has been examine\n", placeTypeString(place.first).c_str());
+            // Nothing to do, the action is handle after the place update
+            break;
+
           case ActionType::Explode:
             // Handle the action only when its turn
             if (action.remainingTurn != 0) {
@@ -165,6 +175,11 @@ namespace pem {
             break;
 
           case ActionType::FakeFix:
+            // If the room is OK, nothing to do
+            if (!place.second.broken) {
+              break;
+            }
+
             if (action.remainingTurn == 0) {
               place.second.fakeFix = false;
             }
@@ -226,6 +241,31 @@ namespace pem {
     });
 
     return static_cast<float>(workingRoom) / static_cast<float>(places.size());
+  }
+
+  std::vector<std::string> Ship::getPlaceStateStrings(PlaceType place) const {
+    std::vector<std::string> stateStrings;
+
+    const ShipPlace state = places.at(place);
+
+    if (state.alarm) {
+      stateStrings.push_back("The place is under false alarm");
+    }
+    else if (state.fakeFix) {
+      stateStrings.push_back("The repair is fake");
+    }
+
+    if (state.broken) {
+      stateStrings.push_back("The place is broken");
+    }
+    else if (stateStrings.size() == 0) {
+      stateStrings.push_back("Everything's in order");
+    }
+    else {
+      stateStrings.push_back("The room is fonctional");
+    }
+
+    return stateStrings;
   }
 
   std::vector<Action>::iterator Ship::getLastTurnAction(std::vector<Action> &actions) {

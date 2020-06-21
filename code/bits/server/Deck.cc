@@ -26,9 +26,10 @@ namespace pem {
       // { CardType::Track,       2 },
       // { CardType::Block,       2 },
       // { CardType::Release,     1 },
+      { CardType::Demine,      2 },
+      { CardType::Examine,     5 },
       { CardType::Hide,        2 },
       { CardType::Block,       2 },
-      { CardType::Demine,     15 },
       { CardType::Release,     1 },
       { CardType::Repair,     15 },
     };
