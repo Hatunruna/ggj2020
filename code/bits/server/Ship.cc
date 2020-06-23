@@ -99,6 +99,16 @@ namespace pem {
         action.remainingTurn = 2;
         break;
 
+      case CardType::Reinforce1:
+        action.actionType = ActionType::Reinforce;
+        action.remainingTurn = 1;
+        break;
+
+      case CardType::Reinforce2:
+        action.actionType = ActionType::Reinforce;
+        action.remainingTurn = 2;
+        break;
+
       case CardType::Repair:
         action.actionType = ActionType::Repair;
         action.remainingTurn = 0;
@@ -125,9 +135,21 @@ namespace pem {
 
   void Ship::sortActions() {
     for (auto &entry: places) {
+      for (auto &action: entry.second.actions) {
+        gf::Log::debug("BEFORE: place %s: action %d, turn %d\n", placeTypeString(entry.first).c_str(), static_cast<int8_t>(action.actionType), action.remainingTurn);
+      }
+    }
+
+    for (auto &entry: places) {
       auto &place = entry.second;
 
       std::sort(place.actions.begin(), place.actions.end());
+    }
+
+    for (auto &entry: places) {
+      for (auto &action: entry.second.actions) {
+        gf::Log::debug("AFTER: place %s: action %d, turn %d\n", placeTypeString(entry.first).c_str(), static_cast<int8_t>(action.actionType), action.remainingTurn);
+      }
     }
   }
 
@@ -170,8 +192,14 @@ namespace pem {
               break;
             }
 
-            gf::Log::debug("(Ship) The place '%s' has explode\n", placeTypeString(place.first).c_str());
-            place.second.broken = true;
+            if (place.second.reinforced == ReinforcedState::Reinforced) {
+              place.second.reinforced = ReinforcedState::Used;
+              gf::Log::debug("(Ship) The place '%s' has been protected by a reinforcement\n", placeTypeString(place.first).c_str());
+            }
+            else {
+              place.second.broken = true;
+              gf::Log::debug("(Ship) The place '%s' has explode\n", placeTypeString(place.first).c_str());
+            }
             break;
 
           case ActionType::FakeFix:
@@ -192,6 +220,19 @@ namespace pem {
 
           case ActionType::Blocked:
             gf::Log::debug("(Ship) The place '%s' is blocked\n", placeTypeString(place.first).c_str());
+            break;
+
+          case ActionType::Reinforce:
+            // If it's the first turn
+            if (action.remainingTurn > 0 && place.second.reinforced == ReinforcedState::None) {
+              place.second.reinforced = ReinforcedState::Reinforced;
+              gf::Log::debug("(Ship) The place '%s' is reinforced\n", placeTypeString(place.first).c_str());
+            }
+            // End of reinforcement
+            else if (action.remainingTurn == 0) {
+              place.second.reinforced = ReinforcedState::None;
+              gf::Log::debug("(Ship) The place '%s' is not reinforced\n", placeTypeString(place.first).c_str());
+            }
             break;
 
           case ActionType::Repair:
@@ -251,8 +292,16 @@ namespace pem {
     if (state.alarm) {
       stateStrings.push_back("The place is under false alarm");
     }
-    else if (state.fakeFix) {
-      stateStrings.push_back("The repair is fake");
+
+    if (state.fakeFix) {
+      stateStrings.push_back("The repair is faked");
+    }
+
+    if (state.reinforced == ReinforcedState::Reinforced) {
+      stateStrings.push_back("The place is reinforced");
+    }
+    else if (state.reinforced == ReinforcedState::Used) {
+      stateStrings.push_back("The reinforcement is used. It has avoid a explosion.");
     }
 
     if (state.broken) {

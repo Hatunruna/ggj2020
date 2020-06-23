@@ -16,6 +16,7 @@ namespace pem {
     Blocked,
     FakeFix,
     Demine,
+    Reinforce,
     Explode,
     Repair,
     Examine,
@@ -26,10 +27,16 @@ namespace pem {
     int remainingTurn;
 
     bool operator<(const Action& other) {
-      bool turnLesser = remainingTurn < other.remainingTurn;
+      bool turnGreater = remainingTurn > other.remainingTurn;
       bool actionLesser = remainingTurn == other.remainingTurn && static_cast<uint8_t>(actionType) < static_cast<uint8_t>(other.actionType);
-      return turnLesser || actionLesser;
+      return turnGreater || actionLesser;
     }
+  };
+
+  enum class ReinforcedState {
+    Reinforced,   // Protect from explode
+    Used,         // The protection is gone. This state is reach when the reinforcement has already protected from a explosion
+    None,         // Default state (no protection)
   };
 
   struct ShipPlace {
@@ -46,6 +53,9 @@ namespace pem {
 
     // False Repair
     bool fakeFix = false;
+
+    // Reinforced
+    ReinforcedState reinforced = ReinforcedState::None;
 
     // SetupJammer
     // PlaceState previous;
@@ -77,6 +87,13 @@ namespace pem {
       Ship(int32_t players);
 
       void addAction(PlaceType place, CardType card);
+
+      /**
+       * Sort the actions by highest turn then by lower ActionType.
+       * We place the highest actions in first to handle the specific
+       * case like reinforcement: we need to apply a eventually reinforcement
+       * before an explosion
+       */
       void sortActions();
       void updateActions();
 

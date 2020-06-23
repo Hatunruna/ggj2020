@@ -65,5 +65,3 @@ do
   echo "killing Server and client ..."
   kill_process
 done
-
-
