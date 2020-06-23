@@ -26,8 +26,8 @@ namespace pem {
   {
     setClearColor(gf::Color::Black);
 
-    std::strncpy(m_hostnameBuffer.data(), "localhost", 256);
-    std::strncpy(m_nameBuffer.data(), "toto", 256);
+    std::strncpy(m_hostnameBuffer.data(), "localhost", 255);
+    std::strncpy(m_nameBuffer.data(), "toto", 255);
 
     addHudEntity(m_backgorund);
   }
@@ -57,7 +57,7 @@ namespace pem {
           m_scenes.replaceScene(m_scenes.lobby, m_scenes.fadeEffect, gf::seconds(0.4f));
 
           ClientHello data;
-          data.name = std::string(m_nameBuffer.cbegin(), m_nameBuffer.cend());
+          data.name = std::string(m_nameBuffer.data());
           m_network.send(data);
         }
       } else {
@@ -82,7 +82,7 @@ namespace pem {
         ImGui::SameLine();
 
         if (ImGui::Button("Connect", DefaultButtonSize)) {
-          m_network.connect(std::string(m_hostnameBuffer.cbegin(), m_hostnameBuffer.cend()));
+          m_network.connect(std::string(m_hostnameBuffer.data()));
           m_connectionAsked = true;
         }
 

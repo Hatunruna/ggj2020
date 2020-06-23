@@ -92,7 +92,7 @@ namespace pem {
 
     if (ImGui::InputText("###chat", m_lineBuffer.data(), m_lineBuffer.size(), ImGuiInputTextFlags_EnterReturnsTrue) && m_lineBuffer[0] != '\0') {
       ClientChatMessage data;
-      data.content = std::string(m_lineBuffer.cbegin(), m_lineBuffer.cend());
+      data.content = std::string(m_lineBuffer.data());
       m_network.send(data);
       m_lineBuffer[0] = '\0';
       ImGui::SetKeyboardFocusHere(-1);

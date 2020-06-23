@@ -70,7 +70,7 @@ namespace pem {
         case ServerChangeName::type: {
           gf::Log::debug("(LOBBY) Receive ServerChangeName\n");
           auto data = packet.as<ServerChangeName>();
-          std::strncpy(m_nameBuffer.data(), data.name.c_str(), 256);
+          std::strncpy(m_nameBuffer.data(), data.name.c_str(), 255);
           break;
         }
 
@@ -204,7 +204,7 @@ namespace pem {
 
       if (ImGui::Button("Change name", DefaultButtonSize) && m_nameBuffer[0] != '\0') {
         ClientChangeName data;
-        data.name = std::string(m_nameBuffer.cbegin(), m_nameBuffer.cend());
+        data.name = std::string(m_nameBuffer.data());
         m_network.send(data);
       }
 
@@ -238,7 +238,7 @@ namespace pem {
 
       if (m_settings.teamsMin > 0 && ImGui::Button("Create room", DefaultButtonSize) && m_roomBuffer[0] != '\0') {
         ClientCreateRoom data;
-        data.name = std::string(m_roomBuffer.cbegin(), m_roomBuffer.cend());
+        data.name = std::string(m_roomBuffer.data());
         data.settings = m_instance;
         m_network.send(data);
         m_roomBuffer[0] = '\0';
