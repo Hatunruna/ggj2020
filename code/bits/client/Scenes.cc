@@ -7,16 +7,9 @@
 
 namespace pem {
 
-  Scenes::Scenes(ClientNetwork& network, gf::Path searchDir)
+  Scenes::Scenes(gf::Path searchDir)
   : gf::SceneManager("Pax et Mors", InitialSize)
   , resources({ searchDir })
-  , intro(*this, resources)
-  , connection(*this, resources, network)
-  , lobby(*this, resources, network)
-  , room(*this, resources, network)
-  , game(*this, network, resources)
-  , credits(*this, resources)
-  , help(*this, resources)
   , myPlayerId(gf::InvalidId)
   {
     ImGui::CreateContext();
@@ -37,5 +30,23 @@ namespace pem {
     ImGui::DestroyContext();
   }
 
-}
+  void Scenes::loadingAssets(ClientNetwork& network) {
+    intro = std::make_unique<IntroScene>(*this, resources);
+    connection = std::make_unique<ConnectionScene>(*this, resources, network);
+    lobby = std::make_unique<LobbyScene>(*this, resources, network);
+    room = std::make_unique<RoomScene>(*this, resources, network);
+    game = std::make_unique<GameScene>(*this, network, resources);
+    credits = std::make_unique<CreditsScene>(*this, resources);
+    help = std::make_unique<HelpScene>(*this, resources);
+  }
 
+  void Scenes::loadingAsynchronousAssets(ClientNetwork& network) {
+    resources.asynchronousLoading(getWindow(), [this, &network](){
+      loadingAssets(network);
+    });
+
+    // Handle splash screen...
+    resources.waitLoading();
+  }
+
+}

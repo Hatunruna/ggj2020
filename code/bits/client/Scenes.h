@@ -16,7 +16,7 @@
 namespace pem {
 
   struct Scenes : public gf::SceneManager {
-    Scenes(ClientNetwork& network, gf::Path searchDir);
+    Scenes(gf::Path searchDir);
     Scenes(const Scenes&) = delete;
     Scenes(Scenes&&) = delete;
     ~Scenes();
@@ -24,15 +24,18 @@ namespace pem {
     Scenes& operator=(const Scenes&) = delete;
     Scenes& operator=(Scenes&&) = delete;
 
+    void loadingAssets(ClientNetwork& network);
+    void loadingAsynchronousAssets(ClientNetwork& network);
+
     gf::ResourceManager resources;
 
-    IntroScene intro;
-    ConnectionScene connection;
-    LobbyScene lobby;
-    RoomScene room;
-    GameScene game;
-    CreditsScene credits;
-    HelpScene help;
+    std::unique_ptr<IntroScene> intro;
+    std::unique_ptr<ConnectionScene> connection;
+    std::unique_ptr<LobbyScene> lobby;
+    std::unique_ptr<RoomScene> room;
+    std::unique_ptr<GameScene> game;
+    std::unique_ptr<CreditsScene> credits;
+    std::unique_ptr<HelpScene> help;
 
     gf::SlideSegueEffect slideEffect;
     gf::FadeSegueEffect fadeEffect;

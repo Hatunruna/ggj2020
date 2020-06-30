@@ -18,6 +18,7 @@ int main(int argc, char *argv[]) {
   pem::ClientNetwork network;
 
   // Singletons
+  // Ressource Manager only for audio...
   gf::SingletonStorage<pem::ResourceManager> storageForResourceManager(pem::gResourceManager);
   pem::gResourceManager().addSearchDir(PEM_DATA_DIR);
 
@@ -28,9 +29,10 @@ int main(int argc, char *argv[]) {
   pem::gBackgroundMusic.play();
 
   // Start graphics
-  pem::Scenes scenes(network, PEM_DATA_DIR);
+  pem::Scenes scenes(PEM_DATA_DIR);
 
   if (argc == 3 && std::string(argv[1]) == "--debug") {
+    scenes.loadingAssets(network);
     gf::Log::debug("(CLIENT) run in debug mode\n");
 
     // Wait connection
@@ -107,7 +109,7 @@ int main(int argc, char *argv[]) {
       assert(packet.getType() == pem::ServerJoinRoom::type);
 
       auto data = packet.as<pem::ServerJoinRoom>();
-      scenes.room.startRoom(data.settings);
+      scenes.room->startRoom(data.settings);
 
       gf::Log::debug("Joined room %lX\n", data.room);
     }
@@ -168,14 +170,15 @@ int main(int argc, char *argv[]) {
 
       assert(packet.getType() == pem::ServerStartGame::type);
       assert(players.size() == 4u);
-      scenes.game.initialize(players);
+      scenes.game->initialize(players);
     }
 
-    scenes.pushScene(scenes.game);
+    scenes.pushScene(*scenes.game);
     scenes.run();
   }
   else {
-    scenes.pushScene(scenes.intro);
+    scenes.loadingAsynchronousAssets(network);
+    scenes.pushScene(*scenes.intro);
     scenes.run();
   }
   return EXIT_SUCCESS;

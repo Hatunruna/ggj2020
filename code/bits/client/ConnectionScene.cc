@@ -54,7 +54,7 @@ namespace pem {
 
         if (m_network.isConnected()) {
           m_connectionAsked = false;
-          m_scenes.replaceScene(m_scenes.lobby, m_scenes.fadeEffect, gf::seconds(0.4f));
+          m_scenes.replaceScene(*m_scenes.lobby, m_scenes.fadeEffect, gf::seconds(0.4f));
 
           ClientHello data;
           data.name = std::string(m_nameBuffer.data());
@@ -76,7 +76,7 @@ namespace pem {
 
         if (ImGui::Button("Back", DefaultButtonSize)) {
           m_connectionAsked = false;
-          m_scenes.replaceScene(m_scenes.intro, m_scenes.fadeEffect, gf::seconds(0.4f));
+          m_scenes.replaceScene(*m_scenes.intro, m_scenes.fadeEffect, gf::seconds(0.4f));
         }
 
         ImGui::SameLine();

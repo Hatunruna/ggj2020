@@ -63,7 +63,7 @@ namespace pem {
         case ServerDisconnect::type:
           gf::Log::debug("(LOBBY) Receive ServerDisconnect\n");
           m_network.disconnect();
-          m_scenes.replaceScene(m_scenes.connection, m_scenes.fadeEffect, gf::seconds(0.4f));
+          m_scenes.replaceScene(*m_scenes.connection, m_scenes.fadeEffect, gf::seconds(0.4f));
 //           m_scenes.replaceScene(m_scenes.connection);
           break;
 
@@ -108,8 +108,8 @@ namespace pem {
         case ServerJoinRoom::type: {
           gf::Log::debug("(LOBBY) Receive ServerJoinRoom\n");
           auto data = packet.as<ServerJoinRoom>();
-          m_scenes.room.startRoom(data.settings);
-          m_scenes.replaceScene(m_scenes.room, m_scenes.fadeEffect, gf::seconds(0.4f));
+          m_scenes.room->startRoom(data.settings);
+          m_scenes.replaceScene(*m_scenes.room, m_scenes.fadeEffect, gf::seconds(0.4f));
 //           m_scenes.replaceScene(m_scenes.room);
           // do not poll any more message as the next messages are for the room
           return;
@@ -253,7 +253,7 @@ namespace pem {
       ImGui::Indent();
 
       if (ImGui::Button("Back", DefaultButtonSize)) {
-        m_scenes.replaceScene(m_scenes.connection, m_scenes.fadeEffect, gf::seconds(0.4f));
+        m_scenes.replaceScene(*m_scenes.connection, m_scenes.fadeEffect, gf::seconds(0.4f));
 //         m_scenes.replaceScene(m_scenes.connection);
         m_network.disconnect();
       }

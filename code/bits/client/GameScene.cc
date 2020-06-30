@@ -98,7 +98,7 @@ namespace pem {
 
       // Go back to main menu
       // TODO: change to go back to lobby
-      m_scenes.replaceScene(m_scenes.intro, m_scenes.fadeEffect, gf::seconds(0.4f));
+      m_scenes.replaceScene(*m_scenes.intro, m_scenes.fadeEffect, gf::seconds(0.4f));
     }
   }
 

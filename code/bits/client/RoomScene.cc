@@ -57,7 +57,7 @@ namespace pem {
         case ServerLeaveRoom::type:
           gf::Log::debug("(ROOM) Receive ServerLeaveRoom\n");
           m_currentTeam = -1;
-          m_scenes.replaceScene(m_scenes.lobby, m_scenes.fadeEffect, gf::seconds(0.4f));
+          m_scenes.replaceScene(*m_scenes.lobby, m_scenes.fadeEffect, gf::seconds(0.4f));
           // do not poll any more message as the next messages are for the lobby
           return;
 
@@ -91,9 +91,9 @@ namespace pem {
 
         case ServerStartGame::type: {
           gf::Log::debug("(ROOM) Receive ServerStartGame\n");
-          m_scenes.replaceScene(m_scenes.game, m_scenes.glitchEffect, gf::seconds(0.4f));
+          m_scenes.replaceScene(*m_scenes.game, m_scenes.glitchEffect, gf::seconds(0.4f));
 //           m_scenes.replaceScene(m_scenes.game);
-          m_scenes.game.initialize(m_players);
+          m_scenes.game->initialize(m_players);
           // do not poll any more message as the next messages are for the game
           return;
         }
