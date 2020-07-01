@@ -54,6 +54,11 @@ namespace pem {
   void IntroScene::doUpdate(gf::Time time) {
     gf::unused(time);
 
+    if (!m_scenes.loadingFinished()) {
+      m_choice = MenuChoice::None;
+      return;
+    }
+
     switch (m_choice) {
       case MenuChoice::None:
         break;

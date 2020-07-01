@@ -26,6 +26,7 @@ namespace pem {
 
     void loadingAssets(ClientNetwork& network);
     void loadingAsynchronousAssets(ClientNetwork& network);
+    bool loadingFinished();
 
     gf::ResourceManager resources;
 
@@ -42,6 +43,9 @@ namespace pem {
     gf::GlitchSegueEffect glitchEffect;
 
     gf::Id myPlayerId;
+
+    bool m_asyncLoading;
+    bool m_loadingFinished;
   };
 
 }

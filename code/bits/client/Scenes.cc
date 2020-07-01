@@ -11,6 +11,8 @@ namespace pem {
   : gf::SceneManager("Pax et Mors", InitialSize)
   , resources({ searchDir })
   , myPlayerId(gf::InvalidId)
+  , m_asyncLoading(false)
+  , m_loadingFinished(false)
   {
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
@@ -31,22 +33,35 @@ namespace pem {
   }
 
   void Scenes::loadingAssets(ClientNetwork& network) {
-    intro = std::make_unique<IntroScene>(*this, resources);
+    if (!m_asyncLoading) {
+      intro = std::make_unique<IntroScene>(*this, resources);
+    }
     connection = std::make_unique<ConnectionScene>(*this, resources, network);
     lobby = std::make_unique<LobbyScene>(*this, resources, network);
     room = std::make_unique<RoomScene>(*this, resources, network);
     game = std::make_unique<GameScene>(*this, network, resources);
     credits = std::make_unique<CreditsScene>(*this, resources);
     help = std::make_unique<HelpScene>(*this, resources);
+
+    m_loadingFinished = true;
   }
 
   void Scenes::loadingAsynchronousAssets(ClientNetwork& network) {
+    m_asyncLoading = true;
     resources.asynchronousLoading(getWindow(), [this, &network](){
       loadingAssets(network);
     });
 
     // Handle splash screen...
-    resources.waitLoading();
+    intro = std::make_unique<IntroScene>(*this, resources);
+  }
+
+  bool Scenes::loadingFinished() {
+    if (m_asyncLoading) {
+      return resources.waitLoading();
+    }
+
+    return m_loadingFinished;
   }
 
 }
