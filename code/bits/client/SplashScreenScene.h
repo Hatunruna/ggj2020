@@ -1,6 +1,9 @@
 #ifndef PEM_SPLASH_SCREEN_SCENE_H
 #define PEM_SPLASH_SCREEN_SCENE_H
 
+#include <atomic>
+#include <memory>
+
 #include <gf/ResourceManager.h>
 #include <gf/Scene.h>
 
@@ -14,7 +17,9 @@ namespace pem {
 
   class SplashScreenScene : public gf::Scene {
   public:
-    SplashScreenScene(Scenes& scenes, gf::ResourceManager& resources);
+    SplashScreenScene(Scenes& scenes);
+
+    void loadAnimation();
 
   private:
     void doHandleActions(gf::Window& window) override;
@@ -25,7 +30,7 @@ namespace pem {
 
     gf::Action m_escapeAction;
 
-    SplashScreenEntity m_splashScreenEntity;
+    std::unique_ptr<SplashScreenEntity> m_splashScreenEntity;
   };
 
 }

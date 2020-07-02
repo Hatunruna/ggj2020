@@ -1,6 +1,7 @@
 #include <cstdlib>
 
 #include <gf/Log.h>
+#include <gf/SharedGLContext.h>
 
 #include <SFML/Audio.hpp>
 
@@ -32,7 +33,7 @@ int main(int argc, char *argv[]) {
   pem::Scenes scenes(PEM_DATA_DIR);
 
   if (argc == 3 && std::string(argv[1]) == "--debug") {
-    scenes.loadingAssets(network);
+    scenes.loadingAllAssets(network);
     gf::Log::debug("(CLIENT) run in debug mode\n");
 
     // Wait connection
@@ -177,7 +178,17 @@ int main(int argc, char *argv[]) {
     scenes.run();
   }
   else {
-    scenes.loadingAsynchronousAssets(network);
+    scenes.getWindow().toggleFullscreen();
+    auto loadingSplashScreen = std::async(std::launch::async, [&scenes, &network]() {
+      {
+        gf::SharedGLContext glContext(scenes.getWindow());
+        scenes.loadingSplashScreen();
+      }
+      auto loadingOther = std::async(std::launch::async, [&scenes, &network]() {
+        gf::SharedGLContext glContext(scenes.getWindow());
+        scenes.loadingMainAssets(network);
+      });
+    });
     scenes.pushScene(*scenes.splashScreen);
     scenes.run();
   }

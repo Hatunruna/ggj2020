@@ -1,6 +1,8 @@
 #ifndef PEM_SCENES_H
 #define PEM_SCENES_H
 
+#include <atomic>
+
 #include <gf/SceneManager.h>
 #include <gf/ResourceManager.h>
 #include <gf/SegueEffects.h>
@@ -25,8 +27,9 @@ namespace pem {
     Scenes& operator=(const Scenes&) = delete;
     Scenes& operator=(Scenes&&) = delete;
 
-    void loadingAssets(ClientNetwork& network);
-    void loadingAsynchronousAssets(ClientNetwork& network);
+    void loadingAllAssets(ClientNetwork& network);
+    void loadingSplashScreen();
+    void loadingMainAssets(ClientNetwork& network);
     bool loadingFinished();
 
     gf::ResourceManager resources;
@@ -46,8 +49,7 @@ namespace pem {
 
     gf::Id myPlayerId;
 
-    bool m_asyncLoading;
-    bool m_loadingFinished;
+    std::atomic_bool m_loadingFinished;
   };
 
 }
