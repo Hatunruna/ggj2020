@@ -50,6 +50,8 @@ add_executable(pax_et_mors
   code/bits/client/RoomScene.cc
   code/bits/client/Scenes.cc
   code/bits/client/ShipEntity.cc
+  code/bits/client/SplashScreenEntity.cc
+  code/bits/client/SplashScreenScene.cc
   code/bits/client/StarsEntity.cc
   code/bits/client/Singletons.cc
   code/bits/client/ViewAdaptator.cc

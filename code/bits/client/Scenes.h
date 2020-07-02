@@ -12,6 +12,7 @@
 #include "IntroScene.h"
 #include "LobbyScene.h"
 #include "RoomScene.h"
+#include "SplashScreenScene.h"
 
 namespace pem {
 
@@ -30,6 +31,7 @@ namespace pem {
 
     gf::ResourceManager resources;
 
+    std::unique_ptr<SplashScreenScene> splashScreen;
     std::unique_ptr<IntroScene> intro;
     std::unique_ptr<ConnectionScene> connection;
     std::unique_ptr<LobbyScene> lobby;

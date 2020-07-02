@@ -33,9 +33,7 @@ namespace pem {
   }
 
   void Scenes::loadingAssets(ClientNetwork& network) {
-    if (!m_asyncLoading) {
-      intro = std::make_unique<IntroScene>(*this, resources);
-    }
+    intro = std::make_unique<IntroScene>(*this, resources);
     connection = std::make_unique<ConnectionScene>(*this, resources, network);
     lobby = std::make_unique<LobbyScene>(*this, resources, network);
     room = std::make_unique<RoomScene>(*this, resources, network);
@@ -48,12 +46,12 @@ namespace pem {
 
   void Scenes::loadingAsynchronousAssets(ClientNetwork& network) {
     m_asyncLoading = true;
+
+    splashScreen = std::make_unique<SplashScreenScene>(*this, resources);
+
     resources.asynchronousLoading(getWindow(), [this, &network](){
       loadingAssets(network);
     });
-
-    // Handle splash screen...
-    intro = std::make_unique<IntroScene>(*this, resources);
   }
 
   bool Scenes::loadingFinished() {

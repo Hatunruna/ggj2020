@@ -178,7 +178,7 @@ int main(int argc, char *argv[]) {
   }
   else {
     scenes.loadingAsynchronousAssets(network);
-    scenes.pushScene(*scenes.intro);
+    scenes.pushScene(*scenes.splashScreen);
     scenes.run();
   }
   return EXIT_SUCCESS;
