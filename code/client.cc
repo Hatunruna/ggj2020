@@ -178,16 +178,10 @@ int main(int argc, char *argv[]) {
     scenes.run();
   }
   else {
-    scenes.getWindow().toggleFullscreen();
     auto loadingSplashScreen = std::async(std::launch::async, [&scenes, &network]() {
-      {
-        gf::SharedGLContext glContext(scenes.getWindow());
-        scenes.loadingSplashScreen();
-      }
-      auto loadingOther = std::async(std::launch::async, [&scenes, &network]() {
-        gf::SharedGLContext glContext(scenes.getWindow());
-        scenes.loadingMainAssets(network);
-      });
+      gf::SharedGLContext glContext(scenes.getWindow());
+      scenes.loadingSplashScreen();
+      scenes.loadingMainAssets(network);
     });
     scenes.pushScene(*scenes.splashScreen);
     scenes.run();
