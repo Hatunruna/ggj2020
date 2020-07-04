@@ -25,8 +25,7 @@ namespace pem {
     }
 
     // Add the last tileset with probably missing frames
-    m_animation.addTileset(textures.back(), textureSize, gf::vec(6, 4), 4, gf::seconds(1.0f / 25.0f));
-    m_animation.setRepeat(false);
+    m_animation.addTileset(textures.back(), textureSize, { 6, 4 }, 4, gf::seconds(1.0f / 25.0f));
 
     m_animationLoaded = true;
   }

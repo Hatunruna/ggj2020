@@ -29,7 +29,9 @@ namespace pem {
       m_scenes.resources.getTexture("animations/splash_screen_2.png"),
       m_scenes.resources.getTexture("animations/splash_screen_3.png"),
       m_scenes.resources.getTexture("animations/splash_screen_4.png"),
-      m_scenes.resources.getTexture("animations/splash_screen_5.png")
+      m_scenes.resources.getTexture("animations/splash_screen_5.png"),
+      m_scenes.resources.getTexture("animations/splash_screen_6.png"),
+      m_scenes.resources.getTexture("animations/splash_screen_7.png")
     }));
   }
 
