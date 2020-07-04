@@ -44,6 +44,10 @@ namespace pem {
   void SplashScreenScene::doUpdate(gf::Time time) {
     gf::unused(time);
 
+    if (!isActive()) {
+      return;
+    }
+
     if (m_scenes.loadingFinished()) {
       m_scenes.replaceScene(*m_scenes.intro, m_scenes.slideEffect, gf::seconds(0.3f));
       return;
