@@ -46,6 +46,7 @@ namespace pem {
     gf::SlideSegueEffect slideEffect;
     gf::FadeSegueEffect fadeEffect;
     gf::GlitchSegueEffect glitchEffect;
+    gf::BlackoutSegueEffect blackoutEffect;
 
     gf::Id myPlayerId;
 

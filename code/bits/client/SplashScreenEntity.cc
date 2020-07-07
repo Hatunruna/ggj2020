@@ -11,7 +11,7 @@ namespace pem {
   SplashScreenEntity::SplashScreenEntity(gf::Texture& tempTexture)
   : m_tempTexture(tempTexture)
   , m_animationLoaded(false) {
-
+    m_tempTexture.setSmooth(true);
   }
 
   void SplashScreenEntity::loadAnimation(std::vector<gf::Ref<gf::Texture>> textures) {
@@ -21,10 +21,12 @@ namespace pem {
     for (int i = 0; i < static_cast<int>(textures.size()) - 1; ++i) {
       auto &texture = textures[i];
 
+      texture.get().setSmooth(true);
       m_animation.addTileset(texture, textureSize, { 6, 4 }, 24, gf::seconds(1.0f / 25.0f));
     }
 
     // Add the last tileset with probably missing frames
+    textures.back().get().setSmooth(true);
     m_animation.addTileset(textures.back(), textureSize, { 6, 4 }, 4, gf::seconds(1.0f / 25.0f));
 
     m_animationLoaded = true;

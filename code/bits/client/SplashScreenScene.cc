@@ -51,7 +51,7 @@ namespace pem {
     }
 
     if (m_scenes.loadingFinished()) {
-      m_scenes.replaceScene(*m_scenes.intro, m_scenes.slideEffect, gf::seconds(0.3f));
+      m_scenes.replaceScene(*m_scenes.intro, m_scenes.blackoutEffect, gf::seconds(2.0f));
       return;
     }
   }
