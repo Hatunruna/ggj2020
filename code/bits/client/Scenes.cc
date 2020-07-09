@@ -9,7 +9,7 @@ namespace pem {
 
   Scenes::Scenes(gf::Path searchDir)
   : gf::SceneManager("Pax et Mors", InitialSize)
-  , resources({ searchDir })
+  , resources({ searchDir, "assets" })
   , splashScreen(std::make_unique<SplashScreenScene>(*this))
   , myPlayerId(gf::InvalidId)
   , m_loadingFinished(false)

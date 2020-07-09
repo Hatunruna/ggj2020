@@ -8,11 +8,15 @@ include(GNUInstallDirs)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/modules")
 
-find_package(gf REQUIRED)
-find_package(gfnet REQUIRED)
-# find_package(Box2D REQUIRED)
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(SFML2 REQUIRED sfml-audio>=2.1)
+find_package(gf REQUIRED COMPONENTS graphics net)
+
+if (UNIX)
+  find_package(PkgConfig REQUIRED)
+  pkg_check_modules(SFML2 REQUIRED sfml-audio>=2.1)
+elseif (WIN32)
+  find_package(SFML 2.1 REQUIRED COMPONENTS audio)
+  set(SFML2_LIBRARIES "sfml-audio")
+endif ()
 
 set(PEM_DATA_DIR "${CMAKE_INSTALL_PREFIX}/share/games/pax_et_mors" CACHE PATH "data path")
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/code/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h @ONLY)
@@ -20,14 +24,10 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/code/config.h.in ${CMAKE_CURRENT_BINA
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
-option(ENABLE_ASAN OFF)
-
-if (ENABLE_ASAN)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address ")
-endif (ENABLE_ASAN)
-
 if(NOT MSVC)
   add_definitions(-Wall -Wextra -g -pedantic)
+else ()
+  add_definitions(/DNOMINMAX /W4 /utf-8 /permissive-)
 endif()
 
 # client
@@ -75,8 +75,7 @@ target_include_directories(pax_et_mors
 )
 
 target_link_libraries(pax_et_mors
-  gf::gf0
-  gf::gfnet0
+  ${GF_LIBRARIES}
   ${SFML2_LIBRARIES}
 )
 
@@ -111,8 +110,7 @@ target_include_directories(pax_et_mors_server
 )
 
 target_link_libraries(pax_et_mors_server
-  gf::gfcore0
-  gf::gfnet0
+  ${GF_LIBRARIES}
 )
 
 install(

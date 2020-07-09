@@ -23,6 +23,7 @@ int main(int argc, char *argv[]) {
   // Ressource Manager only for audio...
   gf::SingletonStorage<pem::ResourceManager> storageForResourceManager(pem::gResourceManager);
   pem::gResourceManager().addSearchDir(PEM_DATA_DIR);
+  pem::gResourceManager().addSearchDir("assets");
 
   // Background music
   pem::gBackgroundMusic.setBuffer(pem::gResourceManager().getSound("audio/main_theme.ogg"));
