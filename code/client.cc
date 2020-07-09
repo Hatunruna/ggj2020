@@ -1,7 +1,8 @@
 #include <cstdlib>
+#include <future>
 
 #include <gf/Log.h>
-#include <gf/SharedGLContext.h>
+#include <gf/SharedGraphics.h>
 
 #include <SFML/Audio.hpp>
 
@@ -179,7 +180,7 @@ int main(int argc, char *argv[]) {
   }
   else {
     auto loadingSplashScreen = std::async(std::launch::async, [&scenes, &network]() {
-      gf::SharedGLContext glContext(scenes.getWindow());
+      gf::SharedGraphics glContext(scenes.getWindow());
       scenes.loadingSplashScreen();
       scenes.loadingMainAssets(network);
     });
