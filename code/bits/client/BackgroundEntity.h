@@ -8,6 +8,15 @@
 #include "StarsEntity.h"
 
 namespace pem {
+  struct ParallaxLayer {
+    ParallaxLayer(gf::Texture& texture)
+    : texture(texture)
+    , position(gf::vec(0.0f, 0.5f)) {
+    }
+
+    gf::Texture& texture;
+    gf::Vector2f position;
+  };
 
   class BackgroundEntity: public gf::Entity {
   public:
@@ -17,8 +26,8 @@ namespace pem {
     void render(gf::RenderTarget& target, const gf::RenderStates& states) override;
 
   private:
-    gf::Texture& m_backgroundTexture;
-    gf::Vector2f m_backgroundPosition;
+    ParallaxLayer m_backgroundLayer;
+    std::vector<ParallaxLayer> m_starsLayers;
   };
 
 }
