@@ -17,11 +17,8 @@ namespace pem {
     void render(gf::RenderTarget& target, const gf::RenderStates& states) override;
 
   private:
-    gf::Texture &m_texture;
-    // gf::Texture &m_engineTexture;
-    // gf::Animation m_engineAnimation;
-    StarsEntity m_stars;
-    bool m_displayShip;
+    gf::Texture& m_backgroundTexture;
+    gf::Vector2f m_backgroundPosition;
   };
 
 }
