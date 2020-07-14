@@ -25,6 +25,9 @@ namespace pem {
     io.Fonts->AddFontFromFileTTF(resources.getAbsolutePath("DejaVuSans.ttf").string().c_str(), 20);
 
     ImGui_ImplGF_Init(getWindow(), getRenderer());
+
+    // Set frame limit
+    getWindow().setVerticalSyncEnabled(true);
   }
 
   Scenes::~Scenes() {
