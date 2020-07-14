@@ -8,10 +8,10 @@
 #include "StarsEntity.h"
 
 namespace pem {
-  struct ParallaxLayer {
-    ParallaxLayer(gf::Texture& texture)
+  struct ParallaxEntities {
+    ParallaxEntities(gf::Texture& texture)
     : texture(texture)
-    , position(gf::vec(0.0f, 0.5f)) {
+    , position(gf::vec(0.0f, 0.0f)) {
     }
 
     gf::Texture& texture;
@@ -25,9 +25,19 @@ namespace pem {
     void update(gf::Time time) override;
     void render(gf::RenderTarget& target, const gf::RenderStates& states) override;
 
+  public:
+    void chooseNebula();
+
   private:
-    ParallaxLayer m_backgroundLayer;
-    std::vector<ParallaxLayer> m_starsLayers;
+    // Last layer
+    ParallaxEntities m_backgroundLayer;
+
+    // Nebulae layer
+    std::vector<ParallaxEntities> m_nebulaeLayer;
+    int m_selectedNebula;
+
+    // Star layer
+    std::vector<ParallaxEntities> m_starsLayer;
   };
 
 }

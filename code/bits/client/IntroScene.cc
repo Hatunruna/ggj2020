@@ -16,14 +16,17 @@ namespace pem {
   , m_escapeAction("Escape")
   , m_choice(MenuChoice::None)
   , m_menu(resources, m_choice)
-  , m_backgorund(resources, false)
+  , m_background(resources, false)
   {
     setClearColor(gf::Color::Black);
 
     m_escapeAction.addKeycodeKeyControl(gf::Keycode::Escape);
     addAction(m_escapeAction);
 
-    addHudEntity(m_backgorund);
+    setWorldViewSize(ViewSize);
+    setWorldViewCenter(WorldSize * 0.5f);
+
+    addWorldEntity(m_background);
     addHudEntity(m_menu);
   }
 

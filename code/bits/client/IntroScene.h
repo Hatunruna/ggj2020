@@ -28,7 +28,7 @@ namespace pem {
     MenuChoice m_choice;
     MenuEntity m_menu;
 
-    BackgroundEntity m_backgorund;
+    BackgroundEntity m_background;
   };
 
 }

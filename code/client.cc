@@ -31,6 +31,9 @@ int main(int argc, char *argv[]) {
   pem::gBackgroundMusic.setVolume(pem::BackgroundAmbiantVolume);
   pem::gBackgroundMusic.play();
 
+  // Random engine
+  gf::SingletonStorage<gf::Random> storageForRandom(pem::gRandom);
+
   // Start graphics
   pem::Scenes scenes(PEM_DATA_DIR);
 
@@ -180,6 +183,7 @@ int main(int argc, char *argv[]) {
     scenes.run();
   }
   else {
+    scenes.getWindow().toggleFullscreen();
     auto loadingSplashScreen = std::async(std::launch::async, [&scenes, &network]() {
       gf::SharedGraphics glContext(scenes.getWindow());
       scenes.loadingSplashScreen();

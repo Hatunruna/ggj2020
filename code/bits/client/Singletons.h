@@ -2,6 +2,7 @@
 #define PEM_SINGLETONS_H
 
 #include <gf/Singleton.h>
+#include <gf/Random.h>
 
 #include "ResourceManager.h"
 
@@ -12,6 +13,7 @@ namespace pem {
 
   extern gf::Singleton<ResourceManager> gResourceManager;
   extern sf::Sound gBackgroundMusic;
+  extern gf::Singleton<gf::Random> gRandom;
 
 }
 
