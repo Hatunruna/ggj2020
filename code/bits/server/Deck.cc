@@ -3,7 +3,7 @@
 #include <cassert>
 #include <algorithm>
 
-#include <gf/ArrayRef.h>
+#include <gf/Span.h>
 
 #include "Crew.h"
 
@@ -57,7 +57,7 @@ namespace pem {
     };
 
 
-    std::vector<CardType> createDeck(int32_t players, gf::ArrayRef<DeckData> config, gf::Random& random) {
+    std::vector<CardType> createDeck(int32_t players, gf::Span<const DeckData> config, gf::Random& random) {
       std::vector<CardType> deck;
 
       for (auto data : config) {
