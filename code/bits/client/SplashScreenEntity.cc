@@ -22,12 +22,12 @@ namespace pem {
       auto &texture = textures[i];
 
       texture.get().setSmooth(true);
-      m_animation.addTileset(texture, textureSize, { 6, 4 }, 24, gf::seconds(1.0f / 25.0f));
+      m_animation.addTileset(texture, { 6, 4 }, gf::seconds(1.0f / 25.0f), 24);
     }
 
     // Add the last tileset with probably missing frames
     textures.back().get().setSmooth(true);
-    m_animation.addTileset(textures.back(), textureSize, { 6, 4 }, 4, gf::seconds(1.0f / 25.0f));
+    m_animation.addTileset(textures.back(), { 6, 4 }, gf::seconds(1.0f / 25.0f), 4);
 
     m_animationLoaded = true;
   }

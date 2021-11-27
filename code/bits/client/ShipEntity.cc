@@ -84,11 +84,11 @@ namespace pem {
     for (int i = 0; i < static_cast<int>(brokenTextures.size()) - 1; ++i) {
       auto &texture = brokenTextures[i];
 
-      m_brokenAnimation.addTileset(texture, textureSize, tilesetLayout, tilesetLayout.width * tilesetLayout.height, gf::seconds(1.0f / 25.0f));
+      m_brokenAnimation.addTileset(texture, tilesetLayout, gf::seconds(1.0f / 25.0f), tilesetLayout.width * tilesetLayout.height);
     }
 
     // Add the last tileset with probably missing frames
-    m_brokenAnimation.addTileset(brokenTextures.back(), textureSize, tilesetLayout, lastNumberFrame, gf::seconds(1.0f / 25.0f));
+    m_brokenAnimation.addTileset(brokenTextures.back(), tilesetLayout, gf::seconds(1.0f / 25.0f), lastNumberFrame);
   }
 
   void PlaceEntity::update(gf::Time time) {
@@ -121,10 +121,10 @@ namespace pem {
   , m_model(model) {
     // Load sprites for animations
     constexpr gf::Vector2f FlameTextureSize = { 1051.0f / 6306.0f, 1521.0f / 6084.0f };
-    m_leftFlameWorkingAnimation.addTileset(resources.getTexture("animations/left_flame_working.png"), FlameTextureSize, { 6, 4}, 24, gf::seconds(1.0f / 25.0f));
-    m_leftFlameBrokenAnimation.addTileset(resources.getTexture("animations/left_flame_broken.png"), FlameTextureSize, { 6, 4}, 24, gf::seconds(1.0f / 25.0f));
-    m_rightFlameWorkingAnimation.addTileset(resources.getTexture("animations/right_flame_working.png"), FlameTextureSize, { 6, 4}, 24, gf::seconds(1.0f / 25.0f));
-    m_rightFlameBrokenAnimation.addTileset(resources.getTexture("animations/right_flame_broken.png"), FlameTextureSize, { 6, 4}, 24, gf::seconds(1.0f / 25.0f));
+    m_leftFlameWorkingAnimation.addTileset(resources.getTexture("animations/left_flame_working.png"), { 6, 4}, gf::seconds(1.0f / 25.0f), 24);
+    m_leftFlameBrokenAnimation.addTileset(resources.getTexture("animations/left_flame_broken.png"), { 6, 4}, gf::seconds(1.0f / 25.0f), 24);
+    m_rightFlameWorkingAnimation.addTileset(resources.getTexture("animations/right_flame_working.png"), { 6, 4}, gf::seconds(1.0f / 25.0f), 24);
+    m_rightFlameBrokenAnimation.addTileset(resources.getTexture("animations/right_flame_broken.png"), { 6, 4}, gf::seconds(1.0f / 25.0f), 24);
 
     // Add all animations for broken place
     m_places.emplace_back(
