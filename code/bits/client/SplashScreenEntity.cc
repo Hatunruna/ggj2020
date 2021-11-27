@@ -15,8 +15,6 @@ namespace pem {
   }
 
   void SplashScreenEntity::loadAnimation(std::vector<gf::Ref<gf::Texture>> textures) {
-    const gf::Vector2f textureSize = gf::vec(1.0f / 6.0f, 1.0f / 4.0f);
-
     // Add tileset without empty frame
     for (int i = 0; i < static_cast<int>(textures.size()) - 1; ++i) {
       auto &texture = textures[i];

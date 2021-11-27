@@ -78,8 +78,6 @@ namespace pem {
   , m_workingTexture(workingTexture)
   , m_position(getPlaceLocation(place)) {
 
-    const gf::Vector2f textureSize = gf::vec(1.0f / tilesetLayout.width, 1.0f / tilesetLayout.height);
-
     // Add tileset without empty frame
     for (int i = 0; i < static_cast<int>(brokenTextures.size()) - 1; ++i) {
       auto &texture = brokenTextures[i];
@@ -120,7 +118,6 @@ namespace pem {
   , m_shipTexture(resources.getTexture("images/ship.png"))
   , m_model(model) {
     // Load sprites for animations
-    constexpr gf::Vector2f FlameTextureSize = { 1051.0f / 6306.0f, 1521.0f / 6084.0f };
     m_leftFlameWorkingAnimation.addTileset(resources.getTexture("animations/left_flame_working.png"), { 6, 4}, gf::seconds(1.0f / 25.0f), 24);
     m_leftFlameBrokenAnimation.addTileset(resources.getTexture("animations/left_flame_broken.png"), { 6, 4}, gf::seconds(1.0f / 25.0f), 24);
     m_rightFlameWorkingAnimation.addTileset(resources.getTexture("animations/right_flame_working.png"), { 6, 4}, gf::seconds(1.0f / 25.0f), 24);
