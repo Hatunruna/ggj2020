@@ -17,7 +17,7 @@ namespace pem {
   };
 
   template<typename Archive>
-  Archive operator|(Archive& ar, PlayerData& data) {
+  Archive& operator|(Archive& ar, PlayerData& data) {
     return ar | data.id | data.name | data.team | data.ready;
   }
 
@@ -29,7 +29,7 @@ namespace pem {
   };
 
   template<typename Archive>
-  Archive operator|(Archive& ar, RoomData& data) {
+  Archive& operator|(Archive& ar, RoomData& data) {
     return ar | data.id | data.name | data.settings | data.players;
   }
 
@@ -41,7 +41,7 @@ namespace pem {
   };
 
   template<typename Archive>
-  Archive operator|(Archive& ar, MessageData& data) {
+  Archive& operator|(Archive& ar, MessageData& data) {
     return ar | data.origin | data.author | data.content | data.recipient;
   }
 
