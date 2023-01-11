@@ -26,7 +26,7 @@ namespace pem {
   };
 
   template<typename Archive>
-  Archive operator|(Archive& ar, PemServerInitRole& data) {
+  Archive& operator|(Archive& ar, PemServerInitRole& data) {
     return ar | data.role | data.cards;
   }
 
@@ -35,7 +35,7 @@ namespace pem {
   };
 
   template<typename Archive>
-  Archive operator|(Archive& ar, PemServerStartMoveAndPlay&) {
+  Archive& operator|(Archive& ar, PemServerStartMoveAndPlay&) {
     return ar;
   }
 
@@ -45,7 +45,7 @@ namespace pem {
   };
 
   template<typename Archive>
-  Archive operator|(Archive& ar, PemServerUpdateShip& data) {
+  Archive& operator|(Archive& ar, PemServerUpdateShip& data) {
     return ar | data.states;
   }
 
@@ -64,7 +64,7 @@ namespace pem {
   };
 
   template<typename Archive>
-  Archive operator|(Archive& ar, PemServerStartVoteForPrisoner&) {
+  Archive& operator|(Archive& ar, PemServerStartVoteForPrisoner&) {
     return ar;
   }
 
@@ -74,7 +74,7 @@ namespace pem {
   };
 
   template<typename Archive>
-  Archive operator|(Archive& ar, PemServerChoosePrisoner& data) {
+  Archive& operator|(Archive& ar, PemServerChoosePrisoner& data) {
     return ar | data.member;
   }
 
@@ -85,7 +85,7 @@ namespace pem {
   };
 
   template<typename Archive>
-  Archive operator|(Archive& ar, PemServerReleasePrisoner& data) {
+  Archive& operator|(Archive& ar, PemServerReleasePrisoner& data) {
     return ar | data.prisoner | data.deliverer;
   }
 
@@ -96,7 +96,7 @@ namespace pem {
   };
 
   template<typename Archive>
-  Archive operator|(Archive& ar, PemServerMissionStatus& data) {
+  Archive& operator|(Archive& ar, PemServerMissionStatus& data) {
     return ar | data.distance | data.turn;
   }
 
@@ -106,7 +106,7 @@ namespace pem {
   };
 
   template<typename Archive>
-  Archive operator|(Archive& ar, PemServerUpdateHand& data) {
+  Archive& operator|(Archive& ar, PemServerUpdateHand& data) {
     return ar | data.card;
   }
 
@@ -121,7 +121,7 @@ namespace pem {
   };
 
   template<typename Archive>
-  Archive operator|(Archive& ar, PemClientChoosePrisoner& data) {
+  Archive& operator|(Archive& ar, PemClientChoosePrisoner& data) {
     return ar | data.member;
   }
 
@@ -133,7 +133,7 @@ namespace pem {
   };
 
   template<typename Archive>
-  Archive operator|(Archive& ar, PemClientMoveAndPlay& data) {
+  Archive& operator|(Archive& ar, PemClientMoveAndPlay& data) {
     return ar | data.place | data.card | data.indexCard;
   }
 
