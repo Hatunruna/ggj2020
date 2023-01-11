@@ -26,7 +26,7 @@ namespace pem {
   };
 
   template<typename Archive>
-  Archive operator|(Archive& ar, ServerHello& data) {
+  Archive& operator|(Archive& ar, ServerHello& data) {
     return ar | data.settings | data.playerId;
   }
 
@@ -35,7 +35,7 @@ namespace pem {
   };
 
   template<typename Archive>
-  Archive operator|(Archive& ar, ServerDisconnect&) {
+  Archive& operator|(Archive& ar, ServerDisconnect&) {
     return ar;
   }
 
@@ -45,7 +45,7 @@ namespace pem {
   };
 
   template<typename Archive>
-  Archive operator|(Archive& ar, ServerChangeName& data) {
+  Archive& operator|(Archive& ar, ServerChangeName& data) {
     return ar | data.name;
   }
 
@@ -56,7 +56,7 @@ namespace pem {
   };
 
   template<typename Archive>
-  Archive operator|(Archive& ar, ServerJoinRoom& data) {
+  Archive& operator|(Archive& ar, ServerJoinRoom& data) {
     return ar | data.room | data.settings;
   }
 
@@ -65,7 +65,7 @@ namespace pem {
   };
 
   template<typename Archive>
-  Archive operator|(Archive& ar, ServerLeaveRoom&) {
+  Archive& operator|(Archive& ar, ServerLeaveRoom&) {
     return ar;
   }
 
@@ -75,7 +75,7 @@ namespace pem {
   };
 
   template<typename Archive>
-  Archive operator|(Archive& ar, ServerChangeTeam& data) {
+  Archive& operator|(Archive& ar, ServerChangeTeam& data) {
     return ar | data.team;
   }
 
@@ -85,7 +85,7 @@ namespace pem {
   };
 
   template<typename Archive>
-  Archive operator|(Archive& ar, ServerReady& data) {
+  Archive& operator|(Archive& ar, ServerReady& data) {
     return ar | data.ready;
   }
 
@@ -95,7 +95,7 @@ namespace pem {
   };
 
   template<typename Archive>
-  Archive operator|(Archive& ar, ServerChatMessage& data) {
+  Archive& operator|(Archive& ar, ServerChatMessage& data) {
     return ar | data.message;
   }
 
@@ -105,7 +105,7 @@ namespace pem {
   };
 
   template<typename Archive>
-  Archive operator|(Archive& ar, ServerListPlayers& data) {
+  Archive& operator|(Archive& ar, ServerListPlayers& data) {
     return ar | data.players;
   }
 
@@ -115,7 +115,7 @@ namespace pem {
   };
 
   template<typename Archive>
-  Archive operator|(Archive& ar, ServerListRoomPlayers& data) {
+  Archive& operator|(Archive& ar, ServerListRoomPlayers& data) {
     return ar | data.players;
   }
 
@@ -125,7 +125,7 @@ namespace pem {
   };
 
   template<typename Archive>
-  Archive operator|(Archive& ar, ServerListRooms& data) {
+  Archive& operator|(Archive& ar, ServerListRooms& data) {
     return ar | data.rooms;
   }
 
@@ -134,7 +134,7 @@ namespace pem {
   };
 
   template<typename Archive>
-  Archive operator|(Archive& ar, ServerStartGame&) {
+  Archive& operator|(Archive& ar, ServerStartGame&) {
     return ar;
   }
 
@@ -143,7 +143,7 @@ namespace pem {
   };
 
   template<typename Archive>
-  Archive operator|(Archive& ar, ServerStopGame&) {
+  Archive& operator|(Archive& ar, ServerStopGame&) {
     return ar;
   }
 
@@ -200,7 +200,7 @@ namespace pem {
   }
 
   template<typename Archive>
-  Archive operator|(Archive& ar, ServerError& data) {
+  Archive& operator|(Archive& ar, ServerError& data) {
     return ar | data.reason;
   }
 
@@ -214,7 +214,7 @@ namespace pem {
   };
 
   template<typename Archive>
-  Archive operator|(Archive& ar, ClientHello& data) {
+  Archive& operator|(Archive& ar, ClientHello& data) {
     return ar | data.name;
   }
 
@@ -223,7 +223,7 @@ namespace pem {
   };
 
   template<typename Archive>
-  Archive operator|(Archive& ar, ClientDisconnect&) {
+  Archive& operator|(Archive& ar, ClientDisconnect&) {
     return ar;
   }
 
@@ -233,7 +233,7 @@ namespace pem {
   };
 
   template<typename Archive>
-  Archive operator|(Archive& ar, ClientChangeName& data) {
+  Archive& operator|(Archive& ar, ClientChangeName& data) {
     return ar | data.name;
   }
 
@@ -244,7 +244,7 @@ namespace pem {
   };
 
   template<typename Archive>
-  Archive operator|(Archive& ar, ClientCreateRoom& data) {
+  Archive& operator|(Archive& ar, ClientCreateRoom& data) {
     return ar | data.name | data.settings;
   }
 
@@ -254,7 +254,7 @@ namespace pem {
   };
 
   template<typename Archive>
-  Archive operator|(Archive& ar, ClientJoinRoom& data) {
+  Archive& operator|(Archive& ar, ClientJoinRoom& data) {
     return ar | data.room;
   }
 
@@ -263,7 +263,7 @@ namespace pem {
   };
 
   template<typename Archive>
-  Archive operator|(Archive& ar, ClientLeaveRoom&) {
+  Archive& operator|(Archive& ar, ClientLeaveRoom&) {
     return ar;
   }
 
@@ -273,7 +273,7 @@ namespace pem {
   };
 
   template<typename Archive>
-  Archive operator|(Archive& ar, ClientChangeTeam& data) {
+  Archive& operator|(Archive& ar, ClientChangeTeam& data) {
     return ar | data.team;
   }
 
@@ -283,7 +283,7 @@ namespace pem {
   };
 
   template<typename Archive>
-  Archive operator|(Archive& ar, ClientReady& data) {
+  Archive& operator|(Archive& ar, ClientReady& data) {
     return ar | data.ready;
   }
 
@@ -294,7 +294,7 @@ namespace pem {
   };
 
   template<typename Archive>
-  Archive operator|(Archive& ar, ClientChatMessage& data) {
+  Archive& operator|(Archive& ar, ClientChatMessage& data) {
     return ar | data.content | data.recipient;
   }
 
