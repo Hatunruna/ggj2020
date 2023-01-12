@@ -25,7 +25,7 @@ namespace {
 }
 
 namespace pem {
-  BackgroundEntity::BackgroundEntity(gf::ResourceManager& resources, bool displayShip)
+  BackgroundEntity::BackgroundEntity(gf::ResourceManager& resources, [[maybe_unused]] bool displayShip)
   : m_backgroundLayer(resources.getTexture("images/parallax/background.png")) {
     m_backgroundLayer.texture.setSmooth();
     m_backgroundLayer.texture.setRepeated();

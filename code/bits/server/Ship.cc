@@ -12,7 +12,7 @@
 namespace pem {
 
   namespace {
-    std::map<PlaceType,ShipPlace> createShip(int32_t players){
+    std::map<PlaceType,ShipPlace> createShip([[maybe_unused]] int32_t players){
       std::map<PlaceType,ShipPlace> ship = {
         { PlaceType::Infirmery,           ShipPlace() },
         { PlaceType::CommunicationCenter, ShipPlace() },
