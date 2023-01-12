@@ -5,7 +5,6 @@
 #include <gf/Coordinates.h>
 #include <gf/Log.h>
 #include <gf/Shapes.h>
-#include <gf/Unused.h>
 
 #include <imgui.h>
 #include <imgui_impl_gf.h>
@@ -88,9 +87,7 @@ namespace pem {
     m_cardShuffle.play();
   }
 
-  void GameScene::doHandleActions(gf::Window& window) {
-    gf::unused(window);
-
+  void GameScene::doHandleActions([[maybe_unused]] gf::Window& window) {
     if (m_escapeAction.isActive()) {
       // Stop song
       m_ambiantBackground.stop();

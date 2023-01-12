@@ -4,7 +4,6 @@
 
 #include <gf/Coordinates.h>
 #include <gf/Log.h>
-#include <gf/Unused.h>
 
 #include <imgui.h>
 #include <imgui_impl_gf.h>

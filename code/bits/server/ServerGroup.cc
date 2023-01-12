@@ -2,8 +2,6 @@
 
 #include <algorithm>
 
-#include <gf/Unused.h>
-
 namespace pem {
   ServerGroup::~ServerGroup() = default;
 
@@ -53,13 +51,11 @@ namespace pem {
     }
   }
 
-  void ServerGroup::doAddPlayer(ServerPlayer& player) {
-    gf::unused(player);
+  void ServerGroup::doAddPlayer([[maybe_unused]] ServerPlayer& player) {
     // nothing by default
   }
 
-  void ServerGroup::doRemovePlayer(ServerPlayer& player) {
-    gf::unused(player);
+  void ServerGroup::doRemovePlayer([[maybe_unused]] ServerPlayer& player) {
     // nothing by default
   }
 

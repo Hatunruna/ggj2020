@@ -2,7 +2,6 @@
 
 #include <gf/Coordinates.h>
 #include <gf/Text.h>
-#include <gf/Unused.h>
 
 #include "common/Constants.h"
 
@@ -25,9 +24,7 @@ namespace pem {
     addHudEntity(m_backgorund);
   }
 
-  void CreditsScene::doHandleActions(gf::Window& window) {
-    gf::unused(window);
-
+  void CreditsScene::doHandleActions([[maybe_unused]] gf::Window& window) {
     if (m_escapeAction.isActive()) {
       m_scenes.replaceScene(*m_scenes.intro, m_scenes.fadeEffect, gf::seconds(0.4f));
     }

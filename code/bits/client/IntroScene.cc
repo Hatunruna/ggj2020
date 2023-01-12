@@ -1,7 +1,6 @@
 #include "IntroScene.h"
 
 #include <gf/Log.h>
-#include <gf/Unused.h>
 
 #include "common/Constants.h"
 
@@ -46,17 +45,13 @@ namespace pem {
     }
   }
 
-  void IntroScene::doHandleActions(gf::Window& window) {
-    gf::unused(window);
-
+  void IntroScene::doHandleActions([[maybe_unused]] gf::Window& window) {
     if (m_escapeAction.isActive()) {
       m_scenes.popScene();
     }
   }
 
-  void IntroScene::doUpdate(gf::Time time) {
-    gf::unused(time);
-
+  void IntroScene::doUpdate([[maybe_unused]] gf::Time time) {
     if (!m_scenes.loadingFinished()) {
       m_choice = MenuChoice::None;
       return;

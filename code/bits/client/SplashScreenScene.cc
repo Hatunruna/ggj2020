@@ -1,7 +1,5 @@
 #include "SplashScreenScene.h"
 
-#include <gf/Unused.h>
-
 #include "common/Constants.h"
 
 #include "Scenes.h"
@@ -35,17 +33,13 @@ namespace pem {
     }));
   }
 
-  void SplashScreenScene::doHandleActions(gf::Window& window) {
-    gf::unused(window);
-
+  void SplashScreenScene::doHandleActions([[maybe_unused]] gf::Window& window) {
     if (m_escapeAction.isActive()) {
       m_scenes.popScene();
     }
   }
 
-  void SplashScreenScene::doUpdate(gf::Time time) {
-    gf::unused(time);
-
+  void SplashScreenScene::doUpdate([[maybe_unused]] gf::Time time) {
     if (!isActive()) {
       return;
     }
